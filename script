@@ -60,7 +60,7 @@
 @End
 
 @GlowActiveSpace
-  SendMidiNoteOn bbChannel, activeSpace, 100
+  SendMidiNoteOn bbChannel, activeSpace, 100, 100
 @End
 
 @SendNoteFromCurrentSpace
