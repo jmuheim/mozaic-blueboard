@@ -1,0 +1,93 @@
+// Make sure to start the BlueBoard while pressing the B pad!
+@OnLoad
+  SetShortName {Joshua Short}
+  Log {Joshua wants to be a pop band}
+
+  // BlueBoard (bb) pads.
+  // Each pad (A, B, C, D) offers one space which is activated by long-tapping.
+  bbA_in = 60
+  bbB_in = 62
+  bbC_in = 64
+  bbD_in = 65
+
+  gtlChannel = 15 // Channel on which GTL should listen => should not be 0!
+  bbChannel = 0   // BlueBoard's channel => do not change this!
+
+  activeSpace = bbA_in
+  Call @ActivateSpace
+
+  longTapTime = 300 // Time needed to execute a long-tap (in ms)
+  onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
+@End
+
+@OnMidiNoteOn
+  padPressedStartTime = SystemTime // Time at which pad was pressed down
+@End
+
+@OnMidiNoteOff
+  If SystemTime - padPressedStartTime >= longTapTime
+    Call @LongTap
+  Else
+    Call @ShortTap
+  Endif
+@End
+
+@ShortTap
+  // Log {Short Tap: }, MidiNote
+
+  Call @SendNoteFromCurrentSpace
+@End
+
+@LongTap
+  // Log {Long Tap: }, MidiNote
+
+  activeSpace = MidiNote
+  Call @ActivateSpace
+@End
+
+@ActivateSpace
+  Call @UnglowEverything
+  Call @GlowActiveSpace
+
+  Log {Activated space: }, activeSpace
+@End
+
+@UnglowEverything
+  SendMidiNoteOff bbChannel, bbA_in, 100
+  SendMidiNoteOff bbChannel, bbB_in, 100
+  SendMidiNoteOff bbChannel, bbC_in, 100
+  SendMidiNoteOff bbChannel, bbD_in, 100
+@End
+
+@GlowActiveSpace
+  SendMidiNoteOn bbChannel, activeSpace, 100
+@End
+
+@SendNoteFromCurrentSpace
+  baseNote = -1
+  noteToSend = -1
+
+  if activeSpace = bbA_in
+    baseNote = 0
+  elseif activeSpace = bbB_in
+    baseNote = 4
+  elseif activeSpace = bbC_in
+    baseNote = 8
+  elseif activeSpace = bbD_in
+    baseNote = 12
+  endif
+
+  if MidiNote = bbA_in
+    noteToSend = baseNote + 0
+  elseif MidiNote = bbB_in
+    noteToSend = baseNote + 1
+  elseif MidiNote = bbC_in
+    noteToSend = baseNote + 2
+  elseif MidiNote = bbD_in
+    noteToSend = baseNote + 3
+  endif
+
+  SendMidiNoteOn gtlChannel, noteToSend, 100
+  SendMidiNoteOff gtlChannel, noteToSend, 0, onOffDelay
+  Log {Sent Midi: }, noteToSend
+@End
