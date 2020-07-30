@@ -53,10 +53,10 @@
 @End
 
 @UnglowEverything
-  SendMidiNoteOff bbChannel, bbA_in, 100
-  SendMidiNoteOff bbChannel, bbB_in, 100
-  SendMidiNoteOff bbChannel, bbC_in, 100
-  SendMidiNoteOff bbChannel, bbD_in, 100
+  SendMidiNoteOff bbChannel, bbA_in, 0
+  SendMidiNoteOff bbChannel, bbB_in, 0
+  SendMidiNoteOff bbChannel, bbC_in, 0
+  SendMidiNoteOff bbChannel, bbD_in, 0
 @End
 
 @GlowActiveSpace
