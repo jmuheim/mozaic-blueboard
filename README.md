@@ -40,3 +40,7 @@ For more info see related posts on the [Audiobus forums](https://forum.audiob.us
 - [Mozaic: How to detect a "long tap" (0.5secs) on my BlueBoard](https://forum.audiob.us/discussion/39866/mozaic-how-to-detect-a-long-tap-0-5secs-on-my-blueboard)
 - [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc)
 - [Is there a MIDI app that allows to send several controls by the press of only one switch?](https://forum.audiob.us/discussion/39721/is-there-a-midi-app-that-allows-to-send-several-controls-by-the-press-of-only-one-switch#latest)
+
+## Alternatives
+
+- The [Midifire](https://apps.apple.com/us/app/midifire/id906600872) **Blue Velvet** script adds advanced input gestures like double/triple taps and combinations of taps to the BlueBoard, see [Midifire Blue velvet adds up to 24 midi notes controls to Blueboard](https://forum.audiob.us/discussion/29902/midifire-blue-velvet-adds-up-to-24-midi-notes-controls-to-blueboard/p1). While this seems intriguing, it is too difficult for me and my tap dancing skills.
