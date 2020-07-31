@@ -1,6 +1,6 @@
 # Mozaic BlueBoard
 
-This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).
+**This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).**
 
 By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons (A, B, C, and D). My script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly 1/4 sec) any of the buttons. Per space, each button sends a unique MIDI signal, which makes `4 spaces * 4 buttons = 16 signals`:
 
