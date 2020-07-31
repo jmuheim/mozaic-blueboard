@@ -14,7 +14,7 @@ All signals are sent through channel `15`.
 ## How to
 
 - You need [AUM](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) and [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653)
-    - There might be other similar apps available that can act as the AUv3 host, too
+    - Instead of AUM, there might be other similar apps available that can act as the AUv3 host, too
 - Turn on your BlueBoard while holding the `B` button (only needed once)
     - You need the most current firmware installed, see [SOLVED: BlueBoard firmware update using Firmware Updater!](https://cgi.ikmultimedia.com/ikforum/viewtopic.php?f=9&t=24780)
 - Connect the BlueBoard to AUM in `Menu` > `Settings` > `Central`
