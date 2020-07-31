@@ -15,6 +15,8 @@
 
   activeSpace = bbA_in
   Call @ActivateSpace
+  
+  Call @IlluminateAllButtons
 
   longTapTime = 300 // Time needed to execute a long-tap (in ms)
   onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
@@ -46,21 +48,18 @@
 @End
 
 @ActivateSpace
-  Call @UnglowEverything
-  Call @GlowActiveSpace
-
   Log {Activated space: }, activeSpace
 @End
 
-@UnglowEverything
-  SendMidiNoteOff bbChannel, bbA_in, 0
-  SendMidiNoteOff bbChannel, bbB_in, 0
-  SendMidiNoteOff bbChannel, bbC_in, 0
-  SendMidiNoteOff bbChannel, bbD_in, 0
-@End
+@IlluminateAllButtons
+  // It would have been nice to be able to illuminate specific buttons depending on the interaction with the BB.
+  // But this seems to be buggy, see https://forum.audiob.us/discussion/comment/832104/#Comment_832104.
+  // So we just keep all of them illuminated (for visibility purposes when using the BB in the dark).
 
-@GlowActiveSpace
-  SendMidiNoteOn bbChannel, activeSpace, 100, 100
+  SendMidiNoteOn bbChannel, bbA_in, 100
+  SendMidiNoteOn bbChannel, bbB_in, 100
+  SendMidiNoteOn bbChannel, bbC_in, 100
+  SendMidiNoteOn bbChannel, bbD_in, 100
 @End
 
 @SendNoteFromCurrentSpace
