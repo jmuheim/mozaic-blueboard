@@ -2,14 +2,26 @@
 
 **This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).**
 
-By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons (A, B, C, and D). My script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly 1/4 sec) any of the buttons. Per space, each button sends a unique MIDI signal, which makes `4 spaces * 4 buttons = 16 signals`:
+By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The [enhancer](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/enhancer) script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for `1` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
 
-- Space `A` sends `0 to 3`
-- Space `B` sends `4 to 7`
-- Space `C` sends `8 to 11`
-- Space `D` sends `12 to 15`
+- Space `A` (activation sends `0`)
+    - **Short**-tapping `A` sends `1`
+    - Short-tapping `B` sends `2`
+    - Short-tapping `C` sends `3`
+    - Short-tapping `D` sends `4`
+    - **Long**-tapping `A` sends `5`
+    - Long-tapping `B` sends `6`
+    - Long-tapping `C` sends `7`
+    - Long-tapping `D` sends `8`
+- Space `B` (activation sends `32`)
+    - **Short**-tapping `A` sends `33`
+    - **Long**-tapping `A` sends `37`
+- Space `C` (activation sends `64`)
+- Space `D` (activation sends `96`)
 
 All signals are sent through channel `15`.
+
+The (optional) [feedbacker](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/feedbacker) script adds the possibility to 
 
 ## How to
 

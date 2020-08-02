@@ -1,7 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B pad!
 @OnLoad
-  SetShortName {Joshua Short}
-  Log {Joshua wants to be a pop band}
+  SetShortName {BlueBoard}
 
   // BlueBoard (bb) pads.
   // Each pad (A, B, C, D) offers one space which is activated by long-tapping.
@@ -12,14 +11,16 @@
 
   gtlChannel = 15 // Channel on which GTL should listen => should not be 0!
   bbChannel = 0   // BlueBoard's channel => do not change this!
+  longTapTime = 250 // Time needed to execute a long-tap (in ms)
+  spaceActivationTapTime = 1000 // Time needed to activate a space
+  onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
+  baseNote = -1
+  noteToSend = -1
+
+  Call @IlluminateAllButtons
 
   activeSpace = bbA_in
   Call @ActivateSpace
-  
-  Call @IlluminateAllButtons
-
-  longTapTime = 300 // Time needed to execute a long-tap (in ms)
-  onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
 @End
 
 @OnMidiNoteOn
@@ -27,7 +28,12 @@
 @End
 
 @OnMidiNoteOff
-  If SystemTime - padPressedStartTime >= longTapTime
+  padPressedTime = SystemTime - padPressedStartTime
+
+  if padPressedTime >= spaceActivationTapTime
+    activeSpace = MidiNote
+    Call @ActivateSpace
+  elseif padPressedTime >= longTapTime
     Call @LongTap
   Else
     Call @ShortTap
@@ -37,18 +43,50 @@
 @ShortTap
   // Log {Short Tap: }, MidiNote
 
+  if MidiNote = bbA_in
+    noteToSend = baseNote + 1
+  elseif MidiNote = bbB_in
+    noteToSend = baseNote + 2
+  elseif MidiNote = bbC_in
+    noteToSend = baseNote + 3
+  elseif MidiNote = bbD_in
+    noteToSend = baseNote + 4
+  endif
+
   Call @SendNoteFromCurrentSpace
 @End
 
 @LongTap
   // Log {Long Tap: }, MidiNote
 
-  activeSpace = MidiNote
-  Call @ActivateSpace
+  if MidiNote = bbA_in
+    noteToSend = baseNote + 5
+  elseif MidiNote = bbB_in
+    noteToSend = baseNote + 6
+  elseif MidiNote = bbC_in
+    noteToSend = baseNote + 7
+  elseif MidiNote = bbD_in
+    noteToSend = baseNote + 8
+  endif
+
+  Call @SendNoteFromCurrentSpace
 @End
 
 @ActivateSpace
   Log {Activated space: }, activeSpace
+
+  if activeSpace = bbA_in
+    baseNote = 0
+  elseif activeSpace = bbB_in
+    baseNote = 32
+  elseif activeSpace = bbC_in
+    baseNote = 64
+  elseif activeSpace = bbD_in
+    baseNote = 96
+  endif
+
+  noteToSend = baseNote
+  Call @SendNoteFromCurrentSpace
 @End
 
 @IlluminateAllButtons
@@ -63,29 +101,6 @@
 @End
 
 @SendNoteFromCurrentSpace
-  baseNote = -1
-  noteToSend = -1
-
-  if activeSpace = bbA_in
-    baseNote = 0
-  elseif activeSpace = bbB_in
-    baseNote = 4
-  elseif activeSpace = bbC_in
-    baseNote = 8
-  elseif activeSpace = bbD_in
-    baseNote = 12
-  endif
-
-  if MidiNote = bbA_in
-    noteToSend = baseNote + 0
-  elseif MidiNote = bbB_in
-    noteToSend = baseNote + 1
-  elseif MidiNote = bbC_in
-    noteToSend = baseNote + 2
-  elseif MidiNote = bbD_in
-    noteToSend = baseNote + 3
-  endif
-
   SendMidiNoteOn gtlChannel, noteToSend, 100
   SendMidiNoteOff gtlChannel, noteToSend, 0, onOffDelay
   Log {Sent Midi: }, noteToSend
