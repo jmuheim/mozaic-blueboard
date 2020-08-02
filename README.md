@@ -45,11 +45,11 @@ All signals are sent through channel `15`.
 
 ## Giving audio feedback
 
-Triggering some feature using the BlueBoard often will result in an immediately perceivable feedback inside the running app. For example when toggling Play/Pause in AUM, the respective icon will visually change. In some other cases (especially when running multiple apps side by side while only seeing the front most) there will be no such feedback, for example when switching between spaces (by tapping-and-holding its button for a second).
+Triggering some feature using the BlueBoard often will result in an immediately perceivable feedback inside the running app. For example when toggling Play/Pause in AUM, the respective icon will visually change. In some other cases (especially when running multiple apps side by side while only seeing the front most) there will be no such feedback, for example when triggering some feature in a loaded AUv3 or an app in the background; or simply when switching between BlueBoard spaces (by tapping-and-holding its button for a second).
 
 As interacting with a foot controller can be a bit tricky at times, you may want to receive feedback in such a situation, so you can be sure that everything worked out as intented. Imagine you wanted to switch from space `A` to `B`, but you didn't hold the `B` button long enough. So you'd still be in space `A`, but because you don't get any feedback you'd think you're in space `B`!
 
-While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're not using this feature at all. Instead, it's easy to let some sampler app listen to the different MIDI notes sent from this script, and play a specific audio file upon it.
+While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're not using this feature at all (it's also quite limited and probably hard to read while performing). Instead, you can let some AUv3 sampler listen to the different MIDI notes sent from this script, and play a specific audio file upon it.
 
 For example, I have added [Chameleon](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) as another audio channel in AUM, and configured to send the script's MIDI also to it (snake-like arrow button). Now I have loaded a custom preset in Chameleon which plays an audio file "Space 1 selected" when MIDI note `0` arrives, or "Space 2 selected" when MIDI note `32` arrives, etc.
 
