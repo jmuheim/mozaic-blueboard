@@ -21,7 +21,7 @@ By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of 
 
 All signals are sent through channel `15`.
 
-## How to
+## Installation & configuration
 
 - You need [AUM](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) and [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653)
     - Instead of AUM, there might be other similar apps available that can act as the AUv3 host, too
@@ -43,6 +43,20 @@ All signals are sent through channel `15`.
     - Now tap on some buttons on the BlueBoard to make sure that the MIDI signals arrive as expected (they should be displayed in the `LOG`)
 - You can now start to add MIDI bindings, yay!
 
+## Giving audio feedback
+
+Triggering some feature using the BlueBoard often will result in an immediately perceivable feedback inside the running app. For example when toggling Play/Pause in AUM, the respective icon will visually change. In some other cases (especially when running multiple apps side by side while only seeing the front most) there will be no such feedback, for example when switching between spaces (by tapping-and-holding its button for a second).
+
+As interacting with a foot controller can be a bit tricky at times, you may want to receive feedback in such a situation, so you can be sure that everything worked out as intented. Imagine you wanted to switch from space `A` to `B`, but you didn't hold the `B` button long enough. So you'd still be in space `A`, but because you don't get any feedback you'd think you're in space `B`!
+
+While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're not using this feature at all. Instead, it's easy to let some sampler app listen to the different MIDI notes sent from this script, and play a specific audio file upon it.
+
+For example, I have added [Chameleon](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) as another audio channel in AUM, and configured to send the script's MIDI also to it (snake-like arrow button). Now I have loaded a custom preset in Chameleon which plays an audio file "Space 1 selected" when MIDI note `0` arrives, or "Space 2 selected" when MIDI note `32` arrives, etc.
+
+You can add such an audio file for each available note (`0` to `127`). For example, if you want to toggle the effect of your guitar using the `B` button in space `C`, you can assign an audio file "Toggled guitar effect" to MIDI note `66`. Such audio files can easily be generated using a Text-To-Speech engine like <https://voicemaker.in/>.
+
+For live situations, you probably don't want the audience to hear these audio feedbacks. Try to pan them completely to one side (left) of the stereo output, and listen to them by headphones (or monitors). Then forward only the other side (right) to the PA system (you may need an audio splitter cable for this).
+
 ## Additional info
 
 For more info see related posts on the [Audiobus forums](https://forum.audiob.us/):
@@ -50,6 +64,7 @@ For more info see related posts on the [Audiobus forums](https://forum.audiob.us
 - [Mozaic: How to detect a "long tap" (0.5secs) on my BlueBoard](https://forum.audiob.us/discussion/39866/mozaic-how-to-detect-a-long-tap-0-5secs-on-my-blueboard)
 - [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc)
 - [Is there a MIDI app that allows to send several controls by the press of only one switch?](https://forum.audiob.us/discussion/39721/is-there-a-midi-app-that-allows-to-send-several-controls-by-the-press-of-only-one-switch#latest)
+- [AUM: Play short audio files upon receiving specific MIDI signals?](https://forum.audiob.us/discussion/40256/aum-play-short-audio-files-upon-receiving-specific-midi-signals#latest)
 
 ## Alternatives
 
