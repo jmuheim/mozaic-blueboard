@@ -21,8 +21,6 @@ By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of 
 
 All signals are sent through channel `15`.
 
-The (optional) [feedbacker](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/feedbacker) script adds the possibility to 
-
 ## How to
 
 - You need [AUM](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) and [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653)
