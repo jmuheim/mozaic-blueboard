@@ -1,0 +1,28 @@
+@OnLoad
+  SetShortName {Feedback}
+
+  space1Active = 24
+  space2Active = 25
+  space3Active = 26
+  space4Active = 27
+
+  feedbackNote = space1Active
+@End
+
+@OnMidiInput
+  SendMidiThru
+@End
+
+@OnMidiNoteOn
+  Log {Sending MIDI through: }, MidiNote
+  Call @GiveFeedback
+@End
+
+@GiveFeedback
+  velocity = 80
+
+  Log {Giving feedback: }, feedbackNote
+
+  SendMidiNoteOn 0, feedbackNote, velocity
+  SendMidiNoteOff 0, feedbackNote, 0, 500
+@End
