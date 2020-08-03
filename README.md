@@ -2,7 +2,7 @@
 
 **This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).**
 
-By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The [enhancer](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/enhancer) script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for `1` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
+By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The [enhancer](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/enhancer) script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly `3/4` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
 
 - Space `A` (activation sends `0`)
     - **Short**-tapping `A` sends `1`
@@ -65,6 +65,7 @@ For more info see related posts on the [Audiobus forums](https://forum.audiob.us
 - [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc)
 - [Is there a MIDI app that allows to send several controls by the press of only one switch?](https://forum.audiob.us/discussion/39721/is-there-a-midi-app-that-allows-to-send-several-controls-by-the-press-of-only-one-switch#latest)
 - [AUM: Play short audio files upon receiving specific MIDI signals?](https://forum.audiob.us/discussion/40256/aum-play-short-audio-files-upon-receiving-specific-midi-signals#latest)
+- [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc/p1)
 
 ## Alternatives
 
