@@ -1,6 +1,7 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
   SetShortName {BlueBoard}
+  EMPTY = -1
 
   // BlueBoard (bb) buttons. Each button (A, B, C, D) offers one space which is activated by very-long-tapping.
   bbNotes = [60, 62, 64, 65]
@@ -10,8 +11,8 @@
   longTapTime = 250 // Time needed to execute a long-tap (in ms)
   veryLongTapTime = 1000 // Time needed to activate a space
   onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
-  baseNote = -1
-  noteToSend = -1
+  baseNote = EMPTY
+  noteToSend = EMPTY
 
   Call @IlluminateAllButtons
 
