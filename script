@@ -9,10 +9,13 @@
   gtlChannel = 15 // Channel on which GTL should listen => should not be 0!
   bbChannel = 0   // BlueBoard's channel => do not change this!
   longTapTime = 250 // Time needed to execute a long-tap (in ms)
-  veryLongTapTime = 1000 // Time needed to activate a space
+  veryLongTapTime = 750 // Time needed to activate a space
   onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
   baseNote = EMPTY
   noteToSend = EMPTY
+
+  timerInterval = 5
+  SetTimerInterval timerInterval
 
   Call @IlluminateAllButtons
 
@@ -22,19 +25,34 @@
 
 @OnMidiNoteOn
   buttonPressedStartTime = SystemTime // Time at which button was pressed down
+
+  timerCounter = veryLongTapTime
+  StartTimer
 @End
 
 @OnMidiNoteOff
   buttonPressedTime = SystemTime - buttonPressedStartTime
 
   if buttonPressedTime >= veryLongTapTime
-    activeSpace = MidiNote
-    Call @ActivateSpace
+    // Do nothing, the timer took care of activating the space already
   elseif buttonPressedTime >= longTapTime
     Call @LongTap
   Else
     Call @ShortTap
   Endif
+
+  StopTimer
+@End
+
+@OnTimer
+  if timerCounter > 0
+    timerCounter = timerCounter - timerInterval
+  else
+    activeSpace = MidiNote
+    Call @ActivateSpace
+
+    StopTimer
+  endif
 @End
 
 @ShortTap
