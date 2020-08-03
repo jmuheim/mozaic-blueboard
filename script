@@ -1,9 +1,8 @@
-// Make sure to start the BlueBoard while pressing the B pad!
+// Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
   SetShortName {BlueBoard}
 
-  // BlueBoard (bb) pads.
-  // Each pad (A, B, C, D) offers one space which is activated by long-tapping.
+  // BlueBoard (bb) buttons. Each button (A, B, C, D) offers one space which is activated by very-long-tapping.
   bbA_in = 60
   bbB_in = 62
   bbC_in = 64
@@ -12,7 +11,7 @@
   gtlChannel = 15 // Channel on which GTL should listen => should not be 0!
   bbChannel = 0   // BlueBoard's channel => do not change this!
   longTapTime = 250 // Time needed to execute a long-tap (in ms)
-  spaceActivationTapTime = 1000 // Time needed to activate a space
+  veryLongTapTime = 1000 // Time needed to activate a space
   onOffDelay = 50 // Delay between on/off note send, see https://forum.audiob.us/discussion/comment/829929/#Comment_829929
   baseNote = -1
   noteToSend = -1
@@ -24,16 +23,16 @@
 @End
 
 @OnMidiNoteOn
-  padPressedStartTime = SystemTime // Time at which pad was pressed down
+  buttonPressedStartTime = SystemTime // Time at which button was pressed down
 @End
 
 @OnMidiNoteOff
-  padPressedTime = SystemTime - padPressedStartTime
+  buttonPressedTime = SystemTime - buttonPressedStartTime
 
-  if padPressedTime >= spaceActivationTapTime
+  if buttonPressedTime >= veryLongTapTime
     activeSpace = MidiNote
     Call @ActivateSpace
-  elseif padPressedTime >= longTapTime
+  elseif buttonPressedTime >= longTapTime
     Call @LongTap
   Else
     Call @ShortTap
