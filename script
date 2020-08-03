@@ -3,10 +3,7 @@
   SetShortName {BlueBoard}
 
   // BlueBoard (bb) buttons. Each button (A, B, C, D) offers one space which is activated by very-long-tapping.
-  bbA_in = 60
-  bbB_in = 62
-  bbC_in = 64
-  bbD_in = 65
+  bbNotes = [60, 62, 64, 65]
 
   gtlChannel = 15 // Channel on which GTL should listen => should not be 0!
   bbChannel = 0   // BlueBoard's channel => do not change this!
@@ -18,7 +15,7 @@
 
   Call @IlluminateAllButtons
 
-  activeSpace = bbA_in
+  activeSpace = bbNotes[0]
   Call @ActivateSpace
 @End
 
@@ -42,15 +39,11 @@
 @ShortTap
   // Log {Short Tap: }, MidiNote
 
-  if MidiNote = bbA_in
-    noteToSend = baseNote + 1
-  elseif MidiNote = bbB_in
-    noteToSend = baseNote + 2
-  elseif MidiNote = bbC_in
-    noteToSend = baseNote + 3
-  elseif MidiNote = bbD_in
-    noteToSend = baseNote + 4
-  endif
+  for i = 0 to 3
+    if MIDINote = bbNotes[i]
+      noteToSend = baseNote + i + 1
+    endif
+  endfor
 
   Call @SendNoteFromCurrentSpace
 @End
@@ -58,15 +51,11 @@
 @LongTap
   // Log {Long Tap: }, MidiNote
 
-  if MidiNote = bbA_in
-    noteToSend = baseNote + 5
-  elseif MidiNote = bbB_in
-    noteToSend = baseNote + 6
-  elseif MidiNote = bbC_in
-    noteToSend = baseNote + 7
-  elseif MidiNote = bbD_in
-    noteToSend = baseNote + 8
-  endif
+  for i = 0 to 3
+    if MIDINote = bbNotes[i]
+      noteToSend = baseNote + i + 5
+    endif
+  endfor
 
   Call @SendNoteFromCurrentSpace
 @End
@@ -74,15 +63,12 @@
 @ActivateSpace
   Log {Activated space: }, activeSpace
 
-  if activeSpace = bbA_in
-    baseNote = 0
-  elseif activeSpace = bbB_in
-    baseNote = 32
-  elseif activeSpace = bbC_in
-    baseNote = 64
-  elseif activeSpace = bbD_in
-    baseNote = 96
-  endif
+  for i = 0 to 3
+    if activeSpace = bbNotes[i]
+      // 128 / 4 buttons = 32
+      baseNote = i * 32
+    endif
+  endfor
 
   noteToSend = baseNote
   Call @SendNoteFromCurrentSpace
@@ -93,10 +79,9 @@
   // But this seems to be buggy, see https://forum.audiob.us/discussion/comment/832104/#Comment_832104.
   // So we just keep all of them illuminated (for visibility purposes when using the BB in the dark).
 
-  SendMidiNoteOn bbChannel, bbA_in, 100
-  SendMidiNoteOn bbChannel, bbB_in, 100
-  SendMidiNoteOn bbChannel, bbC_in, 100
-  SendMidiNoteOn bbChannel, bbD_in, 100
+  for i = 0 to 3
+    SendMidiNoteOn bbChannel, bbNotes[i], 100
+  endfor
 @End
 
 @SendNoteFromCurrentSpace
