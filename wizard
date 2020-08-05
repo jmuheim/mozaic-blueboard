@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {BBWiz}
+  SetShortName {Wizard}
 
   Call @InitConstants
   Call @InitVariables
