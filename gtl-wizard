@@ -1,0 +1,162 @@
+// Make sure to start the BlueBoard while pressing the B button!
+@OnLoad
+  SetShortName {BBWiz}
+
+  Call @InitConstants
+  Call @InitVariables
+
+  Call @IlluminateAllbuttons
+  Call @AskForInput
+@End
+
+@InitConstants
+  BB_NOTE_A = 60
+  BB_NOTE_B = 62
+  BB_NOTE_C = 64
+  BB_NOTE_D = 65
+  BB_NOTES = [BB_NOTE_A, BB_NOTE_B, BB_NOTE_C, BB_NOTE_D]
+
+  ONE_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
+  TWO_BEATS_TAP_TIME  = 2 * ONE_BEAT_TAP_TIME
+  FOUR_BEATS_TAP_TIME = 4 * ONE_BEAT_TAP_TIME
+
+  IMMEDIATE_TAP = 1
+  ONE_BAR_TAP  = 1
+  TWO_BARS_TAP  = 2
+  FOUR_BARS_TAP = 3
+
+  PERF_WIZ_GROUP = 1
+  MAIN_GROUP     = 1
+  GROUP_ONE      = 2
+  GROUP_TWO      = 3
+  GROUP_THREE    = 4
+  GROUP_FOUR     = 5
+  GROUP_FIVE     = 6
+
+  PERF_WIZ_LOOP = 2
+  LOOP_ONE      = 1
+  LOOP_TWO      = 2
+  LOOP_THREE    = 3
+  LOOP_FOUR     = 4
+
+  PERF_WIZ_CLOCK_LENGTH  = 3
+  PERF_WIZ_GTL_INPUT     = 4
+  PERF_WIZ_INSTRUMENT_FX = 5
+
+  GTL_CHANNEL = 15
+  BB_CHANNEL  = 0
+@End
+
+@InitVariables
+  perfWizCycleLength = 0
+  perfWizCurrentStep = PERF_WIZ_GROUP
+
+  perfWizGroupInputs        = []
+  perfWizLoopInputs         = []
+  perfWizClockLengthInputs  = []
+  perfWizGtlInputs          = []
+  perfWizInstrumentFxInputs = []
+@End
+
+@IlluminateAllbuttons
+  for i = 0 to 3
+    SendMidiNoteOn BB_CHANNEL, BB_NOTES[i], 100
+  endfor
+@End
+
+@OnMidiNoteOn
+  buttonPressedStartTime = SystemTime // Time at which button was pressed down
+@End
+
+@OnMidiNoteOff
+  buttonPressedTime = SystemTime - buttonPressedStartTime
+
+  If buttonPressedTime >= FOUR_BEATS_TAP_TIME
+    tapType = FOUR_BARS_TAP
+  Elseif buttonPressedTime >= TWO_BEATS_TAP_TIME
+    tapType = TWO_BARS_TAP
+  Elseif buttonPressedTime >= ONE_BEAT_TAP_TIME
+    tapType = ONE_BAR_TAP
+  Else
+    tapType = IMMEDIATE_TAP
+  Endif
+
+  Call @AddInput
+  Call @AskForInput
+@End
+
+@AddInput
+  if MidiNote = BB_NOTE_D
+    Call @ArmCycle
+  else
+    if perfWizCurrentStep = PERF_WIZ_GROUP
+      if MidiNote = BB_NOTE_A
+        if tapType = IMMEDIATE_TAP
+          group = GROUP_ONE
+        elseif tapType = ONE_BAR_TAP
+          group = MAIN_GROUP
+        endif
+      elseif MidiNote = BB_NOTE_B
+        if tapType = IMMEDIATE_TAP
+          group = GROUP_TWO
+        elseif tapType = ONE_BAR_TAP
+          group = GROUP_FOUR
+        endif
+      elseif MidiNote = BB_NOTE_C
+        if tapType = IMMEDIATE_TAP
+          group = GROUP_THREE
+        elseif tapType = ONE_BAR_TAP
+          group = GROUP_FIVE
+        endif
+      endif
+
+      perfWizGroupInputs[perfWizCycleLength] = group
+    elseif perfWizCurrentStep = PERF_WIZ_LOOP
+      if MidiNote = BB_NOTE_A
+        if tapType = IMMEDIATE_TAP
+          loop = LOOP_ONE
+        elseif tapType = ONE_BAR_TAP
+          loop = LOOP_FOUR
+        endif
+      elseif MidiNote = BB_NOTE_B
+        if tapType = IMMEDIATE_TAP
+          loop = LOOP_TWO
+        endif
+      elseif MidiNote = BB_NOTE_C
+        if tapType = IMMEDIATE_TAP
+          loop = LOOP_THREE
+        endif
+      endif
+
+      perfWizLoopInputs[perfWizCycleLength] = loop
+    endif
+  endif
+
+  if perfWizCurrentStep < PERF_WIZ_LOOP
+    Inc perfWizCurrentStep
+  else
+    Log {Recorded cycle! Group: }, perfWizGroupInputs[perfWizCycleLength], { Loop: }, perfWizLoopInputs[perfWizCycleLength]
+    perfWizCurrentStep = PERF_WIZ_GROUP
+    Inc perfWizCycleLength
+  endif
+@End
+
+@AskForInput
+  if perfWizCurrentStep = PERF_WIZ_GROUP
+    Log {Select group}
+  elseif perfWizCurrentStep = PERF_WIZ_LOOP
+    Log {Select loop}
+  elseif perfWizCurrentStep = PERF_WIZ_CLOCK_LENGTH
+    Log {Select clock length}
+  elseif perfWizCurrentStep = PERF_WIZ_GTL_INPUT
+    Log {Select GTL input}
+  elseif perfWizCurrentStep = PERF_WIZ_INSTRUMENT_FX
+    Log {Select instrument effect}
+  endif
+@End
+
+@ArmCycle
+  for i = 0 to perfWizCycleLength
+    Log {Cycle: }, i, { Group: }, perfWizGroupInputs[i], { Loop: }, perfWizLoopInputs[i]
+  endfor
+@End
