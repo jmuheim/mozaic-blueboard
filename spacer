@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {BlueBoard}
+  SetShortName {Spacer}
   EMPTY = -1
 
   // BlueBoard (bb) buttons. Each button (A, B, C, D) offers one space which is activated by very-long-tapping.
