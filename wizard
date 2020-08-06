@@ -99,37 +99,37 @@
   lastSelectedInstrFx     = UNDEFINED
   lastSelectedRecMode     = UNDEFINED
 
-  groupInputs       = []
-  loopInputs        = []
-  clockLengthInputs = []
-  gtlSendsInputs    = []
-  instrFxInputs     = []
-  recModeInputs     = []
+  groupStack       = []
+  loopStack        = []
+  clockLengthStack = []
+  gtlSendsStack    = []
+  instrFxStack     = []
+  recModeStack     = []
 
   // Call @InitTestData
 @End
 
 @InitTestData
-  groupInputs[0]       = GROUP_1
-  loopInputs[0]        = LOOP_1
-  clockLengthInputs[0] = 3
-  gtlSendsInputs[0]    = 2
-  instrFxInputs[0]     = 1
-  recModeInputs[0]     = 2
+  groupStack[0]       = GROUP_1
+  loopStack[0]        = LOOP_1
+  clockLengthStack[0] = 3
+  gtlSendsStack[0]    = 2
+  instrFxStack[0]     = 1
+  recModeStack[0]     = 2
 
-  groupInputs[1]       = GROUP_M
-  loopInputs[1]        = LOOP_1
-  clockLengthInputs[1] = 3
-  gtlSendsInputs[1]    = 2
-  instrFxInputs[1]     = 1
-  recModeInputs[1]     = 2
+  groupStack[1]       = GROUP_M
+  loopStack[1]        = LOOP_1
+  clockLengthStack[1] = 3
+  gtlSendsStack[1]    = 2
+  instrFxStack[1]     = 1
+  recModeStack[1]     = 2
 
-  groupInputs[2]       = GROUP_2
-  loopInputs[2]        = LOOP_3
-  clockLengthInputs[2] = 3
-  gtlSendsInputs[2]    = 2
-  instrFxInputs[2]     = 1
-  recModeInputs[2]     = 2
+  groupStack[2]       = GROUP_2
+  loopStack[2]        = LOOP_3
+  clockLengthStack[2] = 3
+  gtlSendsStack[2]    = 2
+  instrFxStack[2]     = 1
+  recModeStack[2]     = 2
 
   cycleLength = 3
 @End
@@ -367,42 +367,42 @@
     Log {No loop selected yet}
   else
     Log {Add loop}, lastSelectedLoop
-    loopInputs[cycleLength] = lastSelectedLoop
+    loopStack[cycleLength] = lastSelectedLoop
   endif
 
   if lastSelectedGroup = UNDEFINED
     configPartMissing = YES
     Log {No group selected yet}
   else
-    groupInputs[cycleLength] = lastSelectedGroup
+    groupStack[cycleLength] = lastSelectedGroup
   endif
 
 //  if lastSelectedGtlSends = UNDEFINED
 //    configPartMissing = YES
 //    Log {No GTL sends selected yet}
 //  else
-//    gtlSendsInputs[cycleLength] = lastSelectedGtlSends
+//    gtlSendsStack[cycleLength] = lastSelectedGtlSends
 //  endif
 //
 //  if lastSelectedRecMode = UNDEFINED
 //    configPartMissing = YES
 //    Log {No rec mode selected yet}
 //  else
-//    recModeInputs[cycleLength] = lastSelectedRecMode
+//    recModeStack[cycleLength] = lastSelectedRecMode
 //  endif
 //
 //  if lastSelectedInstrFx = UNDEFINED
 //    configPartMissing = YES
 //    Log {No instr fx selected yet}
 //  else
-//    instrFxInputs[cycleLength] = lastSelectedInstrFx
+//    instrFxStack[cycleLength] = lastSelectedInstrFx
 //  endif
 //
 //  if lastSelectedClockLength = UNDEFINED
 //    configPartMissing = YES
 //    Log {No clock length selected yet}
 //  else
-//    clockLengthInputs[cycleLength] = lastSelectedClockLength
+//    clockLengthStack[cycleLength] = lastSelectedClockLength
 //  endif
 
   if configPartMissing = NO
@@ -433,7 +433,7 @@
 @End
 
 @ArmLoop
-  currentLoop = loopInputs[lastActivatedCycle]
+  currentLoop = loopStack[lastActivatedCycle]
   Log {Current loop: }, currentLoop
 
   if currentLoop = LOOP_1
@@ -453,7 +453,7 @@
 @End
 
 @ArmGroup
-  currentGroup = groupInputs[lastActivatedCycle]
+  currentGroup = groupStack[lastActivatedCycle]
 
   if currentGroup = GROUP_M
     midiToSend = GTL_SELECT_GROUP_M
@@ -476,21 +476,21 @@
 @End
 
 @ArmClockLength
-  currentClockLength = clockLengthInputs[lastActivatedCycle]
+  currentClockLength = clockLengthStack[lastActivatedCycle]
   Log {- Clock length: }, currentClockLength
 @End
 
 @ArmGtlSends
-  currentGtlSends = groupInputs[lastActivatedCycle]
+  currentGtlSends = groupStack[lastActivatedCycle]
   Log {- GTL sends: }, currentGtlSends
 @End
 
 @ArmInstrFx
-  currentInstrFx = instrFxInputs[lastActivatedCycle]
+  currentInstrFx = instrFxStack[lastActivatedCycle]
   Log {- Instr fx: }, currentInstrFx
 @End
 
 @ArmRecMode
-  currentRecMode = recModeInputs[lastActivatedCycle]
+  currentRecMode = recModeStack[lastActivatedCycle]
   Log {- Rec mode: }, currentRecMode
 @End
