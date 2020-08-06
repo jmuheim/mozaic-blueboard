@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {Wizard}
+  SetShortName {GTL Wizard}
 
   Call @InitConstants
   Call @InitVariables
@@ -106,7 +106,7 @@
   instrFxInputs     = []
   recModeInputs     = []
 
-  Call @InitTestData
+  // Call @InitTestData
 @End
 
 @InitTestData
@@ -149,13 +149,10 @@
   buttonPressedTime = SystemTime - buttonPressedStartTime
 
   If buttonPressedTime >= 4_BEATS_TAP_TIME
-    Log {4 bars}
     tapType = TAP_4_BARS
   Elseif buttonPressedTime >= 1_BEAT_TAP_TIME
-    Log {1 bar}
     tapType = TAP_1_BAR
   Else
-    Log {Immediate}
     tapType = TAP_IMMEDIATE
   Endif
 
@@ -275,7 +272,6 @@
 @End
 
 @MapUserInputToLoop
-  Log {---}, tapType
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
       lastSelectedLoop = LOOP_1
