@@ -15,35 +15,59 @@
   BB_NOTE_C = 64
   BB_NOTE_D = 65
 
-  ONE_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
-  TWO_BEATS_TAP_TIME  = 2 * ONE_BEAT_TAP_TIME
-  FOUR_BEATS_TAP_TIME = 4 * ONE_BEAT_TAP_TIME
+  1_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
+  2_BEATS_TAP_TIME  = 2 * 1_BEAT_TAP_TIME
+  4_BEATS_TAP_TIME = 4 * 1_BEAT_TAP_TIME
 
   IMMEDIATE_TAP = 1
-  ONE_BAR_TAP  = 1
-  TWO_BARS_TAP  = 2
-  FOUR_BARS_TAP = 3
+  TAP_1_BAR  = 1
+  TAP_2_BARS = 2
+  TAP_4_BARS = 3
 
   PERF_WIZ_LOOP = 1
-  LOOP_ONE      = 1
-  LOOP_TWO      = 2
-  LOOP_THREE    = 3
-  LOOP_FOUR     = 4
+  LOOP_1 = 1
+  LOOP_2 = 2
+  LOOP_3 = 3
+  LOOP_4 = 4
 
   PERF_WIZ_GROUP = 2
-  MAIN_GROUP     = 1
-  GROUP_ONE      = 2
-  GROUP_TWO      = 3
-  GROUP_THREE    = 4
-  GROUP_FOUR     = 5
-  GROUP_FIVE     = 6
+  GROUP_M = 1
+  GROUP_1 = 2
+  GROUP_2 = 3
+  GROUP_3 = 4
+  GROUP_4 = 5
+  GROUP_5 = 6
 
   PERF_WIZ_CLOCK_LENGTH  = 3
-  PERF_WIZ_GTL_INPUT     = 4
-  PERF_WIZ_INSTRUMENT_FX = 5
+  CLOCK_LENGTH_2  = 2
+  CLOCK_LENGTH_4  = 4
+  CLOCK_LENGTH_8  = 8
+  CLOCK_LENGTH_10 = 10
+  CLOCK_LENGTH_12 = 12
+  CLOCK_LENGTH_16 = 16
+
+  PERF_WIZ_GTL_SENDS = 4
+  GTL_SENDS_GUITAR           = 1
+  GTL_SENDS_MIC              = 2
+  GTL_SENDS_MIC_AND_GUITAR   = 3
+  GTL_SENDS_KEYBOARD         = 4
+  GTL_SENDS_MIC_AND_KEYBOARD = 5
+
+  PERF_WIZ_INSTR_FX = 5
+  INSTR_FX_1 = 1
+  INSTR_FX_2 = 2
+  INSTR_FX_3 = 3
+  INSTR_FX_4 = 4
+  INSTR_FX_5 = 5
+  INSTR_FX_6 = 6
+
+  PERF_WIZ_REC_MODE = 6
+  REC_MODE_RECORD          = 1
+  REC_MODE_OVERDUB         = 2
+  REC_MODE_RECORD_AND_MUTE = 3
 
   PERF_WIZ_FIRST_STEP = PERF_WIZ_LOOP
-  PERF_WIZ_LAST_STEP  = PERF_WIZ_GROUP
+  PERF_WIZ_LAST_STEP  = PERF_WIZ_REC_MODE
 
   GTL_CHANNEL = 15
   BB_CHANNEL  = 0
@@ -53,11 +77,12 @@
   perfWizCycleLength = 0
   perfWizCurrentStep = PERF_WIZ_FIRST_STEP
 
-  perfWizGroupInputs        = []
-  perfWizLoopInputs         = []
-  perfWizClockLengthInputs  = []
-  perfWizGtlInputs          = []
-  perfWizInstrumentFxInputs = []
+  perfWizGroupInputs       = []
+  perfWizLoopInputs        = []
+  perfWizClockLengthInputs = []
+  perfWizGtlSendss         = []
+  perfWizInstrFxInputs     = []
+  perfWizRecModeInputs     = []
 @End
 
 @IlluminateAllbuttons
@@ -74,18 +99,17 @@
 @OnMidiNoteOff
   buttonPressedTime = SystemTime - buttonPressedStartTime
 
-  If buttonPressedTime >= FOUR_BEATS_TAP_TIME
-    tapType = FOUR_BARS_TAP
-  Elseif buttonPressedTime >= TWO_BEATS_TAP_TIME
-    tapType = TWO_BARS_TAP
-  Elseif buttonPressedTime >= ONE_BEAT_TAP_TIME
-    tapType = ONE_BAR_TAP
+  If buttonPressedTime >= 4_BEATS_TAP_TIME
+    tapType = TAP_4_BARS
+  Elseif buttonPressedTime >= 2_BEATS_TAP_TIME
+    tapType = TAP_2_BARS
+  Elseif buttonPressedTime >= 1_BEAT_TAP_TIME
+    tapType = TAP_1_BAR
   Else
     tapType = IMMEDIATE_TAP
   Endif
 
   Call @AddInput
-  Call @AskForInput
 @End
 
 @AddInput
@@ -96,52 +120,150 @@
       Call @MapUserInputToLoop
     elseif perfWizCurrentStep = PERF_WIZ_GROUP
       Call @MapUserInputToGroup
+    elseif perfWizCurrentStep = PERF_WIZ_CLOCK_LENGTH
+      Call @MapUserInputToClockLength
+    elseif perfWizCurrentStep = PERF_WIZ_GTL_SENDS
+      Call @MapUserInputToGtlSends
+    elseif perfWizCurrentStep = PERF_WIZ_INSTR_FX
+      Call @MapUserInputToInstrFx
+    elseif perfWizCurrentStep = PERF_WIZ_REC_MODE
+      Call @MapUserInputToRecMode
     endif
   endif
 
   if perfWizCurrentStep < PERF_WIZ_LAST_STEP
     Inc perfWizCurrentStep
   else
-    Log {Recorded cycle! Group: }, perfWizGroupInputs[perfWizCycleLength], { Loop: }, perfWizLoopInputs[perfWizCycleLength]
+    Log {Recorded cycle! Group: }, perfWizGroupInputs[perfWizCycleLength], { Loop: }, perfWizLoopInputs[perfWizCycleLength], { Clock length: }, perfWizClockLengthInputs[perfWizCycleLength], { GTL sends: }, perfWizGtlSendsInputs[perfWizCycleLength], { Instr fx: }, perfWizInstrFxInputs[perfWizCycleLength], { Record mode: }, perfWizRecModeInputs[perfWizCycleLength]
     perfWizCurrentStep = PERF_WIZ_FIRST_STEP
     Inc perfWizCycleLength
   endif
+
+  Call @AskForInput
+@End
+
+@MapUserInputToGtlSends
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      gtlSends = GTL_SENDS_GUITAR
+    elseif MidiNote = BB_NOTE_B
+      gtlSends = GTL_SENDS_MIC
+    elseif MidiNote = BB_NOTE_C
+      gtlSends = GTL_SENDS_MIC_AND_GUITAR
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      gtlSends = GTL_SENDS_KEYBOARD
+    elseif MidiNote = BB_NOTE_B
+      // Some day maybe some voice FX, e.g. Vocoder?
+    elseif MidiNote = BB_NOTE_C
+      gtlSends = GTL_SENDS_MIC_AND_KEYBOARD
+    endif
+  endif
+
+  perfWizGtlSendsInputs[perfWizCycleLength] = gtlSends
+@End
+
+@MapUserInputToRecMode
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      recMode = REC_MODE_RECORD
+    elseif MidiNote = BB_NOTE_B
+      recMode = REC_MODE_OVERDUB
+    elseif MidiNote = BB_NOTE_C
+      // TODO: REC_MODE_ADVANCED
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      recMode = REC_MODE_RECORD_AND_MUTE
+    elseif MidiNote = BB_NOTE_B
+      // Nothing
+    elseif MidiNote = BB_NOTE_C
+      // TODO: REC_MODE_ADVANCED_AND_MUTE
+    endif
+  endif
+
+  perfWizRecModeInputs[perfWizCycleLength] = recMode
+@End
+
+@MapUserInputToInstrFx
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      instrFx = INSTR_FX_1
+    elseif MidiNote = BB_NOTE_B
+      instrFx = INSTR_FX_2
+    elseif MidiNote = BB_NOTE_C
+      instrFx = INSTR_FX_3
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      instrFx = INSTR_FX_4
+    elseif MidiNote = BB_NOTE_B
+      instrFx = INSTR_FX_5
+    elseif MidiNote = BB_NOTE_C
+      instrFx = INSTR_FX_6
+    endif
+  endif
+
+  perfWizInstrFxInputs[perfWizCycleLength] = instrFx
 @End
 
 @MapUserInputToLoop
   if tapType = IMMEDIATE_TAP
     if MidiNote = BB_NOTE_A
-      loop = LOOP_ONE
+      loop = LOOP_1
     elseif MidiNote = BB_NOTE_B
-      loop = LOOP_TWO
+      loop = LOOP_2
     elseif MidiNote = BB_NOTE_C
-      loop = LOOP_THREE
+      loop = LOOP_3
     endif
-  elseif tapType = ONE_BAR_TAP
+  elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      loop = LOOP_FOUR
+      loop = LOOP_4
     endif
   endif
 
   perfWizLoopInputs[perfWizCycleLength] = loop
 @End
 
+@MapUserInputToClockLength
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      clockLength = CLOCK_LENGTH_2
+    elseif MidiNote = BB_NOTE_B
+      clockLength = CLOCK_LENGTH_4
+    elseif MidiNote = BB_NOTE_C
+      clockLength = CLOCK_LENGTH_8
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      clockLength = CLOCK_LENGTH_10
+    elseif MidiNote = BB_NOTE_B
+      clockLength = CLOCK_LENGTH_12
+    elseif MidiNote = BB_NOTE_C
+      clockLength = CLOCK_LENGTH_16
+    endif
+  endif
+
+  perfWizClockLengthInputs[perfWizCycleLength] = clockLength
+@End
+
 @MapUserInputToGroup
   if tapType = IMMEDIATE_TAP
     if MidiNote = BB_NOTE_A
-      group = GROUP_ONE
+      group = GROUP_1
     elseif MidiNote = BB_NOTE_B
-      group = GROUP_TWO
+      group = GROUP_2
     elseif MidiNote = BB_NOTE_C
-      group = GROUP_THREE
+      group = GROUP_3
     endif
-  elseif tapType = ONE_BAR_TAP
+  elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      group = MAIN_GROUP
+      group = GROUP_M
     elseif MidiNote = BB_NOTE_B
-      group = GROUP_FOUR
+      group = GROUP_4
     elseif MidiNote = BB_NOTE_C
-      group = GROUP_FIVE
+      group = GROUP_5
     endif
   endif
 
@@ -150,20 +272,22 @@
 
 @AskForInput
   if perfWizCurrentStep = PERF_WIZ_GROUP
-    Log {Select group}
+    Log {Please select group}
   elseif perfWizCurrentStep = PERF_WIZ_LOOP
-    Log {Select loop}
+    Log {Please select loop}
   elseif perfWizCurrentStep = PERF_WIZ_CLOCK_LENGTH
-    Log {Select clock length}
-  elseif perfWizCurrentStep = PERF_WIZ_GTL_INPUT
-    Log {Select GTL input}
-  elseif perfWizCurrentStep = PERF_WIZ_INSTRUMENT_FX
-    Log {Select instrument effect}
+    Log {Please select clock length}
+  elseif perfWizCurrentStep = PERF_WIZ_GTL_SENDS
+    Log {Please select GTL input}
+  elseif perfWizCurrentStep = PERF_WIZ_INSTR_FX
+    Log {Please select instrument effect}
+  elseif perfWizCurrentStep = PERF_WIZ_REC_MODE
+    Log {Please select record mode}
   endif
 @End
 
 @ArmCycle
   for i = 0 to perfWizCycleLength
-    Log {Cycle: }, i, { Group: }, perfWizGroupInputs[i], { Loop: }, perfWizLoopInputs[i]
+    Log {Cycle configured: }, i, { Group: }, perfWizGroupInputs[i], { Loop: }, perfWizLoopInputs[i], { Clock length: }, perfWizClockLengthInputs[i]
   endfor
 @End
