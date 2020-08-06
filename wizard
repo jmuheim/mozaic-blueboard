@@ -123,6 +123,8 @@
 @End
 
 @DispatchButtonPress
+  wrongInputDetected = YES
+
   if MidiNote = BB_NOTE_D
     if tapType = TAP_IMMEDIATE
       Call @ArmCycle
@@ -144,13 +146,179 @@
       Call @MapUserInputToRecMode
     endif
 
-    if currentStep < LAST_STEP
-      Inc currentStep
+    if wrongInputDetected = YES
+      Log {Wrong input! Try again.}
     else
-      Call @AddCycle
-    endif
+      if currentStep < LAST_STEP
+        Inc currentStep
+      else
+        Call @AddCycle
+      endif
 
-    Call @AskForInput
+      Call @AskForInput
+    endif
+  endif
+@End
+
+@MapUserInputToGtlSends
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedGtlSends = GTL_SENDS_GUITAR
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedGtlSends = GTL_SENDS_MIC
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedGtlSends = GTL_SENDS_MIC_AND_GUITAR
+      wrongInputDetected = NO
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedGtlSends = GTL_SENDS_KEYBOARD
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      // Some day maybe some voice FX, e.g. Vocoder?
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedGtlSends = GTL_SENDS_MIC_AND_KEYBOARD
+      wrongInputDetected = NO
+    endif
+  endif
+@End
+
+@MapUserInputToRecMode
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedRecMode = REC_MODE_RECORD
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedRecMode = REC_MODE_OVERDUB
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      // TODO: REC_MODE_ADVANCED
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedRecMode = REC_MODE_RECORD_AND_MUTE
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      // Nothing
+    elseif MidiNote = BB_NOTE_C
+      // TODO: REC_MODE_ADVANCED_AND_MUTE
+    endif
+  endif
+@End
+
+@MapUserInputToInstrFx
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedInstrFx = INSTR_FX_1
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedInstrFx = INSTR_FX_2
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedInstrFx = INSTR_FX_3
+      wrongInputDetected = NO
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedInstrFx = INSTR_FX_4
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedInstrFx = INSTR_FX_5
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedInstrFx = INSTR_FX_6
+      wrongInputDetected = NO
+    endif
+  endif
+@End
+
+@MapUserInputToLoop
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedLoop = LOOP_1
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedLoop = LOOP_2
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedLoop = LOOP_3
+      wrongInputDetected = NO
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedLoop = LOOP_4
+      wrongInputDetected = NO
+    endif
+  endif
+@End
+
+@MapUserInputToClockLength
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedClockLength = CLOCK_LENGTH_2
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedClockLength = CLOCK_LENGTH_4
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedClockLength = CLOCK_LENGTH_8
+      wrongInputDetected = NO
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedClockLength = CLOCK_LENGTH_10
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedClockLength = CLOCK_LENGTH_12
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedClockLength = CLOCK_LENGTH_16
+      wrongInputDetected = NO
+    endif
+  endif
+@End
+
+@MapUserInputToGroup
+  if tapType = TAP_IMMEDIATE
+    if MidiNote = BB_NOTE_A
+      lastSelectedGroup = GROUP_1
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedGroup = GROUP_2
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedGroup = GROUP_3
+      wrongInputDetected = NO
+    endif
+  elseif tapType = TAP_1_BAR
+    if MidiNote = BB_NOTE_A
+      lastSelectedGroup = GROUP_M
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_B
+      lastSelectedGroup = GROUP_4
+      wrongInputDetected = NO
+    elseif MidiNote = BB_NOTE_C
+      lastSelectedGroup = GROUP_5
+      wrongInputDetected = NO
+    endif
+  endif
+@End
+
+@AskForInput
+  if currentStep = STEP_GROUP
+    Log {Please select group...}
+  elseif currentStep = STEP_LOOP
+    Log {Please select loop...}
+  elseif currentStep = STEP_CLOCK_LENGTH
+    Log {Please select clock length...}
+  elseif currentStep = STEP_GTL_SENDS
+    Log {Please select GTL input...}
+  elseif currentStep = STEP_INSTR_FX
+    Log {Please select instr fx...}
+  elseif currentStep = STEP_REC_MODE
+    Log {Please select record mode...}
   endif
 @End
 
@@ -204,138 +372,6 @@
     Inc cycleLength
 
     Log {Cycle added!}
-  endif
-@End
-
-@MapUserInputToGtlSends
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedGtlSends = GTL_SENDS_GUITAR
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedGtlSends = GTL_SENDS_MIC
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedGtlSends = GTL_SENDS_MIC_AND_GUITAR
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedGtlSends = GTL_SENDS_KEYBOARD
-    elseif MidiNote = BB_NOTE_B
-      // Some day maybe some voice FX, e.g. Vocoder?
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedGtlSends = GTL_SENDS_MIC_AND_KEYBOARD
-    endif
-  endif
-@End
-
-@MapUserInputToRecMode
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedRecMode = REC_MODE_OVERDUB
-    elseif MidiNote = BB_NOTE_C
-      // TODO: REC_MODE_ADVANCED
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD_AND_MUTE
-    elseif MidiNote = BB_NOTE_B
-      // Nothing
-    elseif MidiNote = BB_NOTE_C
-      // TODO: REC_MODE_ADVANCED_AND_MUTE
-    endif
-  endif
-@End
-
-@MapUserInputToInstrFx
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedInstrFx = INSTR_FX_1
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedInstrFx = INSTR_FX_2
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedInstrFx = INSTR_FX_3
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedInstrFx = INSTR_FX_4
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedInstrFx = INSTR_FX_5
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedInstrFx = INSTR_FX_6
-    endif
-  endif
-@End
-
-@MapUserInputToLoop
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedLoop = LOOP_1
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedLoop = LOOP_2
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedLoop = LOOP_3
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedLoop = LOOP_4
-    endif
-  endif
-@End
-
-@MapUserInputToClockLength
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedClockLength = CLOCK_LENGTH_2
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedClockLength = CLOCK_LENGTH_4
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedClockLength = CLOCK_LENGTH_8
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedClockLength = CLOCK_LENGTH_10
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedClockLength = CLOCK_LENGTH_12
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedClockLength = CLOCK_LENGTH_16
-    endif
-  endif
-@End
-
-@MapUserInputToGroup
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
-      lastSelectedGroup = GROUP_1
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedGroup = GROUP_2
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedGroup = GROUP_3
-    endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedGroup = GROUP_M
-    elseif MidiNote = BB_NOTE_B
-      lastSelectedGroup = GROUP_4
-    elseif MidiNote = BB_NOTE_C
-      lastSelectedGroup = GROUP_5
-    endif
-  endif
-@End
-
-@AskForInput
-  if currentStep = STEP_GROUP
-    Log {Please select group}
-  elseif currentStep = STEP_LOOP
-    Log {Please select loop}
-  elseif currentStep = STEP_CLOCK_LENGTH
-    Log {Please select clock length}
-  elseif currentStep = STEP_GTL_SENDS
-    Log {Please select GTL input}
-  elseif currentStep = STEP_INSTR_FX
-    Log {Please select instr fx}
-  elseif currentStep = STEP_REC_MODE
-    Log {Please select record mode}
   endif
 @End
 
