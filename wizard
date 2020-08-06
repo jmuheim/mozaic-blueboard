@@ -14,7 +14,6 @@
   BB_NOTE_B = 62
   BB_NOTE_C = 64
   BB_NOTE_D = 65
-  BB_NOTES = [BB_NOTE_A, BB_NOTE_B, BB_NOTE_C, BB_NOTE_D]
 
   ONE_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
   TWO_BEATS_TAP_TIME  = 2 * ONE_BEAT_TAP_TIME
@@ -62,9 +61,10 @@
 @End
 
 @IlluminateAllbuttons
-  for i = 0 to 3
-    SendMidiNoteOn BB_CHANNEL, BB_NOTES[i], 100
-  endfor
+  SendMidiNoteOn BB_CHANNEL, BB_NOTE_A, 100
+  SendMidiNoteOn BB_CHANNEL, BB_NOTE_B, 100
+  SendMidiNoteOn BB_CHANNEL, BB_NOTE_C, 100
+  SendMidiNoteOn BB_CHANNEL, BB_NOTE_D, 100
 @End
 
 @OnMidiNoteOn
@@ -116,12 +116,12 @@
       loop = LOOP_TWO
     elseif MidiNote = BB_NOTE_C
       loop = LOOP_THREE
-    end
+    endif
   elseif tapType = ONE_BAR_TAP
     if MidiNote = BB_NOTE_A
       loop = LOOP_FOUR
-    end
-  end
+    endif
+  endif
 
   perfWizLoopInputs[perfWizCycleLength] = loop
 @End
@@ -134,7 +134,7 @@
       group = GROUP_TWO
     elseif MidiNote = BB_NOTE_C
       group = GROUP_THREE
-    end
+    endif
   elseif tapType = ONE_BAR_TAP
     if MidiNote = BB_NOTE_A
       group = MAIN_GROUP
@@ -142,8 +142,8 @@
       group = GROUP_FOUR
     elseif MidiNote = BB_NOTE_C
       group = GROUP_FIVE
-    end
-  end
+    endif
+  endif
 
   perfWizGroupInputs[perfWizCycleLength] = group
 @End
