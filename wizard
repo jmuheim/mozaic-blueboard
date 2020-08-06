@@ -24,13 +24,13 @@
   TAP_2_BARS = 2
   TAP_4_BARS = 3
 
-  PERF_WIZ_LOOP = 1
+  STEP_LOOP = 1
   LOOP_1 = 1
   LOOP_2 = 2
   LOOP_3 = 3
   LOOP_4 = 4
 
-  PERF_WIZ_GROUP = 2
+  STEP_GROUP = 2
   GROUP_M = 1
   GROUP_1 = 2
   GROUP_2 = 3
@@ -38,7 +38,7 @@
   GROUP_4 = 5
   GROUP_5 = 6
 
-  PERF_WIZ_CLOCK_LENGTH  = 3
+  STEP_CLOCK_LENGTH = 3
   CLOCK_LENGTH_2  = 2
   CLOCK_LENGTH_4  = 4
   CLOCK_LENGTH_8  = 8
@@ -46,14 +46,14 @@
   CLOCK_LENGTH_12 = 12
   CLOCK_LENGTH_16 = 16
 
-  PERF_WIZ_GTL_SENDS = 4
+  STEP_GTL_SENDS = 4
   GTL_SENDS_GUITAR           = 1
   GTL_SENDS_MIC              = 2
   GTL_SENDS_MIC_AND_GUITAR   = 3
   GTL_SENDS_KEYBOARD         = 4
   GTL_SENDS_MIC_AND_KEYBOARD = 5
 
-  PERF_WIZ_INSTR_FX = 5
+  STEP_INSTR_FX = 5
   INSTR_FX_1 = 1
   INSTR_FX_2 = 2
   INSTR_FX_3 = 3
@@ -61,28 +61,29 @@
   INSTR_FX_5 = 5
   INSTR_FX_6 = 6
 
-  PERF_WIZ_REC_MODE = 6
+  STEP_REC_MODE = 6
   REC_MODE_RECORD          = 1
   REC_MODE_OVERDUB         = 2
   REC_MODE_RECORD_AND_MUTE = 3
 
-  PERF_WIZ_FIRST_STEP = PERF_WIZ_LOOP
-  PERF_WIZ_LAST_STEP  = PERF_WIZ_REC_MODE
+  FIRST_STEP = STEP_LOOP
+  LAST_STEP  = STEP_REC_MODE
 
   GTL_CHANNEL = 15
   BB_CHANNEL  = 0
 @End
 
 @InitVariables
-  perfWizCycleLength = 0
-  perfWizCurrentStep = PERF_WIZ_FIRST_STEP
+  cycleLength = 0
+  lastActivatedCycle = 0
+  currentStep = FIRST_STEP
 
-  perfWizGroupInputs       = []
-  perfWizLoopInputs        = []
-  perfWizClockLengthInputs = []
-  perfWizGtlSendss         = []
-  perfWizInstrFxInputs     = []
-  perfWizRecModeInputs     = []
+  groupInputs       = []
+  loopInputs        = []
+  clockLengthInputs = []
+  gtlSendss         = []
+  pinstrFxInputs     = []
+  recModeInputs     = []
 @End
 
 @IlluminateAllbuttons
@@ -116,27 +117,27 @@
   if MidiNote = BB_NOTE_D
     Call @ArmCycle
   else
-    if perfWizCurrentStep = PERF_WIZ_LOOP
+    if currentStep = STEP_LOOP
       Call @MapUserInputToLoop
-    elseif perfWizCurrentStep = PERF_WIZ_GROUP
+    elseif currentStep = STEP_GROUP
       Call @MapUserInputToGroup
-    elseif perfWizCurrentStep = PERF_WIZ_CLOCK_LENGTH
+    elseif currentStep = STEP_CLOCK_LENGTH
       Call @MapUserInputToClockLength
-    elseif perfWizCurrentStep = PERF_WIZ_GTL_SENDS
+    elseif currentStep = STEP_GTL_SENDS
       Call @MapUserInputToGtlSends
-    elseif perfWizCurrentStep = PERF_WIZ_INSTR_FX
+    elseif currentStep = STEP_INSTR_FX
       Call @MapUserInputToInstrFx
-    elseif perfWizCurrentStep = PERF_WIZ_REC_MODE
+    elseif currentStep = STEP_REC_MODE
       Call @MapUserInputToRecMode
     endif
-  endif
 
-  if perfWizCurrentStep < PERF_WIZ_LAST_STEP
-    Inc perfWizCurrentStep
-  else
-    Log {Recorded cycle! Group: }, perfWizGroupInputs[perfWizCycleLength], { Loop: }, perfWizLoopInputs[perfWizCycleLength], { Clock length: }, perfWizClockLengthInputs[perfWizCycleLength], { GTL sends: }, perfWizGtlSendsInputs[perfWizCycleLength], { Instr fx: }, perfWizInstrFxInputs[perfWizCycleLength], { Record mode: }, perfWizRecModeInputs[perfWizCycleLength]
-    perfWizCurrentStep = PERF_WIZ_FIRST_STEP
-    Inc perfWizCycleLength
+    if currentStep < LAST_STEP
+      Inc currentStep
+    else
+      Log {Cycle recorded!}
+      currentStep = FIRST_STEP
+      Inc cycleLength
+    endif
   endif
 
   Call @AskForInput
@@ -161,7 +162,7 @@
     endif
   endif
 
-  perfWizGtlSendsInputs[perfWizCycleLength] = gtlSends
+  gtlSendsInputs[cycleLength] = gtlSends
 @End
 
 @MapUserInputToRecMode
@@ -183,7 +184,7 @@
     endif
   endif
 
-  perfWizRecModeInputs[perfWizCycleLength] = recMode
+  recModeInputs[cycleLength] = recMode
 @End
 
 @MapUserInputToInstrFx
@@ -205,7 +206,7 @@
     endif
   endif
 
-  perfWizInstrFxInputs[perfWizCycleLength] = instrFx
+  pinstrFxInputs[cycleLength] = instrFx
 @End
 
 @MapUserInputToLoop
@@ -223,7 +224,7 @@
     endif
   endif
 
-  perfWizLoopInputs[perfWizCycleLength] = loop
+  loopInputs[cycleLength] = loop
 @End
 
 @MapUserInputToClockLength
@@ -245,7 +246,7 @@
     endif
   endif
 
-  perfWizClockLengthInputs[perfWizCycleLength] = clockLength
+  clockLengthInputs[cycleLength] = clockLength
 @End
 
 @MapUserInputToGroup
@@ -267,27 +268,39 @@
     endif
   endif
 
-  perfWizGroupInputs[perfWizCycleLength] = group
+  groupInputs[cycleLength] = group
 @End
 
 @AskForInput
-  if perfWizCurrentStep = PERF_WIZ_GROUP
+  if currentStep = STEP_GROUP
     Log {Please select group}
-  elseif perfWizCurrentStep = PERF_WIZ_LOOP
+  elseif currentStep = STEP_LOOP
     Log {Please select loop}
-  elseif perfWizCurrentStep = PERF_WIZ_CLOCK_LENGTH
+  elseif currentStep = STEP_CLOCK_LENGTH
     Log {Please select clock length}
-  elseif perfWizCurrentStep = PERF_WIZ_GTL_SENDS
+  elseif currentStep = STEP_GTL_SENDS
     Log {Please select GTL input}
-  elseif perfWizCurrentStep = PERF_WIZ_INSTR_FX
+  elseif currentStep = STEP_INSTR_FX
     Log {Please select instrument effect}
-  elseif perfWizCurrentStep = PERF_WIZ_REC_MODE
+  elseif currentStep = STEP_REC_MODE
     Log {Please select record mode}
   endif
 @End
 
 @ArmCycle
-  for i = 0 to perfWizCycleLength
-    Log {Cycle configured: }, i, { Group: }, perfWizGroupInputs[i], { Loop: }, perfWizLoopInputs[i], { Clock length: }, perfWizClockLengthInputs[i]
-  endfor
+  if cycleLength = 0
+    Log {No cycles provided yet}
+  elseif lastActivatedCycle = cycleLength
+    Log {No cycle left}
+  else
+    Log {Arming cycle #}, lastActivatedCycle, {:}
+    Log {- Group: }, groupInputs[lastActivatedCycle]
+    Log {- Loop: }, loopInputs[lastActivatedCycle]
+    Log {- Clock length: }, clockLengthInputs[lastActivatedCycle]
+    Log {- GTL sends: }, groupInputs[lastActivatedCycle]
+    Log {- Instr fx: }, pinstrFxInputs[lastActivatedCycle]
+    Log {- Rec mode: }, recModeInputs[lastActivatedCycle]
+
+    Inc lastActivatedCycle
+  endif
 @End
