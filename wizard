@@ -90,7 +90,7 @@
   groupInputs       = []
   loopInputs        = []
   clockLengthInputs = []
-  gtlSends          = []
+  gtlSendsInputs    = []
   instrFxInputs     = []
   recModeInputs     = []
 @End
@@ -308,17 +308,17 @@
 
 @AskForInput
   if currentStep = STEP_GROUP
-    Log {Please select group...}
+    Log {Please select group.}
   elseif currentStep = STEP_LOOP
-    Log {Please select loop...}
+    Log {Please select loop.}
   elseif currentStep = STEP_CLOCK_LENGTH
-    Log {Please select clock length...}
+    Log {Please select clock length.}
   elseif currentStep = STEP_GTL_SENDS
-    Log {Please select GTL input...}
+    Log {Please select GTL sends.}
   elseif currentStep = STEP_INSTR_FX
-    Log {Please select instr fx...}
+    Log {Please select instr fx.}
   elseif currentStep = STEP_REC_MODE
-    Log {Please select record mode...}
+    Log {Please select record mode.}
   endif
 @End
 
@@ -329,42 +329,42 @@
     configPartMissing = YES
     Log {No GTL sends selected yet}
   else
-    lastSelectedGtlSendsInputs[cycleLength] = lastSelectedGtlSends
+    gtlSendsInputs[cycleLength] = lastSelectedGtlSends
   endif
 
   if lastSelectedRecMode = UNDEFINED
     configPartMissing = YES
     Log {No rec mode selected yet}
   else
-    lastSelectedRecModeInputs[cycleLength] = lastSelectedRecMode
+    recModeInputs[cycleLength] = lastSelectedRecMode
   endif
 
   if lastSelectedInstrFx = UNDEFINED
     configPartMissing = YES
     Log {No instr fx selected yet}
   else
-    lastSelectedInstrFxInputs[cycleLength] = lastSelectedInstrFx
+    instrFxInputs[cycleLength] = lastSelectedInstrFx
   endif
 
   if lastSelectedLoop = UNDEFINED
     configPartMissing = YES
     Log {No loop selected yet}
   else
-    lastSelectedLoopInputs[cycleLength] = lastSelectedLoop
+    loopInputs[cycleLength] = lastSelectedLoop
   endif
 
   if lastSelectedClockLength = UNDEFINED
     configPartMissing = YES
     Log {No clock length selected yet}
   else
-    lastSelectedClockLengthInputs[cycleLength] = lastSelectedClockLength
+    clockLengthInputs[cycleLength] = lastSelectedClockLength
   endif
 
   if lastSelectedGroup = UNDEFINED
     configPartMissing = YES
     Log {No group selected yet}
   else
-    lastSelectedGroupInputs[cycleLength] = lastSelectedGroup
+    groupInputs[cycleLength] = lastSelectedGroup
   endif
 
   if configPartMissing = NO
@@ -377,18 +377,49 @@
 
 @ArmCycle
   if cycleLength = 0
-    Log {No cycles provided yet}
+    Log {No cycles provided yet! Please run through at least one configuration cycle.}
   elseif lastActivatedCycle = cycleLength
-    Log {No cycle left}
+    Log {No cycle left. You can add new cycles whenever you like.}
   else
-    Log {Arming cycle #}, lastActivatedCycle, {:}
-    Log {- Group: }, lastSelectedGroupInputs[lastActivatedCycle]
-    Log {- Loop: }, lastSelectedLoopInputs[lastActivatedCycle]
-    Log {- Clock length: }, lastSelectedClockLengthInputs[lastActivatedCycle]
-    Log {- GTL sends: }, lastSelectedGroupInputs[lastActivatedCycle]
-    Log {- Instr fx: }, lastSelectedInstrFxInputs[lastActivatedCycle]
-    Log {- Rec mode: }, lastSelectedRecModeInputs[lastActivatedCycle]
+    Log {Arming cycle #}, lastActivatedCycle
+
+    Call @ArmGroup
+    Call @ArmLoop
+    Call @ArmClockLength
+    Call @ArmGtlSends
+    Call @ArmInstrFx
+    Call @ArmRecMode
 
     Inc lastActivatedCycle
   endif
+@End
+
+@ArmGroup
+  currentGroup = groupInputs[lastActivatedCycle]
+  Log {- Group: }, currentGroup
+@End
+
+@ArmLoop
+  currentLoop = loopInputs[lastActivatedCycle]
+  Log {- Loop: }, currentLoop
+@End
+
+@ArmClockLength
+  currentClockLength = clockLengthInputs[lastActivatedCycle]
+  Log {- Clock length: }, currentClockLength
+@End
+
+@ArmGtlSends
+  currentGtlSends = groupInputs[lastActivatedCycle]
+  Log {- GTL sends: }, currentGtlSends
+@End
+
+@ArmInstrFx
+  currentInstrFx = instrFxInputs[lastActivatedCycle]
+  Log {- Instr fx: }, currentInstrFx
+@End
+
+@ArmRecMode
+  currentRecMode = recModeInputs[lastActivatedCycle]
+  Log {- Rec mode: }, currentRecMode
 @End
