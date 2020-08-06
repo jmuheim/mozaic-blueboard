@@ -18,13 +18,11 @@
   UNDEFINED = -1
 
   1_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
-  2_BEATS_TAP_TIME  = 2 * 1_BEAT_TAP_TIME
-  4_BEATS_TAP_TIME = 4 * 1_BEAT_TAP_TIME
+  4_BEATS_TAP_TIME  = 4 * 1_BEAT_TAP_TIME
 
   TAP_IMMEDIATE = 1
   TAP_1_BAR  = 1
-  TAP_2_BARS = 2
-  TAP_4_BARS = 3
+  TAP_4_BARS = 2
 
   STEP_LOOP = 1
   LOOP_1 = 1
@@ -69,10 +67,24 @@
   REC_MODE_RECORD_AND_MUTE = 3
 
   FIRST_STEP = STEP_LOOP
-  LAST_STEP  = STEP_REC_MODE
+  LAST_STEP  = STEP_LOOP
 
-  GTL_CHANNEL = 15
+  GTL_CHANNEL = 0 // Will be displayed as channel 1 in GTL!
   BB_CHANNEL  = 0
+
+  ON_OFF_DELAY = 0
+
+  GTL_SELECT_GROUP_M = 48
+  GTL_SELECT_GROUP_1 = 49
+  GTL_SELECT_GROUP_2 = 50
+  GTL_SELECT_GROUP_3 = 51
+  GTL_SELECT_GROUP_4 = 52
+  GTL_SELECT_GROUP_5 = 53
+
+  GTL_SELECT_LOOP_1 = 54
+  GTL_SELECT_LOOP_2 = 55
+  GTL_SELECT_LOOP_3 = 56
+  GTL_SELECT_LOOP_4 = 57
 @End
 
 @InitVariables
@@ -93,6 +105,33 @@
   gtlSendsInputs    = []
   instrFxInputs     = []
   recModeInputs     = []
+  
+  //Call @InitTestData
+@End
+
+@InitTestData
+  groupInputs[0]       = [GROUP_1]
+  loopInputs[0]        = [LOOP_1]
+  clockLengthInputs[0] = [3]
+  gtlSendsInputs[0]    = [2]
+  instrFxInputs[0]     = [1]
+  recModeInputs[0]     = [2]
+
+  groupInputs[1]       = [GROUP_M]
+  loopInputs[1]        = [LOOP_1]
+  clockLengthInputs[1] = [3]
+  gtlSendsInputs[1]    = [2]
+  instrFxInputs[1]     = [1]
+  recModeInputs[1]     = [2]
+
+  groupInputs[2]       = [GROUP_2]
+  loopInputs[2]        = [LOOP_3]
+  clockLengthInputs[2] = [3]
+  gtlSendsInputs[2]    = [2]
+  instrFxInputs[2]     = [1]
+  recModeInputs[2]     = [2]
+
+  cycleLength = 3
 @End
 
 @IlluminateAllbuttons
@@ -110,12 +149,13 @@
   buttonPressedTime = SystemTime - buttonPressedStartTime
 
   If buttonPressedTime >= 4_BEATS_TAP_TIME
+    Log {4 bars}
     tapType = TAP_4_BARS
-  Elseif buttonPressedTime >= 2_BEATS_TAP_TIME
-    tapType = TAP_2_BARS
   Elseif buttonPressedTime >= 1_BEAT_TAP_TIME
+    Log {1 bar}
     tapType = TAP_1_BAR
   Else
+    Log {Immediate}
     tapType = TAP_IMMEDIATE
   Endif
 
@@ -235,6 +275,7 @@
 @End
 
 @MapUserInputToLoop
+  Log {---}, tapType
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
       lastSelectedLoop = LOOP_1
@@ -325,47 +366,48 @@
 @AddCycle
   configPartMissing = NO
 
-  if lastSelectedGtlSends = UNDEFINED
-    configPartMissing = YES
-    Log {No GTL sends selected yet}
-  else
-    gtlSendsInputs[cycleLength] = lastSelectedGtlSends
-  endif
-
-  if lastSelectedRecMode = UNDEFINED
-    configPartMissing = YES
-    Log {No rec mode selected yet}
-  else
-    recModeInputs[cycleLength] = lastSelectedRecMode
-  endif
-
-  if lastSelectedInstrFx = UNDEFINED
-    configPartMissing = YES
-    Log {No instr fx selected yet}
-  else
-    instrFxInputs[cycleLength] = lastSelectedInstrFx
-  endif
-
   if lastSelectedLoop = UNDEFINED
     configPartMissing = YES
     Log {No loop selected yet}
   else
+    Log {Add loop}, lastSelectedLoop
     loopInputs[cycleLength] = lastSelectedLoop
   endif
 
-  if lastSelectedClockLength = UNDEFINED
-    configPartMissing = YES
-    Log {No clock length selected yet}
-  else
-    clockLengthInputs[cycleLength] = lastSelectedClockLength
-  endif
-
-  if lastSelectedGroup = UNDEFINED
-    configPartMissing = YES
-    Log {No group selected yet}
-  else
-    groupInputs[cycleLength] = lastSelectedGroup
-  endif
+//  if lastSelectedGroup = UNDEFINED
+//    configPartMissing = YES
+//    Log {No group selected yet}
+//  else
+//    groupInputs[cycleLength] = lastSelectedGroup
+//  endif
+//
+//  if lastSelectedGtlSends = UNDEFINED
+//    configPartMissing = YES
+//    Log {No GTL sends selected yet}
+//  else
+//    gtlSendsInputs[cycleLength] = lastSelectedGtlSends
+//  endif
+//
+//  if lastSelectedRecMode = UNDEFINED
+//    configPartMissing = YES
+//    Log {No rec mode selected yet}
+//  else
+//    recModeInputs[cycleLength] = lastSelectedRecMode
+//  endif
+//
+//  if lastSelectedInstrFx = UNDEFINED
+//    configPartMissing = YES
+//    Log {No instr fx selected yet}
+//  else
+//    instrFxInputs[cycleLength] = lastSelectedInstrFx
+//  endif
+//
+//  if lastSelectedClockLength = UNDEFINED
+//    configPartMissing = YES
+//    Log {No clock length selected yet}
+//  else
+//    clockLengthInputs[cycleLength] = lastSelectedClockLength
+//  endif
 
   if configPartMissing = NO
     currentStep = FIRST_STEP
@@ -383,12 +425,12 @@
   else
     Log {Arming cycle #}, lastActivatedCycle
 
-    Call @ArmGroup
+//    Call @ArmGroup
     Call @ArmLoop
-    Call @ArmClockLength
-    Call @ArmGtlSends
-    Call @ArmInstrFx
-    Call @ArmRecMode
+//    Call @ArmClockLength
+//    Call @ArmGtlSends
+//    Call @ArmInstrFx
+//    Call @ArmRecMode
 
     Inc lastActivatedCycle
   endif
@@ -396,11 +438,46 @@
 
 @ArmGroup
   currentGroup = groupInputs[lastActivatedCycle]
+
+  if currentGroup = GROUP_M
+    midiToSend = GTL_SELECT_GROUP_M
+  elseif currentGroup = GROUP_1
+    midiToSend = GTL_SELECT_GROUP_1
+  elseif currentGroup = GROUP_2
+    midiToSend = GTL_SELECT_GROUP_2
+  elseif currentGroup = GROUP_3
+    midiToSend = GTL_SELECT_GROUP_3
+  elseif currentGroup = GROUP_4
+    midiToSend = GTL_SELECT_GROUP_4
+  elseif currentGroup = GROUP_5
+    midiToSend = GTL_SELECT_GROUP_5
+  endif
+
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
+  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+
   Log {- Group: }, currentGroup
 @End
 
 @ArmLoop
   currentLoop = loopInputs[lastActivatedCycle]
+  Log {Current loop: }, currentLoop
+
+  if currentLoop = LOOP_1
+    midiToSend = GTL_SELECT_LOOP_1
+  elseif currentLoop = LOOP_2
+    midiToSend = GTL_SELECT_LOOP_2
+  elseif currentLoop = LOOP_3
+    midiToSend = GTL_SELECT_LOOP_3
+  elseif currentLoop = LOOP_4
+    midiToSend = GTL_SELECT_LOOP_4
+  endif
+
+  Log {Sending MIDI to GTL: }, midiToSend
+
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
+  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+
   Log {- Loop: }, currentLoop
 @End
 
