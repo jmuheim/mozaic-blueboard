@@ -25,7 +25,13 @@
   TWO_BARS_TAP  = 2
   FOUR_BARS_TAP = 3
 
-  PERF_WIZ_GROUP = 1
+  PERF_WIZ_LOOP = 1
+  LOOP_ONE      = 1
+  LOOP_TWO      = 2
+  LOOP_THREE    = 3
+  LOOP_FOUR     = 4
+
+  PERF_WIZ_GROUP = 2
   MAIN_GROUP     = 1
   GROUP_ONE      = 2
   GROUP_TWO      = 3
@@ -33,15 +39,12 @@
   GROUP_FOUR     = 5
   GROUP_FIVE     = 6
 
-  PERF_WIZ_LOOP = 2
-  LOOP_ONE      = 1
-  LOOP_TWO      = 2
-  LOOP_THREE    = 3
-  LOOP_FOUR     = 4
-
   PERF_WIZ_CLOCK_LENGTH  = 3
   PERF_WIZ_GTL_INPUT     = 4
   PERF_WIZ_INSTRUMENT_FX = 5
+
+  PERF_WIZ_FIRST_STEP = PERF_WIZ_LOOP
+  PERF_WIZ_LAST_STEP  = PERF_WIZ_GROUP
 
   GTL_CHANNEL = 15
   BB_CHANNEL  = 0
@@ -49,7 +52,7 @@
 
 @InitVariables
   perfWizCycleLength = 0
-  perfWizCurrentStep = PERF_WIZ_GROUP
+  perfWizCurrentStep = PERF_WIZ_FIRST_STEP
 
   perfWizGroupInputs        = []
   perfWizLoopInputs         = []
@@ -89,56 +92,60 @@
   if MidiNote = BB_NOTE_D
     Call @ArmCycle
   else
-    if perfWizCurrentStep = PERF_WIZ_GROUP
-      if MidiNote = BB_NOTE_A
-        if tapType = IMMEDIATE_TAP
-          group = GROUP_ONE
-        elseif tapType = ONE_BAR_TAP
-          group = MAIN_GROUP
-        endif
-      elseif MidiNote = BB_NOTE_B
-        if tapType = IMMEDIATE_TAP
-          group = GROUP_TWO
-        elseif tapType = ONE_BAR_TAP
-          group = GROUP_FOUR
-        endif
-      elseif MidiNote = BB_NOTE_C
-        if tapType = IMMEDIATE_TAP
-          group = GROUP_THREE
-        elseif tapType = ONE_BAR_TAP
-          group = GROUP_FIVE
-        endif
-      endif
-
-      perfWizGroupInputs[perfWizCycleLength] = group
-    elseif perfWizCurrentStep = PERF_WIZ_LOOP
-      if MidiNote = BB_NOTE_A
-        if tapType = IMMEDIATE_TAP
-          loop = LOOP_ONE
-        elseif tapType = ONE_BAR_TAP
-          loop = LOOP_FOUR
-        endif
-      elseif MidiNote = BB_NOTE_B
-        if tapType = IMMEDIATE_TAP
-          loop = LOOP_TWO
-        endif
-      elseif MidiNote = BB_NOTE_C
-        if tapType = IMMEDIATE_TAP
-          loop = LOOP_THREE
-        endif
-      endif
-
-      perfWizLoopInputs[perfWizCycleLength] = loop
+    if perfWizCurrentStep = PERF_WIZ_LOOP
+      Call @MapUserInputToLoop
+    elseif perfWizCurrentStep = PERF_WIZ_GROUP
+      Call @MapUserInputToGroup
     endif
   endif
 
-  if perfWizCurrentStep < PERF_WIZ_LOOP
+  if perfWizCurrentStep < PERF_WIZ_LAST_STEP
     Inc perfWizCurrentStep
   else
     Log {Recorded cycle! Group: }, perfWizGroupInputs[perfWizCycleLength], { Loop: }, perfWizLoopInputs[perfWizCycleLength]
-    perfWizCurrentStep = PERF_WIZ_GROUP
+    perfWizCurrentStep = PERF_WIZ_FIRST_STEP
     Inc perfWizCycleLength
   endif
+@End
+
+@MapUserInputToLoop
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      loop = LOOP_ONE
+    elseif MidiNote = BB_NOTE_B
+      loop = LOOP_TWO
+    elseif MidiNote = BB_NOTE_C
+      loop = LOOP_THREE
+    end
+  elseif tapType = ONE_BAR_TAP
+    if MidiNote = BB_NOTE_A
+      loop = LOOP_FOUR
+    end
+  end
+
+  perfWizLoopInputs[perfWizCycleLength] = loop
+@End
+
+@MapUserInputToGroup
+  if tapType = IMMEDIATE_TAP
+    if MidiNote = BB_NOTE_A
+      group = GROUP_ONE
+    elseif MidiNote = BB_NOTE_B
+      group = GROUP_TWO
+    elseif MidiNote = BB_NOTE_C
+      group = GROUP_THREE
+    end
+  elseif tapType = ONE_BAR_TAP
+    if MidiNote = BB_NOTE_A
+      group = MAIN_GROUP
+    elseif MidiNote = BB_NOTE_B
+      group = GROUP_FOUR
+    elseif MidiNote = BB_NOTE_C
+      group = GROUP_FIVE
+    end
+  end
+
+  perfWizGroupInputs[perfWizCycleLength] = group
 @End
 
 @AskForInput
