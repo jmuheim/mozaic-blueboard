@@ -537,6 +537,6 @@
 
   Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
-  // SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  // SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
+  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
 @End
