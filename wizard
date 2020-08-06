@@ -65,9 +65,9 @@
   INSTR_FX_6 = 6
 
   STEP_REC_MODE = 6
-  REC_MODE_RECORD          = 1
-  REC_MODE_OVERDUB         = 2
-  REC_MODE_RECORD_AND_MUTE = 3
+  REC_MODE_RECORD_OVERDUB     = 1
+  REC_MODE_RECORD_MUTE        = 2
+  REC_MODE_RECORD_SELECT_NEXT = 3
 
   FIRST_STEP = STEP_LOOP
   LAST_STEP  = STEP_GROUP
@@ -95,6 +95,10 @@
 
   GTL_DECREASE_CLOCK = 58
   GTL_INCREASE_CLOCK = 59
+
+  GTL_RECORD_OVERDUB     = 60
+  GTL_RECORD_MUTE        = 61
+  GTL_RECORD_SELECT_NEXT = 62
 @End
 
 @InitVariables
@@ -125,31 +129,31 @@
 @InitTestData
   groupStack[0]       = GROUP_3
   loopStack[0]        = LOOP_1
-  clockLengthStack[0] = CLOCK_LENGTH_8
+  clockLengthStack[0] = CLOCK_LENGTH_2
   gtlSendsStack[0]    = 2
   instrFxStack[0]     = 1
-  recModeStack[0]     = 2
+  recModeStack[0]     = REC_MODE_RECORD_MUTE
 
   groupStack[1]       = GROUP_M
   loopStack[1]        = LOOP_2
-  clockLengthStack[1] = CLOCK_LENGTH_2
+  clockLengthStack[1] = CLOCK_LENGTH_8
   gtlSendsStack[1]    = 2
   instrFxStack[1]     = 1
-  recModeStack[1]     = 2
+  recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
-  groupStack[2]       = GROUP_2
-  loopStack[2]        = LOOP_4
-  clockLengthStack[2] = CLOCK_LENGTH_12
+  groupStack[2]       = GROUP_3
+  loopStack[2]        = LOOP_1
+  clockLengthStack[2] = CLOCK_LENGTH_2
   gtlSendsStack[2]    = 2
   instrFxStack[2]     = 1
-  recModeStack[2]     = 2
+  recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
   groupStack[3]       = GROUP_3
   loopStack[3]        = LOOP_2
   clockLengthStack[3] = CLOCK_LENGTH_4 // Be sure that the last test case ends with DEFAULT_GTL_CLOCK_LENGTH again!
   gtlSendsStack[3]    = 2
   instrFxStack[3]     = 1
-  recModeStack[3]     = 2
+  recModeStack[3]     = REC_MODE_RECORD_SELECT_NEXT
 
   stackSize = 4
 @End
@@ -245,23 +249,17 @@
 @MapUserInputToRecMode
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD
+      lastSelectedRecMode = REC_MODE_RECORD_OVERDUB
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedRecMode = REC_MODE_OVERDUB
+      lastSelectedRecMode = REC_MODE_RECORD_MUTE
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      // TODO: REC_MODE_ADVANCED
+      lastSelectedRecMode = REC_MODE_RECORD_SELECT_NEXT
+      wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD_AND_MUTE
-      wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
-      // Nothing
-    elseif MidiNote = BB_NOTE_C
-      // TODO: REC_MODE_ADVANCED_AND_MUTE
-    endif
+    // TODO: Advanced stuff!
   endif
 @End
 
@@ -517,16 +515,28 @@
 @End
 
 @ArmRecSends
-  currentRecSends = groupStack[lastActivatedStackId]
-  Log {- GTL sends: }, currentRecSends
+  newRecSends = groupStack[lastActivatedStackId]
+  Log {- GTL sends: }, newRecSends
 @End
 
 @ArmInstrFx
-  currentInstrFx = instrFxStack[lastActivatedStackId]
-  Log {- Instr fx: }, currentInstrFx
+  newInstrFx = instrFxStack[lastActivatedStackId]
+  Log {- Instr fx: }, newInstrFx
 @End
 
 @ArmRecMode
-  currentRecMode = recModeStack[lastActivatedStackId]
-  Log {- Rec mode: }, currentRecMode
+  newRecMode = recModeStack[lastActivatedStackId]
+
+  if newRecMode = LOOP_1
+    midiToSend = GTL_RECORD_OVERDUB
+  elseif newRecMode = LOOP_2
+    midiToSend = GTL_RECORD_MUTE
+  elseif newRecMode = LOOP_3
+    midiToSend = GTL_RECORD_SELECT_NEXT
+  endif
+
+  Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+
+  // SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
+  // SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
 @End
