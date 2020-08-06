@@ -410,19 +410,19 @@
 //    gtlSendsStack[stackSize] = lastSelectedRecSends
 //  endif
 //
-//  if lastSelectedRecMode = UNDEFINED
-//    configPartMissing = YES
-//    Log {No rec mode selected yet}
-//  else
-//    recModeStack[stackSize] = lastSelectedRecMode
-//  endif
-//
 //  if lastSelectedInstrFx = UNDEFINED
 //    configPartMissing = YES
 //    Log {No instr fx selected yet}
 //  else
 //    instrFxStack[stackSize] = lastSelectedInstrFx
 //  endif
+
+  if lastSelectedRecMode = UNDEFINED
+    configPartMissing = YES
+    Log {No rec mode selected yet}
+  else
+    recModeStack[stackSize] = lastSelectedRecMode
+  endif
 
   if configPartMissing = NO
     currentStep = FIRST_STEP
@@ -445,7 +445,7 @@
     Call @ArmClockLength
 //    Call @ArmRecSends
 //    Call @ArmInstrFx
-//    Call @ArmRecMode
+    Call @ArmRecMode
 
     Inc lastActivatedStackId
   endif
