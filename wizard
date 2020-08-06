@@ -366,7 +366,6 @@
     configPartMissing = YES
     Log {No loop selected yet}
   else
-    Log {Add loop}, lastSelectedLoop
     loopStack[cycleLength] = lastSelectedLoop
   endif
 
