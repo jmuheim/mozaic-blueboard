@@ -6,13 +6,18 @@
   Call @InitVariables
   Call @InitGtlMidiCodes
 
+  Call @ResetGtlSession
   Call @IlluminateAllbuttons
   Call @AskForInput
+
+  // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
+  //Call @InitTestData
 @End
 
 @InitConstants
   UNDEFINED = -1
 
+  // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
   BB_NOTE_A = 60
   BB_NOTE_B = 62
   BB_NOTE_C = 64
@@ -20,8 +25,6 @@
 
   1_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
   4_BEATS_TAP_TIME  = 4 * 1_BEAT_TAP_TIME
-
-  DEFAULT_GTL_CLOCK_LENGTH = 4 // Make sure that GTL has this clock length set when starting a performance!
 
   TAP_IMMEDIATE = 0
   TAP_1_BAR  = 1
@@ -70,7 +73,7 @@
   REC_MODE_RECORD_SELECT_NEXT = 3
 
   FIRST_STEP = STEP_LOOP
-  LAST_STEP  = STEP_GROUP
+  LAST_STEP  = STEP_REC_MODE
 
   GTL_CHANNEL = 0 // Will be displayed as channel 1 in GTL!
   BB_CHANNEL  = 0
@@ -81,32 +84,36 @@
 // These are the codes that are sent as MIDI to GTL.
 // GTL needs to have respective MIDI bindings assigned to these codes!
 @InitGtlMidiCodes
-  GTL_SELECT_GROUP_M = 48
-  GTL_SELECT_GROUP_1 = 49
-  GTL_SELECT_GROUP_2 = 50
-  GTL_SELECT_GROUP_3 = 51
-  GTL_SELECT_GROUP_4 = 52
-  GTL_SELECT_GROUP_5 = 53
+  GTL_SELECT_GROUP_M = 0
+  GTL_SELECT_GROUP_1 = 1
+  GTL_SELECT_GROUP_2 = 2
+  GTL_SELECT_GROUP_3 = 3
+  GTL_SELECT_GROUP_4 = 4
+  GTL_SELECT_GROUP_5 = 5
 
-  GTL_SELECT_LOOP_1 = 54
-  GTL_SELECT_LOOP_2 = 55
-  GTL_SELECT_LOOP_3 = 56
-  GTL_SELECT_LOOP_4 = 57
+  GTL_SELECT_LOOP_1 = 6
+  GTL_SELECT_LOOP_2 = 7
+  GTL_SELECT_LOOP_3 = 8
+  GTL_SELECT_LOOP_4 = 9
 
-  GTL_DECREASE_CLOCK = 58
-  GTL_INCREASE_CLOCK = 59
+  GTL_DECREASE_CLOCK = 10
+  GTL_INCREASE_CLOCK = 11
 
-  GTL_RECORD_OVERDUB     = 60
-  GTL_RECORD_MUTE        = 61
-  GTL_RECORD_SELECT_NEXT = 62
+  GTL_RECORD_OVERDUB     = 12
+  GTL_RECORD_MUTE        = 13
+  GTL_RECORD_SELECT_NEXT = 14
+
+  GTL_RESET_SESSION = 15
 @End
 
 @InitVariables
+  midiToSend = UNDEFINED
+
   stackSize = 0
-  lastActivatedStackId = 0
+  lastActivatedStackId = 0 // TODO: Shouldn't this be UNDEFINED?
   currentStep = FIRST_STEP
 
-  currentClockLength = DEFAULT_GTL_CLOCK_LENGTH
+  currentClockLength = 1 // GTL sets clock length to 1 when resetting session
 
   lastSelectedGroup       = UNDEFINED
   lastSelectedLoop        = UNDEFINED
@@ -121,41 +128,49 @@
   gtlSendsStack    = []
   instrFxStack     = []
   recModeStack     = []
-
-  // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
-  Call @InitTestData
 @End
 
 @InitTestData
   groupStack[0]       = GROUP_3
   loopStack[0]        = LOOP_1
-  clockLengthStack[0] = CLOCK_LENGTH_2
+  clockLengthStack[0] = CLOCK_LENGTH_4
   gtlSendsStack[0]    = 2
   instrFxStack[0]     = 1
   recModeStack[0]     = REC_MODE_RECORD_MUTE
 
   groupStack[1]       = GROUP_M
   loopStack[1]        = LOOP_2
-  clockLengthStack[1] = CLOCK_LENGTH_8
+  clockLengthStack[1] = CLOCK_LENGTH_2
   gtlSendsStack[1]    = 2
   instrFxStack[1]     = 1
   recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
   groupStack[2]       = GROUP_3
   loopStack[2]        = LOOP_1
-  clockLengthStack[2] = CLOCK_LENGTH_2
+  clockLengthStack[2] = CLOCK_LENGTH_8
   gtlSendsStack[2]    = 2
   instrFxStack[2]     = 1
   recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
   groupStack[3]       = GROUP_3
   loopStack[3]        = LOOP_2
-  clockLengthStack[3] = CLOCK_LENGTH_4 // Be sure that the last test case ends with DEFAULT_GTL_CLOCK_LENGTH again!
+  clockLengthStack[3] = CLOCK_LENGTH_2
   gtlSendsStack[3]    = 2
   instrFxStack[3]     = 1
   recModeStack[3]     = REC_MODE_RECORD_SELECT_NEXT
 
   stackSize = 4
+@End
+
+@ResetGtlSession
+  midiToSend = GTL_RESET_SESSION
+  Log {Resetting session by sending MIDI to GTL: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+@SendMidiNoteOnOff
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
+  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
 @End
 
 @IlluminateAllbuttons
@@ -363,17 +378,17 @@
 
 @AskForInput
   if currentStep = STEP_GROUP
-    Log {Please select group.}
+    Log {Which group?}
   elseif currentStep = STEP_LOOP
-    Log {Please select loop.}
+    Log {Which loop?}
   elseif currentStep = STEP_CLOCK_LENGTH
-    Log {Please select clock length.}
+    Log {Which clock length?}
   elseif currentStep = STEP_REC_SENDS
-    Log {Please select GTL sends.}
+    Log {Which GTL sends?}
   elseif currentStep = STEP_INSTR_FX
-    Log {Please select instr fx.}
+    Log {Which instr FX?}
   elseif currentStep = STEP_REC_MODE
-    Log {Please select record mode.}
+    Log {Which record mode?}
   endif
 @End
 
@@ -382,42 +397,42 @@
 
   if lastSelectedLoop = UNDEFINED
     configPartMissing = YES
-    Log {No loop selected yet}
+    Log {No loop selected yet!}
   else
     loopStack[stackSize] = lastSelectedLoop
   endif
 
   if lastSelectedGroup = UNDEFINED
     configPartMissing = YES
-    Log {No group selected yet}
+    Log {No group selected yet!}
   else
     groupStack[stackSize] = lastSelectedGroup
   endif
 
   if lastSelectedClockLength = UNDEFINED
     configPartMissing = YES
-    Log {No clock length selected yet}
+    Log {No clock length selected yet!}
   else
     clockLengthStack[stackSize] = lastSelectedClockLength
   endif
 
 //  if lastSelectedRecSends = UNDEFINED
 //    configPartMissing = YES
-//    Log {No GTL sends selected yet}
+//    Log {No GTL sends selected yet!}
 //  else
 //    gtlSendsStack[stackSize] = lastSelectedRecSends
 //  endif
 //
 //  if lastSelectedInstrFx = UNDEFINED
 //    configPartMissing = YES
-//    Log {No instr fx selected yet}
+//    Log {No instr fx selected yet!}
 //  else
 //    instrFxStack[stackSize] = lastSelectedInstrFx
 //  endif
 
   if lastSelectedRecMode = UNDEFINED
     configPartMissing = YES
-    Log {No rec mode selected yet}
+    Log {No rec mode selected yet!}
   else
     recModeStack[stackSize] = lastSelectedRecMode
   endif
@@ -426,7 +441,7 @@
     currentStep = FIRST_STEP
     Inc stackSize
 
-    Log {Cycle added!}
+    Log {Hooray! Cycle added! :-)}
   endif
 @End
 
@@ -451,7 +466,6 @@
 
 @ArmLoop
   newLoop = loopStack[lastActivatedStackId]
-  Log {Current loop: }, newLoop
 
   if newLoop = LOOP_1
     midiToSend = GTL_SELECT_LOOP_1
@@ -464,9 +478,7 @@
   endif
 
   Log {Selecting loop by sending MIDI to GTL: }, midiToSend
-
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+  Call @SendMidiNoteOnOff
 @End
 
 @ArmGroup
@@ -487,9 +499,7 @@
   endif
 
   Log {Selecting group by sending MIDI to GTL: }, midiToSend
-
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+  Call @SendMidiNoteOnOff
 @End
 
 @ArmClockLength
@@ -507,8 +517,7 @@
   Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
 
   for i = 1 to timesToSend
-    SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-    SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+    Call @SendMidiNoteOnOff
   endfor
 
   currentClockLength = newClockLength
@@ -516,12 +525,10 @@
 
 @ArmRecSends
   newRecSends = groupStack[lastActivatedStackId]
-  Log {- GTL sends: }, newRecSends
 @End
 
 @ArmInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
-  Log {- Instr fx: }, newInstrFx
 @End
 
 @ArmRecMode
@@ -537,6 +544,5 @@
 
   Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+  // Call @SendMidiNoteOnOff
 @End
