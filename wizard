@@ -77,15 +77,15 @@
 
 @InitVariables
   cycleLength = 0
-  lastActivatedCycle = 0
+  previousActivatedCycle = 0
   currentStep = FIRST_STEP
 
-  lastSelectedGroup       = UNDEFINED
-  lastSelectedLoop        = UNDEFINED
-  lastSelectedClockLength = UNDEFINED
-  lastSelectedGtlSends    = UNDEFINED
-  lastSelectedInstrFx     = UNDEFINED
-  lastSelectedRecMode     = UNDEFINED
+  previousSelectedGroup       = UNDEFINED
+  previousSelectedLoop        = UNDEFINED
+  previousSelectedClockLength = UNDEFINED
+  previousSelectedGtlSends    = UNDEFINED
+  previousSelectedInstrFx     = UNDEFINED
+  previousSelectedRecMode     = UNDEFINED
 
   groupInputs       = []
   loopInputs        = []
@@ -163,23 +163,23 @@
 @MapUserInputToGtlSends
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedGtlSends = GTL_SENDS_GUITAR
+      previousSelectedGtlSends = GTL_SENDS_GUITAR
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedGtlSends = GTL_SENDS_MIC
+      previousSelectedGtlSends = GTL_SENDS_MIC
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedGtlSends = GTL_SENDS_MIC_AND_GUITAR
+      previousSelectedGtlSends = GTL_SENDS_MIC_AND_GUITAR
       wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedGtlSends = GTL_SENDS_KEYBOARD
+      previousSelectedGtlSends = GTL_SENDS_KEYBOARD
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
       // Some day maybe some voice FX, e.g. Vocoder?
     elseif MidiNote = BB_NOTE_C
-      lastSelectedGtlSends = GTL_SENDS_MIC_AND_KEYBOARD
+      previousSelectedGtlSends = GTL_SENDS_MIC_AND_KEYBOARD
       wrongInputDetected = NO
     endif
   endif
@@ -188,17 +188,17 @@
 @MapUserInputToRecMode
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD
+      previousSelectedRecMode = REC_MODE_RECORD
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedRecMode = REC_MODE_OVERDUB
+      previousSelectedRecMode = REC_MODE_OVERDUB
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
       // TODO: REC_MODE_ADVANCED
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedRecMode = REC_MODE_RECORD_AND_MUTE
+      previousSelectedRecMode = REC_MODE_RECORD_AND_MUTE
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
       // Nothing
@@ -211,24 +211,24 @@
 @MapUserInputToInstrFx
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedInstrFx = INSTR_FX_1
+      previousSelectedInstrFx = INSTR_FX_1
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedInstrFx = INSTR_FX_2
+      previousSelectedInstrFx = INSTR_FX_2
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedInstrFx = INSTR_FX_3
+      previousSelectedInstrFx = INSTR_FX_3
       wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedInstrFx = INSTR_FX_4
+      previousSelectedInstrFx = INSTR_FX_4
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedInstrFx = INSTR_FX_5
+      previousSelectedInstrFx = INSTR_FX_5
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedInstrFx = INSTR_FX_6
+      previousSelectedInstrFx = INSTR_FX_6
       wrongInputDetected = NO
     endif
   endif
@@ -237,18 +237,18 @@
 @MapUserInputToLoop
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedLoop = LOOP_1
+      previousSelectedLoop = LOOP_1
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedLoop = LOOP_2
+      previousSelectedLoop = LOOP_2
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedLoop = LOOP_3
+      previousSelectedLoop = LOOP_3
       wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedLoop = LOOP_4
+      previousSelectedLoop = LOOP_4
       wrongInputDetected = NO
     endif
   endif
@@ -257,24 +257,24 @@
 @MapUserInputToClockLength
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedClockLength = CLOCK_LENGTH_2
+      previousSelectedClockLength = CLOCK_LENGTH_2
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedClockLength = CLOCK_LENGTH_4
+      previousSelectedClockLength = CLOCK_LENGTH_4
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedClockLength = CLOCK_LENGTH_8
+      previousSelectedClockLength = CLOCK_LENGTH_8
       wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedClockLength = CLOCK_LENGTH_10
+      previousSelectedClockLength = CLOCK_LENGTH_10
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedClockLength = CLOCK_LENGTH_12
+      previousSelectedClockLength = CLOCK_LENGTH_12
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedClockLength = CLOCK_LENGTH_16
+      previousSelectedClockLength = CLOCK_LENGTH_16
       wrongInputDetected = NO
     endif
   endif
@@ -283,24 +283,24 @@
 @MapUserInputToGroup
   if tapType = TAP_IMMEDIATE
     if MidiNote = BB_NOTE_A
-      lastSelectedGroup = GROUP_1
+      previousSelectedGroup = GROUP_1
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedGroup = GROUP_2
+      previousSelectedGroup = GROUP_2
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedGroup = GROUP_3
+      previousSelectedGroup = GROUP_3
       wrongInputDetected = NO
     endif
   elseif tapType = TAP_1_BAR
     if MidiNote = BB_NOTE_A
-      lastSelectedGroup = GROUP_M
+      previousSelectedGroup = GROUP_M
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_B
-      lastSelectedGroup = GROUP_4
+      previousSelectedGroup = GROUP_4
       wrongInputDetected = NO
     elseif MidiNote = BB_NOTE_C
-      lastSelectedGroup = GROUP_5
+      previousSelectedGroup = GROUP_5
       wrongInputDetected = NO
     endif
   endif
@@ -325,46 +325,46 @@
 @AddCycle
   configPartMissing = NO
 
-  if lastSelectedGtlSends = UNDEFINED
+  if previousSelectedGtlSends = UNDEFINED
     configPartMissing = YES
     Log {No GTL sends selected yet}
   else
-    lastSelectedGtlSendsInputs[cycleLength] = lastSelectedGtlSends
+    previousSelectedGtlSendsInputs[cycleLength] = previousSelectedGtlSends
   endif
 
-  if lastSelectedRecMode = UNDEFINED
+  if previousSelectedRecMode = UNDEFINED
     configPartMissing = YES
     Log {No rec mode selected yet}
   else
-    lastSelectedRecModeInputs[cycleLength] = lastSelectedRecMode
+    previousSelectedRecModeInputs[cycleLength] = previousSelectedRecMode
   endif
 
-  if lastSelectedInstrFx = UNDEFINED
+  if previousSelectedInstrFx = UNDEFINED
     configPartMissing = YES
     Log {No instr fx selected yet}
   else
-    lastSelectedInstrFxInputs[cycleLength] = lastSelectedInstrFx
+    previousSelectedInstrFxInputs[cycleLength] = previousSelectedInstrFx
   endif
 
-  if lastSelectedLoop = UNDEFINED
+  if previousSelectedLoop = UNDEFINED
     configPartMissing = YES
     Log {No loop selected yet}
   else
-    lastSelectedLoopInputs[cycleLength] = lastSelectedLoop
+    previousSelectedLoopInputs[cycleLength] = previousSelectedLoop
   endif
 
-  if lastSelectedClockLength = UNDEFINED
+  if previousSelectedClockLength = UNDEFINED
     configPartMissing = YES
     Log {No clock length selected yet}
   else
-    lastSelectedClockLengthInputs[cycleLength] = lastSelectedClockLength
+    previousSelectedClockLengthInputs[cycleLength] = previousSelectedClockLength
   endif
 
-  if lastSelectedGroup = UNDEFINED
+  if previousSelectedGroup = UNDEFINED
     configPartMissing = YES
     Log {No group selected yet}
   else
-    lastSelectedGroupInputs[cycleLength] = lastSelectedGroup
+    previousSelectedGroupInputs[cycleLength] = previousSelectedGroup
   endif
 
   if configPartMissing = NO
@@ -378,17 +378,17 @@
 @ArmCycle
   if cycleLength = 0
     Log {No cycles provided yet}
-  elseif lastActivatedCycle = cycleLength
+  elseif previousActivatedCycle = cycleLength
     Log {No cycle left}
   else
-    Log {Arming cycle #}, lastActivatedCycle, {:}
-    Log {- Group: }, lastSelectedGroupInputs[lastActivatedCycle]
-    Log {- Loop: }, lastSelectedLoopInputs[lastActivatedCycle]
-    Log {- Clock length: }, lastSelectedClockLengthInputs[lastActivatedCycle]
-    Log {- GTL sends: }, lastSelectedGroupInputs[lastActivatedCycle]
-    Log {- Instr fx: }, lastSelectedInstrFxInputs[lastActivatedCycle]
-    Log {- Rec mode: }, lastSelectedRecModeInputs[lastActivatedCycle]
+    Log {Arming cycle #}, previousActivatedCycle, {:}
+    Log {- Group: }, previousSelectedGroupInputs[previousActivatedCycle]
+    Log {- Loop: }, previousSelectedLoopInputs[previousActivatedCycle]
+    Log {- Clock length: }, previousSelectedClockLengthInputs[previousActivatedCycle]
+    Log {- GTL sends: }, previousSelectedGroupInputs[previousActivatedCycle]
+    Log {- Instr fx: }, previousSelectedInstrFxInputs[previousActivatedCycle]
+    Log {- Rec mode: }, previousSelectedRecModeInputs[previousActivatedCycle]
 
-    Inc lastActivatedCycle
+    Inc previousActivatedCycle
   endif
 @End
