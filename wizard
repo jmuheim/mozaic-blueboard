@@ -5,13 +5,14 @@
   Call @InitConstants
   Call @InitVariables
   Call @InitGtlMidiCodes
+  Call @InitAumMidiCodes
 
   Call @ResetGtlSession
   Call @IlluminateAllbuttons
   Call @AskForInput
 
   // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
-  //Call @InitTestData
+  Call @InitTestData
 @End
 
 @InitConstants
@@ -45,6 +46,7 @@
   GROUP_5 = 6
 
   STEP_CLOCK_LENGTH = 3
+  CLOCK_LENGTH_1  = 1
   CLOCK_LENGTH_2  = 2
   CLOCK_LENGTH_4  = 4
   CLOCK_LENGTH_8  = 8
@@ -98,12 +100,40 @@
 
   GTL_DECREASE_CLOCK = 10
   GTL_INCREASE_CLOCK = 11
+  GTL_SET_CLOCK_2  = 33
+  GTL_SET_CLOCK_4  = 34
+  GTL_SET_CLOCK_8  = 35
+  GTL_SET_CLOCK_10 = 36
+  GTL_SET_CLOCK_12 = 37
+  GTL_SET_CLOCK_16 = 38
 
   GTL_RECORD_OVERDUB     = 12
   GTL_RECORD_MUTE        = 13
   GTL_RECORD_SELECT_NEXT = 14
 
   GTL_RESET_SESSION = 15
+@End
+
+@InitAumMidiCodes
+  AUM_SEND_GUITAR           = 16
+  AUM_SEND_MIC              = 17
+  AUM_SEND_MIC_AND_GUITAR   = 18
+  AUM_SEND_KEYBOARD         = 19
+  AUM_SEND_MIC_AND_KEYBOARD = 20
+
+  AUM_GUITAR_FX_1 = 21
+  AUM_GUITAR_FX_2 = 22
+  AUM_GUITAR_FX_3 = 23
+  AUM_GUITAR_FX_4 = 24
+  AUM_GUITAR_FX_5 = 25
+  AUM_GUITAR_FX_6 = 26
+
+  AUM_KEYBOARD_FX_1 = 27
+  AUM_KEYBOARD_FX_2 = 28
+  AUM_KEYBOARD_FX_3 = 29
+  AUM_KEYBOARD_FX_4 = 30
+  AUM_KEYBOARD_FX_5 = 31
+  AUM_KEYBOARD_FX_6 = 32
 @End
 
 @InitVariables
@@ -131,35 +161,69 @@
 @End
 
 @InitTestData
-  groupStack[0]       = GROUP_3
+  // Percussion
+  groupStack[0]       = GROUP_M
   loopStack[0]        = LOOP_1
-  clockLengthStack[0] = CLOCK_LENGTH_4
-  gtlSendsStack[0]    = 2
-  instrFxStack[0]     = 1
-  recModeStack[0]     = REC_MODE_RECORD_MUTE
+  clockLengthStack[0] = CLOCK_LENGTH_1
+  gtlSendsStack[0]    = REC_SENDS_KEYBOARD
+  instrFxStack[0]     = AUM_KEYBOARD_FX_3
+  recModeStack[0]     = REC_MODE_RECORD_OVERDUB
 
-  groupStack[1]       = GROUP_M
-  loopStack[1]        = LOOP_2
-  clockLengthStack[1] = CLOCK_LENGTH_2
-  gtlSendsStack[1]    = 2
-  instrFxStack[1]     = 1
+  // Verse 1
+  groupStack[1]       = GROUP_1
+  loopStack[1]        = LOOP_1
+  clockLengthStack[1] = CLOCK_LENGTH_8
+  gtlSendsStack[1]    = REC_SENDS_GUITAR
+  instrFxStack[1]     = AUM_GUITAR_FX_3
   recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
-  groupStack[2]       = GROUP_3
-  loopStack[2]        = LOOP_1
+  // Verse 1 (repeat)
+  groupStack[2]       = GROUP_1
+  loopStack[2]        = LOOP_2
   clockLengthStack[2] = CLOCK_LENGTH_8
-  gtlSendsStack[2]    = 2
-  instrFxStack[2]     = 1
+  gtlSendsStack[2]    = REC_SENDS_MIC_AND_KEYBOARD
+  instrFxStack[2]     = AUM_KEYBOARD_FX_5
   recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
-  groupStack[3]       = GROUP_3
-  loopStack[3]        = LOOP_2
-  clockLengthStack[3] = CLOCK_LENGTH_2
-  gtlSendsStack[3]    = 2
-  instrFxStack[3]     = 1
-  recModeStack[3]     = REC_MODE_RECORD_SELECT_NEXT
+  // Go manually to chorus!
 
-  stackSize = 4
+  // Verse 2
+  groupStack[3]       = GROUP_2
+  loopStack[3]        = LOOP_1
+  clockLengthStack[3] = CLOCK_LENGTH_10
+  gtlSendsStack[3]    = REC_SENDS_MIC_AND_GUITAR
+  instrFxStack[3]     = AUM_GUITAR_FX_2
+  recModeStack[3]     = REC_MODE_RECORD_OVERDUB
+
+  // Verse 2 (repeat)
+  groupStack[4]       = GROUP_2
+  loopStack[4]        = LOOP_2
+  clockLengthStack[4] = CLOCK_LENGTH_10
+  gtlSendsStack[4]    = REC_SENDS_MIC_AND_GUITAR
+  instrFxStack[4]     = AUM_GUITAR_FX_2
+  recModeStack[4]     = REC_MODE_RECORD_OVERDUB
+
+  // Bridge
+  groupStack[5]       = GROUP_3
+  loopStack[5]        = LOOP_1
+  clockLengthStack[5] = CLOCK_LENGTH_8
+  gtlSendsStack[5]    = REC_SENDS_MIC_AND_KEYBOARD
+  instrFxStack[5]     = AUM_KEYBOARD_FX_5
+  recModeStack[5]     = REC_MODE_RECORD_OVERDUB
+
+  // Bridge (repeat)
+  groupStack[6]       = GROUP_3
+  loopStack[6]        = LOOP_2
+  clockLengthStack[6] = CLOCK_LENGTH_8
+  gtlSendsStack[6]    = REC_SENDS_MIC_AND_KEYBOARD
+  instrFxStack[6]     = AUM_KEYBOARD_FX_5
+  recModeStack[6]     = REC_MODE_RECORD_OVERDUB
+
+  // Go manually to verse 1
+
+  // Go manually to chorus!
+
+  stackSize = 8
 @End
 
 @ResetGtlSession
@@ -416,19 +480,19 @@
     clockLengthStack[stackSize] = lastSelectedClockLength
   endif
 
-//  if lastSelectedRecSends = UNDEFINED
-//    configPartMissing = YES
-//    Log {No GTL sends selected yet!}
-//  else
-//    gtlSendsStack[stackSize] = lastSelectedRecSends
-//  endif
-//
-//  if lastSelectedInstrFx = UNDEFINED
-//    configPartMissing = YES
-//    Log {No instr fx selected yet!}
-//  else
-//    instrFxStack[stackSize] = lastSelectedInstrFx
-//  endif
+  if lastSelectedRecSends = UNDEFINED
+    configPartMissing = YES
+    Log {No GTL sends selected yet!}
+  else
+    gtlSendsStack[stackSize] = lastSelectedRecSends
+  endif
+
+  if lastSelectedInstrFx = UNDEFINED
+    configPartMissing = YES
+    Log {No instr fx selected yet!}
+  else
+    instrFxStack[stackSize] = lastSelectedInstrFx
+  endif
 
   if lastSelectedRecMode = UNDEFINED
     configPartMissing = YES
@@ -441,7 +505,7 @@
     currentStep = FIRST_STEP
     Inc stackSize
 
-    Log {Hooray! Cycle added! :-)}
+    Log {Hooray! Cycle added! Loop: }, lastSelectedLoop, {, group: }, lastSelectedGroup, {, clock length: }, lastSelectedClockLength, {, record sends: }, lastSelectedRecSends, {, instrument FX: }, lastSelectedInstrFx, {, recording mode: }, lastSelectedRecMode, {! Another one?}
   endif
 @End
 
@@ -456,8 +520,8 @@
     Call @ArmGroup // Needs to be before @ArmLoop!
     Call @ArmLoop
     Call @ArmClockLength
-//    Call @ArmRecSends
-//    Call @ArmInstrFx
+    Call @ArmRecSends
+    Call @ArmInstrFx
     Call @ArmRecMode
 
     Inc lastActivatedStackId
@@ -505,18 +569,22 @@
 @ArmClockLength
   newClockLength = clockLengthStack[lastActivatedStackId]
   difference = newClockLength - currentClockLength
+  Log {Difference: }, difference
 
-  if difference >= 0
+  if difference > 0
     midiToSend = GTL_INCREASE_CLOCK
     timesToSend = difference
   elseif difference < 0
     midiToSend = GTL_DECREASE_CLOCK
     timesToSend = difference * -1
+  else
+    timesToSend = 0
   Endif
 
   Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
 
   for i = 1 to timesToSend
+    Log {Asdf}
     Call @SendMidiNoteOnOff
   endfor
 
@@ -525,10 +593,61 @@
 
 @ArmRecSends
   newRecSends = groupStack[lastActivatedStackId]
+
+  if newRecSends = REC_SENDS_GUITAR
+    midiToSend = AUM_SEND_GUITAR
+  elseif newRecSends = REC_SENDS_MIC
+    midiToSend = AUM_SEND_MIC
+  elseif newRecSends = REC_SENDS_MIC_AND_GUITAR
+    midiToSend = AUM_SEND_MIC_AND_GUITAR
+  elseif newRecSends = REC_SENDS_KEYBOARD
+    midiToSend = AUM_SEND_KEYBOARD
+  elseif newRecSends = REC_SENDS_MIC_AND_KEYBOARD
+    midiToSend = AUM_SEND_MIC_AND_KEYBOARD
+  endif
+
+  Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
+  Call @SendMidiNoteOnOff
 @End
 
 @ArmInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
+
+  if newRecSends = REC_SENDS_GUITAR or newRecSends = REC_SENDS_MIC_AND_GUITAR
+    if newInstrFx = INSTR_FX_1
+      midiToSend = AUM_GUITAR_FX_1
+    elseif newInstrFx = INSTR_FX_2
+      midiToSend = AUM_GUITAR_FX_2
+    elseif newInstrFx = INSTR_FX_3
+      midiToSend = AUM_GUITAR_FX_3
+    elseif newInstrFx = INSTR_FX_4
+      midiToSend = AUM_GUITAR_FX_4
+    elseif newInstrFx = INSTR_FX_5
+      midiToSend = AUM_GUITAR_FX_5
+    elseif newInstrFx = INSTR_FX_6
+      midiToSend = AUM_GUITAR_FX_6
+    endif
+
+    Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+  elseif newRecSends = REC_SENDS_KEYBOARD or newRecSends = REC_SENDS_MIC_AND_KEYBOARD
+    if newInstrFx = INSTR_FX_1
+      midiToSend = AUM_KEYBOARD_FX_1
+    elseif newInstrFx = INSTR_FX_2
+      midiToSend = AUM_KEYBOARD_FX_2
+    elseif newInstrFx = INSTR_FX_3
+      midiToSend = AUM_KEYBOARD_FX_3
+    elseif newInstrFx = INSTR_FX_4
+      midiToSend = AUM_KEYBOARD_FX_4
+    elseif newInstrFx = INSTR_FX_5
+      midiToSend = AUM_KEYBOARD_FX_5
+    elseif newInstrFx = INSTR_FX_6
+      midiToSend = AUM_KEYBOARD_FX_6
+    endif
+
+    Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+  endif
+
+  Call @SendMidiNoteOnOff
 @End
 
 @ArmRecMode
@@ -544,5 +663,5 @@
 
   Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
-  // Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOff
 @End
