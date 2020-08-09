@@ -160,6 +160,9 @@
   midiToSend = UNDEFINED
   midiDelay = 0
 
+  guitarInstrActive = NO
+  keyboardInstrActive = NO
+
   stackSize = 0
   lastActivatedStackId = 0 // TODO: Shouldn't this be UNDEFINED?
   currentStep = FIRST_STEP
@@ -268,8 +271,6 @@
 @End
 
 @AnnounceMidi
-  Log {Announcing MIDI now: }, midiToSend
-
   if midiToSend < 34
     channel = FB_CHANNEL_0_TO_33
   else
@@ -277,7 +278,7 @@
   endif
 
   SendMidiNoteOn  channel, midiToSend, 100, midiDelay
-  SendMidiNoteOff channel, midiToSend, 0, midiDelay + 3000 // Chameleon needs a delay between on and off, otherwise it doesn't trigger. To make sure the samples are played all through, we use quite a long delay.
+  SendMidiNoteOff channel, midiToSend, 0, midiDelay + 3000 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger. To make sure the samples are played all through, we use quite a long delay.
 @End
 
 @IlluminateAllbuttons
@@ -526,7 +527,12 @@
     midiToSend = AUM_SEND_QUESTION
     Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_INSTR_FX
-    midiToSend = GTL_GUITAR_FX_QUESTION
+    if guitarInstrActive
+      midiToSend = GTL_GUITAR_FX_QUESTION
+    elseif keyboardInstrActive
+      midiToSend = GTL_KEYBOARD_FX_QUESTION
+    endif
+
     Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_REC_MODE
     midiToSend = GTL_RECORD_QUESTION
@@ -705,7 +711,6 @@
   Call @SendMidiNoteOnOff
 @End
 
-// TODO: Divide into @ArmKeyboardFX and @ArmGuitarFx?
 @ArmInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
   Call @MapInstrFxToMidi
@@ -766,51 +771,67 @@
 
 @MapRecSendsToMidi
   if newRecSends = REC_SENDS_GUITAR
+    guitarInstrActive = YES
+    keyboardInstrActive = NO
     midiToSend = AUM_SEND_GUITAR
   elseif newRecSends = REC_SENDS_MIC
+    guitarInstrActive = NO
+    keyboardInstrActive = NO
     midiToSend = AUM_SEND_MIC
   elseif newRecSends = REC_SENDS_MIC_AND_GUITAR
+    guitarInstrActive = YES
+    keyboardInstrActive = NO
     midiToSend = AUM_SEND_MIC_AND_GUITAR
   elseif newRecSends = REC_SENDS_KEYBOARD
+    guitarInstrActive = NO
+    keyboardInstrActive = YES
     midiToSend = AUM_SEND_KEYBOARD
   elseif newRecSends = REC_SENDS_MIC_AND_KEYBOARD
+    guitarInstrActive = NO
+    keyboardInstrActive = YES
     midiToSend = AUM_SEND_MIC_AND_KEYBOARD
   endif
 @End
 
 @MapInstrFxToMidi
-  if newRecSends = REC_SENDS_GUITAR or newRecSends = REC_SENDS_MIC_AND_GUITAR
-    if newInstrFx = INSTR_FX_1
-      midiToSend = AUM_GUITAR_FX_1
-    elseif newInstrFx = INSTR_FX_2
-      midiToSend = AUM_GUITAR_FX_2
-    elseif newInstrFx = INSTR_FX_3
-      midiToSend = AUM_GUITAR_FX_3
-    elseif newInstrFx = INSTR_FX_4
-      midiToSend = AUM_GUITAR_FX_4
-    elseif newInstrFx = INSTR_FX_5
-      midiToSend = AUM_GUITAR_FX_5
-    elseif newInstrFx = INSTR_FX_6
-      midiToSend = AUM_GUITAR_FX_6
-    endif
-
+  if guitarInstrActive
+    Call @MapGuitarFxToMidi
     // Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
-  elseif newRecSends = REC_SENDS_KEYBOARD or newRecSends = REC_SENDS_MIC_AND_KEYBOARD
-    if newInstrFx = INSTR_FX_1
-      midiToSend = AUM_KEYBOARD_FX_1
-    elseif newInstrFx = INSTR_FX_2
-      midiToSend = AUM_KEYBOARD_FX_2
-    elseif newInstrFx = INSTR_FX_3
-      midiToSend = AUM_KEYBOARD_FX_3
-    elseif newInstrFx = INSTR_FX_4
-      midiToSend = AUM_KEYBOARD_FX_4
-    elseif newInstrFx = INSTR_FX_5
-      midiToSend = AUM_KEYBOARD_FX_5
-    elseif newInstrFx = INSTR_FX_6
-      midiToSend = AUM_KEYBOARD_FX_6
-    endif
-
+  elseif keyboardInstrActive
+    Call @MapKeyboardFxToMidi
     // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+  endif
+@End
+
+@MapGuitarFxToMidi
+  if newInstrFx = INSTR_FX_1
+    midiToSend = AUM_GUITAR_FX_1
+  elseif newInstrFx = INSTR_FX_2
+    midiToSend = AUM_GUITAR_FX_2
+  elseif newInstrFx = INSTR_FX_3
+    midiToSend = AUM_GUITAR_FX_3
+  elseif newInstrFx = INSTR_FX_4
+    midiToSend = AUM_GUITAR_FX_4
+  elseif newInstrFx = INSTR_FX_5
+    midiToSend = AUM_GUITAR_FX_5
+  elseif newInstrFx = INSTR_FX_6
+    midiToSend = AUM_GUITAR_FX_6
+  endif
+@End
+
+@MapKeyboardFxToMidi
+  if newInstrFx = INSTR_FX_1
+    midiToSend = AUM_KEYBOARD_FX_1
+  elseif newInstrFx = INSTR_FX_2
+    midiToSend = AUM_KEYBOARD_FX_2
+  elseif newInstrFx = INSTR_FX_3
+    midiToSend = AUM_KEYBOARD_FX_3
+  elseif newInstrFx = INSTR_FX_4
+    midiToSend = AUM_KEYBOARD_FX_4
+  elseif newInstrFx = INSTR_FX_5
+    midiToSend = AUM_KEYBOARD_FX_5
+  elseif newInstrFx = INSTR_FX_6
+    midiToSend = AUM_KEYBOARD_FX_6
   endif
 @End
 
