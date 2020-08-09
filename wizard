@@ -77,10 +77,12 @@
   FIRST_STEP = STEP_LOOP
   LAST_STEP  = STEP_REC_MODE
 
-  GTL_CHANNEL = 0 // Will be displayed as channel 1 in GTL!
-  BB_CHANNEL  = 0
+  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 1 (instead of 0).
+  BB_CHANNEL  = 0 // BlueBoard (listens only to channel 0)
+  GTL_CHANNEL = 1 // Group The Loop
+  FB_CHANNEL  = 2 // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
 
-  ON_OFF_DELAY = 0
+  ON_OFF_DELAY = 50 // While GTL doesn't seem to care, Chameleon needs something >0!
 @End
 
 // These are the codes that are sent as MIDI to GTL.
@@ -235,6 +237,12 @@
 @SendMidiNoteOnOff
   SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
   SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+@End
+
+@AnnounceMidi
+  Log {Announcing MIDI now: }, midiToSend
+  SendMidiNoteOn  FB_CHANNEL, midiToSend, 100
+  SendMidiNoteOff FB_CHANNEL, midiToSend, 0, ON_OFF_DELAY
 @End
 
 @IlluminateAllbuttons
@@ -529,9 +537,22 @@
   endif
 @End
 
+@AnnounceSelectedLoop
+  newLoop = lastSelectedLoop
+  Call @MapLoopToMidi
+
+  Call @AnnounceMidi
+@End
+
 @ArmLoop
   newLoop = loopStack[lastActivatedStackId]
+  Call @MapLoopToMidi
 
+  Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+@MapLoopToMidi
   if newLoop = LOOP_1
     midiToSend = GTL_SELECT_LOOP_1
   elseif newLoop = LOOP_2
@@ -541,9 +562,6 @@
   elseif newLoop = LOOP_4
     midiToSend = GTL_SELECT_LOOP_4
   endif
-
-  Log {Selecting loop by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
 @End
 
 @ArmGroup
