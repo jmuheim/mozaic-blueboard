@@ -1,0 +1,11 @@
+@OnLoad
+  SetShortName {Channel Modifier}
+@End
+
+@OnMidiInput
+  channelToSend = 4
+
+  SendMidiNoteOn channelToSend, MIDINote, MIDIVelocity
+
+  Log {Received channel: }, MIDIChannel, { sent channel: }, channelToSend, { note: }, MIDINote, { velocity: }, MIDIVelocity
+@End
