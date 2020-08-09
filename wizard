@@ -9,6 +9,10 @@
 
   Call @ResetGtlSession
   Call @IlluminateAllbuttons
+
+  midiToSend = AUM_BEGINNING_NEW_CYCLE
+  Call @AnnounceMidi
+
   Call @AskForInput
 
   // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
@@ -80,7 +84,10 @@
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 1 (instead of 0).
   BB_CHANNEL  = 0 // BlueBoard (listens only to channel 0)
   GTL_CHANNEL = 1 // Group The Loop
-  FB_CHANNEL  = 2 // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
+
+  // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
+  FB_CHANNEL_0_TO_33  = 2
+  FB_CHANNEL_34_TO_XX = 3
 
   ON_OFF_DELAY = 50 // While GTL doesn't seem to care, Chameleon needs something >0!
 @End
@@ -136,6 +143,9 @@
   AUM_KEYBOARD_FX_4 = 30
   AUM_KEYBOARD_FX_5 = 31
   AUM_KEYBOARD_FX_6 = 32
+
+  AUM_BEGINNING_NEW_CYCLE = 39
+  AUM_CYCLE_ADDED_AGAIN = 40
 @End
 
 @InitVariables
@@ -241,8 +251,16 @@
 
 @AnnounceMidi
   Log {Announcing MIDI now: }, midiToSend
-  SendMidiNoteOn  FB_CHANNEL, midiToSend, 100
-  SendMidiNoteOff FB_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+
+  // Chameleon only supports 34 audio files per preset, so we have to load more than one, each with its own channel.
+  if midiToSend < 34
+    channel = FB_CHANNEL_0_TO_33
+  else
+    channel = FB_CHANNEL_34_TO_XX
+  endif
+
+  SendMidiNoteOn  channel, midiToSend, 100
+  SendMidiNoteOff channel, midiToSend, 0, ON_OFF_DELAY
 @End
 
 @IlluminateAllbuttons
@@ -394,6 +412,10 @@
       wrongInputDetected = NO
     endif
   endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedLoop
+  endif
 @End
 
 @MapUserInputToClockLength
@@ -446,13 +468,16 @@
       wrongInputDetected = NO
     endif
   endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedGroup
+  endif
 @End
 
 @AskForInput
   if currentStep = STEP_LOOP
     Log {Which loop?}
   elseif currentStep = STEP_GROUP
-    Call @AnnounceSelectedLoop
     Log {Which group?}
   elseif currentStep = STEP_CLOCK_LENGTH
     Log {Which clock length?}
@@ -544,6 +569,13 @@
   Call @AnnounceMidi
 @End
 
+@AnnounceSelectedGroup
+  newGroup = lastSelectedGroup
+  Call @MapGroupToMidi
+
+  Call @AnnounceMidi
+@End
+
 @ArmLoop
   newLoop = loopStack[lastActivatedStackId]
   Call @MapLoopToMidi
@@ -566,7 +598,13 @@
 
 @ArmGroup
   newGroup = groupStack[lastActivatedStackId]
+  Call @MapGroupToMidi
 
+  Log {Selecting group by sending MIDI to GTL: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+@MapGroupToMidi
   if newGroup = GROUP_M
     midiToSend = GTL_SELECT_GROUP_M
   elseif newGroup = GROUP_1
@@ -580,9 +618,6 @@
   elseif newGroup = GROUP_5
     midiToSend = GTL_SELECT_GROUP_5
   endif
-
-  Log {Selecting group by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
 @End
 
 @ArmClockLength
