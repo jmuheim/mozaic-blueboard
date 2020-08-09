@@ -629,7 +629,20 @@
 
 @AnnounceSelectedClockLength
   newClockLength = lastSelectedClockLength
-  Call @MapClockLengthToMidi
+
+  if newClockLength = CLOCK_LENGTH_2
+    midiToSend = GTL_SET_CLOCK_2
+  elseif newClockLength = CLOCK_LENGTH_4
+    midiToSend = GTL_SET_CLOCK_4
+  elseif newClockLength = CLOCK_LENGTH_8
+    midiToSend = GTL_SET_CLOCK_8
+  elseif newClockLength = CLOCK_LENGTH_10
+    midiToSend = GTL_SET_CLOCK_10
+  elseif newClockLength = CLOCK_LENGTH_12
+    midiToSend = GTL_SET_CLOCK_12
+  elseif newClockLength = CLOCK_LENGTH_16
+    midiToSend = GTL_SET_CLOCK_16
+  endif
 
   Call @AnnounceMidi
 @End
@@ -685,7 +698,7 @@
 @End
 
 @ArmRecSends
-  newRecSends = recSendsStack[lastActivatedStackId]
+  newRecSends = gtlSendsStack[lastActivatedStackId]
   Call @MapRecSendsToMidi
 
   // Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
