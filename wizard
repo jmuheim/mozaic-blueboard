@@ -16,7 +16,7 @@
   Call @AskForInput
 
   // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
-  Call @InitTestData
+  // Call @InitTestData
 @End
 
 @InitConstants
@@ -603,9 +603,15 @@
   if stackSize = 0
     midiToSend = AUM_NO_CYCLE_PROVIDED
     Call @AnnounceMidi
+
+    midiDelay = 3000
+    Call @AskForInput
   elseif lastActivatedStackId = stackSize
     midiToSend = AUM_NO_CYCLE_LEFT
     Call @AnnounceMidi
+
+    midiDelay = 2000
+    Call @AskForInput
   else
     // Log {Arming cycle #}, lastActivatedStackId
 
