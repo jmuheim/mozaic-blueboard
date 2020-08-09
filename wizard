@@ -109,6 +109,7 @@
   GTL_SELECT_GROUP_4 = 4
   GTL_SELECT_GROUP_5 = 5
 
+  GTL_SET_CLOCK_QUESTION = 44
   GTL_DECREASE_CLOCK = 10
   GTL_INCREASE_CLOCK = 11
   GTL_SET_CLOCK_2  = 33
@@ -118,6 +119,7 @@
   GTL_SET_CLOCK_12 = 37
   GTL_SET_CLOCK_16 = 38
 
+  GTL_RECORD_QUESTION = 45
   GTL_RECORD_OVERDUB     = 12
   GTL_RECORD_MUTE        = 13
   GTL_RECORD_SELECT_NEXT = 14
@@ -126,12 +128,14 @@
 @End
 
 @InitAumMidiCodes
+  AUM_SEND_QUESTION = 46
   AUM_SEND_GUITAR           = 16
   AUM_SEND_MIC              = 17
   AUM_SEND_MIC_AND_GUITAR   = 18
   AUM_SEND_KEYBOARD         = 19
   AUM_SEND_MIC_AND_KEYBOARD = 20
 
+  GTL_GUITAR_FX_QUESTION = 47
   AUM_GUITAR_FX_1 = 21
   AUM_GUITAR_FX_2 = 22
   AUM_GUITAR_FX_3 = 23
@@ -139,6 +143,7 @@
   AUM_GUITAR_FX_5 = 25
   AUM_GUITAR_FX_6 = 26
 
+  GTL_KEYBOARD_FX_QUESTION = 48
   AUM_KEYBOARD_FX_1 = 27
   AUM_KEYBOARD_FX_2 = 28
   AUM_KEYBOARD_FX_3 = 29
@@ -251,6 +256,15 @@
 @SendMidiNoteOnOff
   SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
   SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, 0
+@End
+
+@AnnounceMidiWithDelay
+    if midiDelay = 0
+      midiDelay = 1000
+    endif
+
+    Call @AnnounceMidi
+    midiDelay = 0
 @End
 
 @AnnounceMidi
@@ -497,27 +511,26 @@
   if currentStep = STEP_LOOP
     midiToSend = GTL_SELECT_LOOP_QUESTION
 
-    if lastActivatedStackId
-      midiDelay = 1000 // Wait for "Welcome" message
-    else
+    if stackSize > 0
       midiDelay = 3000
     endif
 
-    Call @AnnounceMidi
-    midiDelay = 0
+    Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_GROUP
     midiToSend = GTL_SELECT_GROUP_QUESTION
-    midiDelay = 1000
-    Call @AnnounceMidi
-    midiDelay = 0
+    Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_CLOCK_LENGTH
-    Log {Which clock length?}
+    midiToSend = GTL_SET_CLOCK_QUESTION
+    Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_REC_SENDS
-    Log {Which GTL sends?}
+    midiToSend = AUM_SEND_QUESTION
+    Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_INSTR_FX
-    Log {Which instr FX?}
+    midiToSend = GTL_GUITAR_FX_QUESTION
+    Call @AnnounceMidiWithDelay
   elseif currentStep = STEP_REC_MODE
-    Log {Which record mode?}
+    midiToSend = GTL_RECORD_QUESTION
+    Call @AnnounceMidiWithDelay
   endif
 @End
 
@@ -572,8 +585,7 @@
 
     midiToSend = AUM_CYCLE_ADDED_AGAIN
     midiDelay = 1500
-    Call @AnnounceMidi
-    midiDelay = 0
+    Call @AnnounceMidiWithDelay
 
     Log {Hooray! Cycle added! Loop: }, lastSelectedLoop, {, group: }, lastSelectedGroup, {, clock length: }, lastSelectedClockLength, {, record sends: }, lastSelectedRecSends, {, instrument FX: }, lastSelectedInstrFx, {, recording mode: }, lastSelectedRecMode, {! Another one?}
   endif
