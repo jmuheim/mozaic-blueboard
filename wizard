@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {GTL Wizard}
+  SetShortName {GTLWizard}
 
   Call @InitConstants
   Call @InitVariables
