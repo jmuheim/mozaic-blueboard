@@ -90,6 +90,12 @@
   // So we have to load more than one, each with its own channel.
   FB_CHANNEL_0_TO_33  = 2
   FB_CHANNEL_34_TO_XX = 3
+
+  // 
+  GUITAR_CHANNEL = 4
+
+  // 
+  KEYBOARD_CHANNEL = 5
 @End
 
 // These are the codes that are sent as MIDI to GTL.
@@ -806,10 +812,10 @@
 @MapInstrFxToMidi
   if guitarInstrActive
     Call @MapGuitarFxToMidi
-    // Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+    Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
   elseif keyboardInstrActive
     Call @MapKeyboardFxToMidi
-    // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+    Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
   endif
 @End
 
