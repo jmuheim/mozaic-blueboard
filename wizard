@@ -16,7 +16,7 @@
   Call @AskForInput
 
   // Uncomment this to run through some settings quickly, so you can check whether they are applied correctly
-  // Call @InitTestData
+  Call @InitTestData
 @End
 
 @InitConstants
@@ -84,18 +84,13 @@
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 1 (instead of 0).
   BB_CHANNEL  = 0 // BlueBoard (listens only to channel 0)
   GTL_CHANNEL = 1 // Group The Loop
+  AUM_CHANNEL = 4 // AUM
 
   // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
   // Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
   // So we have to load more than one, each with its own channel.
   FB_CHANNEL_0_TO_33  = 2
   FB_CHANNEL_34_TO_XX = 3
-
-  // 
-  GUITAR_CHANNEL = 4
-
-  // 
-  KEYBOARD_CHANNEL = 5
 @End
 
 // These are the codes that are sent as MIDI to GTL.
@@ -197,8 +192,8 @@
   groupStack[0]       = GROUP_M
   loopStack[0]        = LOOP_1
   clockLengthStack[0] = CLOCK_LENGTH_1
-  gtlSendsStack[0]    = REC_SENDS_KEYBOARD
-  instrFxStack[0]     = AUM_KEYBOARD_FX_3
+  gtlSendsStack[0]    = REC_SENDS_GUITAR
+  instrFxStack[0]     = INSTR_FX_3
   recModeStack[0]     = REC_MODE_RECORD_OVERDUB
 
   // Verse 1
@@ -206,7 +201,7 @@
   loopStack[1]        = LOOP_1
   clockLengthStack[1] = CLOCK_LENGTH_8
   gtlSendsStack[1]    = REC_SENDS_GUITAR
-  instrFxStack[1]     = AUM_GUITAR_FX_3
+  instrFxStack[1]     = INSTR_FX_1
   recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
   // Verse 1 (repeat)
@@ -214,7 +209,7 @@
   loopStack[2]        = LOOP_2
   clockLengthStack[2] = CLOCK_LENGTH_8
   gtlSendsStack[2]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[2]     = AUM_KEYBOARD_FX_5
+  instrFxStack[2]     = INSTR_FX_4
   recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
   // Go manually to chorus!
@@ -223,8 +218,8 @@
   groupStack[3]       = GROUP_2
   loopStack[3]        = LOOP_1
   clockLengthStack[3] = CLOCK_LENGTH_10
-  gtlSendsStack[3]    = REC_SENDS_MIC_AND_GUITAR
-  instrFxStack[3]     = AUM_GUITAR_FX_2
+  gtlSendsStack[3]    = REC_SENDS_KEYBOARD
+  instrFxStack[3]     = INSTR_FX_2
   recModeStack[3]     = REC_MODE_RECORD_OVERDUB
 
   // Verse 2 (repeat)
@@ -261,12 +256,17 @@
 @ResetGtlSession
   midiToSend = GTL_RESET_SESSION
   Log {Resetting session by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToGtl
 @End
 
-@SendMidiNoteOnOff
+@SendMidiNoteOnOffToGtl
   SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
   SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, 0
+@End
+
+@SendMidiNoteOnOffToAum
+  SendMidiNoteOn  AUM_CHANNEL, midiToSend, 100
+  SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
 @End
 
 @AnnounceMidiWithDelay
@@ -695,7 +695,7 @@
   Call @MapLoopToMidi
 
   // Log {Selecting loop by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ArmGroup
@@ -703,7 +703,7 @@
   Call @MapGroupToMidi
 
   // Log {Selecting group by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ArmClockLength
@@ -713,7 +713,7 @@
   // Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
 
   for i = 1 to timesToSend
-    Call @SendMidiNoteOnOff
+    Call @SendMidiNoteOnOffToGtl
   endfor
 
   currentClockLength = newClockLength
@@ -724,14 +724,14 @@
   Call @MapRecSendsToMidi
 
   // Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ArmInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
   Call @MapInstrFxToMidi
 
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToAum
 @End
 
 @ArmRecMode
@@ -740,7 +740,7 @@
 
   // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
-  Call @SendMidiNoteOnOff
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @MapLoopToMidi
