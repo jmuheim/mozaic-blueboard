@@ -441,10 +441,11 @@
 @End
 
 @AskForInput
-  if currentStep = STEP_GROUP
-    Log {Which group?}
-  elseif currentStep = STEP_LOOP
+  if currentStep = STEP_LOOP
     Log {Which loop?}
+  elseif currentStep = STEP_GROUP
+    Call @AnnounceSelectedLoop
+    Log {Which group?}
   elseif currentStep = STEP_CLOCK_LENGTH
     Log {Which clock length?}
   elseif currentStep = STEP_REC_SENDS
