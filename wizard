@@ -154,6 +154,8 @@
   AUM_WELCOME = 39
   AUM_CYCLE_ARMED = 40
   AUM_CYCLE_ADDED_AGAIN = 41
+  AUM_NO_CYCLE_PROVIDED = 50
+  AUM_NO_CYCLE_LEFT = 49
 @End
 
 @InitVariables
@@ -599,11 +601,13 @@
 
 @ArmCycle
   if stackSize = 0
-    Log {No cycles provided yet! Please run through at least one configuration cycle.}
+    midiToSend = AUM_NO_CYCLE_PROVIDED
+    Call @AnnounceMidi
   elseif lastActivatedStackId = stackSize
-    Log {No cycle left. You can add new cycles whenever you like.}
+    midiToSend = AUM_NO_CYCLE_LEFT
+    Call @AnnounceMidi
   else
-    Log {Arming cycle #}, lastActivatedStackId
+    // Log {Arming cycle #}, lastActivatedStackId
 
     Call @ArmGroup // Needs to be before @ArmLoop!
     Call @ArmLoop
