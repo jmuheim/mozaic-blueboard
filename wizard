@@ -10,7 +10,7 @@
   Call @ResetGtlSession
   Call @IlluminateAllbuttons
 
-  midiToSend = AUM_BEGINNING_NEW_CYCLE
+  midiToSend = AUM_WELCOME
   Call @AnnounceMidi
 
   Call @AskForInput
@@ -86,26 +86,28 @@
   GTL_CHANNEL = 1 // Group The Loop
 
   // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
+  // Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+  // So we have to load more than one, each with its own channel.
   FB_CHANNEL_0_TO_33  = 2
   FB_CHANNEL_34_TO_XX = 3
-
-  ON_OFF_DELAY = 50 // While GTL doesn't seem to care, Chameleon needs something >0!
 @End
 
 // These are the codes that are sent as MIDI to GTL.
 // GTL needs to have respective MIDI bindings assigned to these codes!
 @InitGtlMidiCodes
+  GTL_SELECT_LOOP_QUESTION = 42
+  GTL_SELECT_LOOP_1 = 6
+  GTL_SELECT_LOOP_2 = 7
+  GTL_SELECT_LOOP_3 = 8
+  GTL_SELECT_LOOP_4 = 9
+
+  GTL_SELECT_GROUP_QUESTION = 43
   GTL_SELECT_GROUP_M = 0
   GTL_SELECT_GROUP_1 = 1
   GTL_SELECT_GROUP_2 = 2
   GTL_SELECT_GROUP_3 = 3
   GTL_SELECT_GROUP_4 = 4
   GTL_SELECT_GROUP_5 = 5
-
-  GTL_SELECT_LOOP_1 = 6
-  GTL_SELECT_LOOP_2 = 7
-  GTL_SELECT_LOOP_3 = 8
-  GTL_SELECT_LOOP_4 = 9
 
   GTL_DECREASE_CLOCK = 10
   GTL_INCREASE_CLOCK = 11
@@ -144,13 +146,14 @@
   AUM_KEYBOARD_FX_5 = 31
   AUM_KEYBOARD_FX_6 = 32
 
-  AUM_BEGINNING_NEW_CYCLE = 39
+  AUM_WELCOME = 39
   AUM_CYCLE_ARMED = 40
   AUM_CYCLE_ADDED_AGAIN = 41
 @End
 
 @InitVariables
   midiToSend = UNDEFINED
+  midiDelay = 0
 
   stackSize = 0
   lastActivatedStackId = 0 // TODO: Shouldn't this be UNDEFINED?
@@ -247,21 +250,20 @@
 
 @SendMidiNoteOnOff
   SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, ON_OFF_DELAY
+  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, 0
 @End
 
 @AnnounceMidi
   Log {Announcing MIDI now: }, midiToSend
 
-  // Chameleon only supports 34 audio files per preset, so we have to load more than one, each with its own channel.
   if midiToSend < 34
     channel = FB_CHANNEL_0_TO_33
   else
     channel = FB_CHANNEL_34_TO_XX
   endif
 
-  SendMidiNoteOn  channel, midiToSend, 100
-  SendMidiNoteOff channel, midiToSend, 0, ON_OFF_DELAY
+  SendMidiNoteOn  channel, midiToSend, 100, midiDelay
+  SendMidiNoteOff channel, midiToSend, 0, midiDelay + 3000 // Chameleon needs a delay between on and off, otherwise it doesn't trigger. To make sure the samples are played all through, we use quite a long delay.
 @End
 
 @IlluminateAllbuttons
@@ -350,6 +352,10 @@
       wrongInputDetected = NO
     endif
   endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedRecSends
+  endif
 @End
 
 @MapUserInputToRecMode
@@ -366,6 +372,10 @@
     endif
   elseif tapType = TAP_1_BAR
     // TODO: Advanced stuff!
+  endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedRecMode
   endif
 @End
 
@@ -392,6 +402,10 @@
       lastSelectedInstrFx = INSTR_FX_6
       wrongInputDetected = NO
     endif
+  endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedInstrFx
   endif
 @End
 
@@ -443,6 +457,10 @@
       wrongInputDetected = NO
     endif
   endif
+
+  if wrongInputDetected = NO
+    Call @AnnounceSelectedClockLength
+  endif
 @End
 
 @MapUserInputToGroup
@@ -477,9 +495,21 @@
 
 @AskForInput
   if currentStep = STEP_LOOP
-    Log {Which loop?}
+    midiToSend = GTL_SELECT_LOOP_QUESTION
+
+    if lastActivatedStackId
+      midiDelay = 1000 // Wait for "Welcome" message
+    else
+      midiDelay = 3000
+    endif
+
+    Call @AnnounceMidi
+    midiDelay = 0
   elseif currentStep = STEP_GROUP
-    Log {Which group?}
+    midiToSend = GTL_SELECT_GROUP_QUESTION
+    midiDelay = 1000
+    Call @AnnounceMidi
+    midiDelay = 0
   elseif currentStep = STEP_CLOCK_LENGTH
     Log {Which clock length?}
   elseif currentStep = STEP_REC_SENDS
@@ -541,7 +571,9 @@
     Inc stackSize
 
     midiToSend = AUM_CYCLE_ADDED_AGAIN
+    midiDelay = 1500
     Call @AnnounceMidi
+    midiDelay = 0
 
     Log {Hooray! Cycle added! Loop: }, lastSelectedLoop, {, group: }, lastSelectedGroup, {, clock length: }, lastSelectedClockLength, {, record sends: }, lastSelectedRecSends, {, instrument FX: }, lastSelectedInstrFx, {, recording mode: }, lastSelectedRecMode, {! Another one?}
   endif
@@ -583,11 +615,85 @@
   Call @AnnounceMidi
 @End
 
+@AnnounceSelectedClockLength
+  newClockLength = lastSelectedClockLength
+  Call @MapClockLengthToMidi
+
+  Call @AnnounceMidi
+@End
+
+@AnnounceSelectedRecSends
+  newRecSends = lastSelectedRecSends
+  Call @MapRecSendsToMidi
+
+  Call @AnnounceMidi
+@End
+
+@AnnounceSelectedInstrFx
+  newInstrFx = lastSelectedInstrFx
+  Call @MapInstrFxToMidi
+
+  Call @AnnounceMidi
+@End
+
+@AnnounceSelectedRecMode
+  newRecMode = lastSelectedRecMode
+  Call @MapRecModeToMidi
+
+  Call @AnnounceMidi
+@End
+
 @ArmLoop
   newLoop = loopStack[lastActivatedStackId]
   Call @MapLoopToMidi
 
   // Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+@ArmGroup
+  newGroup = groupStack[lastActivatedStackId]
+  Call @MapGroupToMidi
+
+  // Log {Selecting group by sending MIDI to GTL: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+@ArmClockLength
+  newClockLength = clockLengthStack[lastActivatedStackId]
+  Call @MapClockLengthToMidi
+
+  // Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
+
+  for i = 1 to timesToSend
+    Call @SendMidiNoteOnOff
+  endfor
+
+  currentClockLength = newClockLength
+@End
+
+@ArmRecSends
+  newRecSends = recSendsStack[lastActivatedStackId]
+  Call @MapRecSendsToMidi
+
+  // Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
+  Call @SendMidiNoteOnOff
+@End
+
+// TODO: Divide into @ArmKeyboardFX and @ArmGuitarFx?
+@ArmInstrFx
+  newInstrFx = instrFxStack[lastActivatedStackId]
+  Call @MapInstrFxToMidi
+
+  Call @SendMidiNoteOnOff
+@End
+
+@ArmRecMode
+  newRecMode = recModeStack[lastActivatedStackId]
+  Call @MapRecModeToMidi
+
+  // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+
   Call @SendMidiNoteOnOff
 @End
 
@@ -601,14 +707,6 @@
   elseif newLoop = LOOP_4
     midiToSend = GTL_SELECT_LOOP_4
   endif
-@End
-
-@ArmGroup
-  newGroup = groupStack[lastActivatedStackId]
-  Call @MapGroupToMidi
-
-  // Log {Selecting group by sending MIDI to GTL: }, midiToSend
-  Call @SendMidiNoteOnOff
 @End
 
 @MapGroupToMidi
@@ -627,10 +725,8 @@
   endif
 @End
 
-@ArmClockLength
-  newClockLength = clockLengthStack[lastActivatedStackId]
+@MapClockLengthToMidi
   difference = newClockLength - currentClockLength
-  Log {Difference: }, difference
 
   if difference > 0
     midiToSend = GTL_INCREASE_CLOCK
@@ -641,19 +737,9 @@
   else
     timesToSend = 0
   Endif
-
-  // Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
-
-  for i = 1 to timesToSend
-    Call @SendMidiNoteOnOff
-  endfor
-
-  currentClockLength = newClockLength
 @End
 
-@ArmRecSends
-  newRecSends = groupStack[lastActivatedStackId]
-
+@MapRecSendsToMidi
   if newRecSends = REC_SENDS_GUITAR
     midiToSend = AUM_SEND_GUITAR
   elseif newRecSends = REC_SENDS_MIC
@@ -665,14 +751,9 @@
   elseif newRecSends = REC_SENDS_MIC_AND_KEYBOARD
     midiToSend = AUM_SEND_MIC_AND_KEYBOARD
   endif
-
-  Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
-  Call @SendMidiNoteOnOff
 @End
 
-@ArmInstrFx
-  newInstrFx = instrFxStack[lastActivatedStackId]
-
+@MapInstrFxToMidi
   if newRecSends = REC_SENDS_GUITAR or newRecSends = REC_SENDS_MIC_AND_GUITAR
     if newInstrFx = INSTR_FX_1
       midiToSend = AUM_GUITAR_FX_1
@@ -706,13 +787,9 @@
 
     // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
   endif
-
-  Call @SendMidiNoteOnOff
 @End
 
-@ArmRecMode
-  newRecMode = recModeStack[lastActivatedStackId]
-
+@MapRecModeToMidi
   if newRecMode = LOOP_1
     midiToSend = GTL_RECORD_OVERDUB
   elseif newRecMode = LOOP_2
@@ -720,8 +797,4 @@
   elseif newRecMode = LOOP_3
     midiToSend = GTL_RECORD_SELECT_NEXT
   endif
-
-  // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
-
-  Call @SendMidiNoteOnOff
 @End
