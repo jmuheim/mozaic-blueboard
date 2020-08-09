@@ -145,7 +145,8 @@
   AUM_KEYBOARD_FX_6 = 32
 
   AUM_BEGINNING_NEW_CYCLE = 39
-  AUM_CYCLE_ADDED_AGAIN = 40
+  AUM_CYCLE_ARMED = 40
+  AUM_CYCLE_ADDED_AGAIN = 41
 @End
 
 @InitVariables
@@ -539,6 +540,9 @@
     currentStep = FIRST_STEP
     Inc stackSize
 
+    midiToSend = AUM_CYCLE_ADDED_AGAIN
+    Call @AnnounceMidi
+
     Log {Hooray! Cycle added! Loop: }, lastSelectedLoop, {, group: }, lastSelectedGroup, {, clock length: }, lastSelectedClockLength, {, record sends: }, lastSelectedRecSends, {, instrument FX: }, lastSelectedInstrFx, {, recording mode: }, lastSelectedRecMode, {! Another one?}
   endif
 @End
@@ -557,6 +561,9 @@
     Call @ArmRecSends
     Call @ArmInstrFx
     Call @ArmRecMode
+
+    midiToSend = AUM_CYCLE_ARMED
+    Call @AnnounceMidi
 
     Inc lastActivatedStackId
   endif
@@ -580,7 +587,7 @@
   newLoop = loopStack[lastActivatedStackId]
   Call @MapLoopToMidi
 
-  Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+  // Log {Selecting loop by sending MIDI to GTL: }, midiToSend
   Call @SendMidiNoteOnOff
 @End
 
@@ -600,7 +607,7 @@
   newGroup = groupStack[lastActivatedStackId]
   Call @MapGroupToMidi
 
-  Log {Selecting group by sending MIDI to GTL: }, midiToSend
+  // Log {Selecting group by sending MIDI to GTL: }, midiToSend
   Call @SendMidiNoteOnOff
 @End
 
@@ -635,10 +642,9 @@
     timesToSend = 0
   Endif
 
-  Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
+  // Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
 
   for i = 1 to timesToSend
-    Log {Asdf}
     Call @SendMidiNoteOnOff
   endfor
 
@@ -682,7 +688,7 @@
       midiToSend = AUM_GUITAR_FX_6
     endif
 
-    Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+    // Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
   elseif newRecSends = REC_SENDS_KEYBOARD or newRecSends = REC_SENDS_MIC_AND_KEYBOARD
     if newInstrFx = INSTR_FX_1
       midiToSend = AUM_KEYBOARD_FX_1
@@ -698,7 +704,7 @@
       midiToSend = AUM_KEYBOARD_FX_6
     endif
 
-    Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+    // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
   endif
 
   Call @SendMidiNoteOnOff
@@ -715,7 +721,7 @@
     midiToSend = GTL_RECORD_SELECT_NEXT
   endif
 
-  Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+  // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
   Call @SendMidiNoteOnOff
 @End
