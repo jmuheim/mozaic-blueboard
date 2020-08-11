@@ -274,8 +274,8 @@
 @End
 
 @SendMidiNoteOnOffToAum
-  @SendMidiNoteOnToAum
-  @SendMidiNoteOffToAum
+  Call @SendMidiNoteOnToAum
+  Call @SendMidiNoteOffToAum
 @End
 
 @AnnounceMidiWithDelay
@@ -732,6 +732,7 @@
   newRecSends = gtlSendsStack[lastActivatedStackId]
   Call @MapRecSendsToMidi
 
+  // Make sure that AUM does not toggle, and that it does invert!
 
   midiToSend = AUM_SEND_GUITAR
   if guitarInstrActive
