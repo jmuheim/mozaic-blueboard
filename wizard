@@ -81,7 +81,7 @@
   FIRST_STEP = STEP_LOOP
   LAST_STEP  = STEP_REC_MODE
 
-  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 1 (instead of 0).
+  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   BB_CHANNEL  = 0 // BlueBoard (listens only to channel 0)
   GTL_CHANNEL = 1 // Group The Loop
   AUM_CHANNEL = 4 // AUM
@@ -192,7 +192,7 @@
   // Percussion
   groupStack[0]       = GROUP_M
   loopStack[0]        = LOOP_1
-  clockLengthStack[0] = CLOCK_LENGTH_1
+  clockLengthStack[0] = CLOCK_LENGTH_2
   gtlSendsStack[0]    = REC_SENDS_GUITAR
   instrFxStack[0]     = INSTR_FX_3
   recModeStack[0]     = REC_MODE_RECORD_OVERDUB
