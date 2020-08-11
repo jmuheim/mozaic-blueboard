@@ -163,6 +163,7 @@
   midiToSend = UNDEFINED
   midiDelay = 0
 
+  microphoneActive = NO
   guitarInstrActive = NO
   keyboardInstrActive = NO
 
@@ -264,9 +265,17 @@
   SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, 0
 @End
 
-@SendMidiNoteOnOffToAum
+@SendMidiNoteOnToAum
   SendMidiNoteOn  AUM_CHANNEL, midiToSend, 100
+@End
+
+@SendMidiNoteOffToAum
   SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
+@End
+
+@SendMidiNoteOnOffToAum
+  @SendMidiNoteOnToAum
+  @SendMidiNoteOffToAum
 @End
 
 @AnnounceMidiWithDelay
@@ -723,8 +732,27 @@
   newRecSends = gtlSendsStack[lastActivatedStackId]
   Call @MapRecSendsToMidi
 
-  // Log {Selecting record sends by sending MIDI to AUM: }, midiToSend
-  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = AUM_SEND_GUITAR
+  if guitarInstrActive
+    Call @SendMidiNoteOnToAum
+  else
+    Call @SendMidiNoteOffToAum
+  endif
+
+  midiToSend = AUM_SEND_KEYBOARD
+  if keyboardInstrActive
+    Call @SendMidiNoteOnToAum
+  else
+    Call @SendMidiNoteOffToAum
+  endif
+
+  midiToSend = AUM_SEND_MIC
+  if microphoneActive
+    Call @SendMidiNoteOnToAum
+  else
+    Call @SendMidiNoteOffToAum
+  endif
 @End
 
 @ArmInstrFx
@@ -789,22 +817,27 @@
   if newRecSends = REC_SENDS_GUITAR
     guitarInstrActive = YES
     keyboardInstrActive = NO
+    microphoneActive = NO
     midiToSend = AUM_SEND_GUITAR
   elseif newRecSends = REC_SENDS_MIC
     guitarInstrActive = NO
     keyboardInstrActive = NO
+    microphoneActive = YES
     midiToSend = AUM_SEND_MIC
   elseif newRecSends = REC_SENDS_MIC_AND_GUITAR
     guitarInstrActive = YES
     keyboardInstrActive = NO
+    microphoneActive = YES
     midiToSend = AUM_SEND_MIC_AND_GUITAR
   elseif newRecSends = REC_SENDS_KEYBOARD
     guitarInstrActive = NO
     keyboardInstrActive = YES
+    microphoneActive = NO
     midiToSend = AUM_SEND_KEYBOARD
   elseif newRecSends = REC_SENDS_MIC_AND_KEYBOARD
     guitarInstrActive = NO
     keyboardInstrActive = YES
+    microphoneActive = YES
     midiToSend = AUM_SEND_MIC_AND_KEYBOARD
   endif
 @End
