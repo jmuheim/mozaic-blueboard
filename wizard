@@ -228,7 +228,7 @@
   loopStack[4]        = LOOP_2
   clockLengthStack[4] = CLOCK_LENGTH_10
   gtlSendsStack[4]    = REC_SENDS_MIC_AND_GUITAR
-  instrFxStack[4]     = AUM_GUITAR_FX_2
+  instrFxStack[4]     = INSTR_FX_3
   recModeStack[4]     = REC_MODE_RECORD_OVERDUB
 
   // Bridge
@@ -236,7 +236,7 @@
   loopStack[5]        = LOOP_1
   clockLengthStack[5] = CLOCK_LENGTH_8
   gtlSendsStack[5]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[5]     = AUM_KEYBOARD_FX_5
+  instrFxStack[5]     = INSTR_FX_5
   recModeStack[5]     = REC_MODE_RECORD_OVERDUB
 
   // Bridge (repeat)
@@ -244,7 +244,7 @@
   loopStack[6]        = LOOP_2
   clockLengthStack[6] = CLOCK_LENGTH_8
   gtlSendsStack[6]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[6]     = AUM_KEYBOARD_FX_5
+  instrFxStack[6]     = INSTR_FX_1
   recModeStack[6]     = REC_MODE_RECORD_OVERDUB
 
   // Go manually to verse 1
@@ -266,7 +266,7 @@
 @End
 
 @SendMidiNoteOnToAum
-  SendMidiNoteOn  AUM_CHANNEL, midiToSend, 100
+  SendMidiNoteOn AUM_CHANNEL, midiToSend, 100
 @End
 
 @SendMidiNoteOffToAum
