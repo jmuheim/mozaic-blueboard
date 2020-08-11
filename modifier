@@ -3,9 +3,9 @@
 @End
 
 @OnMidiInput
-  channelToSend = 4
+  channelToSend = 1
 
-  SendMidiNoteOn channelToSend, MIDINote, MIDIVelocity
+  SendMidiThruOnCh channelToSend
 
   Log {Received channel: }, MIDIChannel, { sent channel: }, channelToSend, { note: }, MIDINote, { velocity: }, MIDIVelocity
 @End
