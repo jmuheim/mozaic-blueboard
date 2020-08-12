@@ -256,7 +256,7 @@
 
 @ResetGtlSession
   midiToSend = GTL_RESET_SESSION
-  Log {Resetting session by sending MIDI to GTL: }, midiToSend
+  // Log {Resetting session by sending MIDI to GTL: }, midiToSend
   Call @SendMidiNoteOnOffToGtl
 @End
 
@@ -732,6 +732,8 @@
   newRecSends = gtlSendsStack[lastActivatedStackId]
   Call @MapRecSendsToMidi
 
+  Call @AnnounceMidiWithDelay
+
   // Make sure that AUM does not toggle, and that it does invert!
 
   midiToSend = AUM_SEND_GUITAR
@@ -759,6 +761,9 @@
 @ArmInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
   Call @MapInstrFxToMidi
+
+  midiDelay = 2000
+  Call @AnnounceMidiWithDelay
 
   Call @SendMidiNoteOnOffToAum
 @End
@@ -846,10 +851,10 @@
 @MapInstrFxToMidi
   if guitarInstrActive
     Call @MapGuitarFxToMidi
-    Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+    // Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
   elseif keyboardInstrActive
     Call @MapKeyboardFxToMidi
-    Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+    // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
   endif
 @End
 
