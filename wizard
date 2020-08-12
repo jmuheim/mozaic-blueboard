@@ -7,6 +7,8 @@
   Call @InitGtlMidiCodes
   Call @InitAumMidiCodes
 
+  Call @OnLoadMetroPulse
+
   Call @ResetGtlSession
   Call @IlluminateAllbuttons
 
@@ -901,4 +903,22 @@
   elseif newRecMode = LOOP_3
     midiToSend = GTL_RECORD_SELECT_NEXT
   endif
+@End
+
+@OnLoadMetroPulse
+  ppqn = 4
+  SetMetroPPQN ppqn    
+  pulsePerBar = HostBeatsPerMeasure * ppqn
+@End
+
+@OnMetroPulse
+  // Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
+
+  if CurrentMetroPulse = pulsePerBar - 1
+    Log {Just before next bar!}
+  endif
+@End 
+
+@OnNewBar
+  // Log { ---- New Bar }
 @End
