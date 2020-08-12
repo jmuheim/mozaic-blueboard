@@ -195,69 +195,55 @@
 @End
 
 @InitTestData
-  // Percussion
-  groupStack[0]       = GROUP_M
+  // Mmmmh (intro)
+  groupStack[0]       = GROUP_1
   loopStack[0]        = LOOP_1
-  clockLengthStack[0] = CLOCK_LENGTH_2
-  gtlSendsStack[0]    = REC_SENDS_KEYBOARD
-  instrFxStack[0]     = INSTR_FX_3
+  clockLengthStack[0] = CLOCK_LENGTH_4
+  gtlSendsStack[0]    = REC_SENDS_MIC_AND_KEYBOARD
+  instrFxStack[0]     = INSTR_FX_1 // Warm pipes
   recModeStack[0]     = REC_MODE_RECORD_OVERDUB
 
-  // Verse 1
+  // Repeat
   groupStack[1]       = GROUP_1
-  loopStack[1]        = LOOP_1
+  loopStack[1]        = LOOP_2
   clockLengthStack[1] = CLOCK_LENGTH_4
-  gtlSendsStack[1]    = REC_SENDS_KEYBOARD
-  instrFxStack[1]     = INSTR_FX_1
+  gtlSendsStack[1]    = REC_SENDS_MIC_AND_KEYBOARD
+  instrFxStack[1]     = INSTR_FX_2 // Marimba
   recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
-  // Verse 1 (repeat)
-  groupStack[2]       = GROUP_1
-  loopStack[2]        = LOOP_2
-  clockLengthStack[2] = CLOCK_LENGTH_4
-  gtlSendsStack[2]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[2]     = INSTR_FX_6
+  // By the rivers...
+  groupStack[2]       = GROUP_2
+  loopStack[2]        = LOOP_1
+  clockLengthStack[2] = CLOCK_LENGTH_8
+  gtlSendsStack[2]    = REC_SENDS_MIC_AND_GUITAR
+  instrFxStack[2]     = INSTR_FX_6 // Wish you were here
   recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
-  // Go manually to chorus!
-
-  // Verse 2
+  // Repeat
   groupStack[3]       = GROUP_2
-  loopStack[3]        = LOOP_1
-  clockLengthStack[3] = CLOCK_LENGTH_10
-  gtlSendsStack[3]    = REC_SENDS_KEYBOARD
-  instrFxStack[3]     = INSTR_FX_2
+  loopStack[3]        = LOOP_2
+  clockLengthStack[3] = CLOCK_LENGTH_8
+  gtlSendsStack[3]    = REC_SENDS_MIC
+  instrFxStack[3]     = INSTR_FX_1 // Bob Marley
   recModeStack[3]     = REC_MODE_RECORD_OVERDUB
 
-  // Verse 2 (repeat)
-  groupStack[4]       = GROUP_2
-  loopStack[4]        = LOOP_2
-  clockLengthStack[4] = CLOCK_LENGTH_10
+  // When the wicked...
+  groupStack[4]       = GROUP_3
+  loopStack[4]        = LOOP_1
+  clockLengthStack[4] = CLOCK_LENGTH_8
   gtlSendsStack[4]    = REC_SENDS_MIC_AND_GUITAR
-  instrFxStack[4]     = INSTR_FX_3
+  instrFxStack[4]     = INSTR_FX_6 // Wish you were here
   recModeStack[4]     = REC_MODE_RECORD_OVERDUB
 
-  // Bridge
+  // Repeat
   groupStack[5]       = GROUP_3
-  loopStack[5]        = LOOP_1
+  loopStack[5]        = LOOP_2
   clockLengthStack[5] = CLOCK_LENGTH_8
   gtlSendsStack[5]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[5]     = INSTR_FX_5
+  instrFxStack[5]     = INSTR_FX_2 // Marimba
   recModeStack[5]     = REC_MODE_RECORD_OVERDUB
 
-  // Bridge (repeat)
-  groupStack[6]       = GROUP_3
-  loopStack[6]        = LOOP_2
-  clockLengthStack[6] = CLOCK_LENGTH_8
-  gtlSendsStack[6]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[6]     = INSTR_FX_1
-  recModeStack[6]     = REC_MODE_RECORD_OVERDUB
-
-  // Go manually to verse 1
-
-  // Go manually to chorus!
-
-  stackSize = 8
+  stackSize = 7
 @End
 
 @ResetGtlSession
@@ -940,7 +926,7 @@
 
   if CurrentMetroPulse = pulsePerBar - 1
     if armRecSendsAndInstrFx
-      // Log {Now arming rec mode and instr fx!}
+      Log {Now arming rec mode and instr fx!}
       Call @ArmRecSends
       Call @ArmInstrFx
 
