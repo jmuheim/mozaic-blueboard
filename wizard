@@ -294,7 +294,11 @@
   endif
 
   midiToSend = GTL_RESET_SESSION
-  // Log {Resetting session by sending MIDI to GTL: }, midiToSend
+
+  if debug
+    Log {Resetting session by sending MIDI to GTL: }, midiToSend
+  endif
+
   Call @SendMidiNoteOnOffToGtl
 @End
 
@@ -363,8 +367,7 @@
   endif
 
   if debug
-    Log {- Channel: }, channel
-    Log {- midiToSend: }, midiToSend
+    Log {- Channel: }, channel, {, midiToSend: }, midiToSend
   endif
 
   SendMidiNoteOn  channel, midiToSend, 100, midiDelay
@@ -497,8 +500,7 @@
   endif
 
   if debug
-    Log {- lastSelectedRecSends: }, lastSelectedRecSends
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedRecSends: }, lastSelectedRecSends, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -527,8 +529,7 @@
   endif
 
   if debug
-    Log {- lastSelectedRecMode: }, lastSelectedRecMode
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedRecMode: }, lastSelectedRecMode, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -566,8 +567,7 @@
   endif
 
   if debug
-    Log {- lastSelectedInstrFx: }, lastSelectedInstrFx
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedInstrFx: }, lastSelectedInstrFx, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -599,8 +599,7 @@
   endif
 
   if debug
-    Log {- lastSelectedLoop: }, lastSelectedLoop
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedLoop: }, lastSelectedLoop, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -638,8 +637,7 @@
   endif
 
   if debug
-    Log {- lastSelectedClockLength: }, lastSelectedClockLength
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedClockLength: }, lastSelectedClockLength, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -677,8 +675,7 @@
   endif
 
   if debug
-    Log {- lastSelectedGroup: }, lastSelectedGroup
-    Log {- wrongInputDetected: }, wrongInputDetected
+    Log {- lastSelectedGroup: }, lastSelectedGroup, {, wrongInputDetected: }, wrongInputDetected
   endif
 
   if wrongInputDetected = NO
@@ -790,13 +787,7 @@
     Call @AnnounceMidiWithDelay
 
     if debug
-      Log {- stackSize: }, stackSize
-      Log {- lastSelectedLoop: }, lastSelectedLoop
-      Log {- lastSelectedGroup: }, lastSelectedGroup
-      Log {- lastSelectedClockLength: }, lastSelectedClockLength
-      Log {- lastSelectedRecSends: }, lastSelectedRecSends
-      Log {- lastSelectedInstrFx: }, lastSelectedInstrFx
-      Log {- lastSelectedRecMode: }, lastSelectedRecMode
+      Log {- stackSize: }, stackSize, {, lastSelectedLoop: }, lastSelectedLoop, {, lastSelectedGroup: }, lastSelectedGroup, {, lastSelectedClockLength: }, lastSelectedClockLength, {, lastSelectedRecSends: }, lastSelectedRecSends, {, lastSelectedInstrFx: }, lastSelectedInstrFx, {, lastSelectedRecMode: }, lastSelectedRecMode
     endif
   endif
 @End
@@ -807,9 +798,7 @@
   endif
 
   if debug
-    Log {- stackSize: }, stackSize
-    Log {- firstArmPress: }, firstArmPress
-    Log {- lastActivatedStackId: }, lastActivatedStackId
+    Log {- stackSize: }, stackSize, {, firstArmPress: }, firstArmPress, {, lastActivatedStackId: }, lastActivatedStackId
   endif
 
   if stackSize = 0
@@ -825,7 +814,9 @@
     midiDelay = 2000
     Call @AskForInput
   else
-    // Log {Arming cycle #}, lastActivatedStackId
+    if debug
+      Log {Arming cycle #}, lastActivatedStackId
+    endif
 
     if firstArmPress = YES
       Call @ArmGroup // Needs to be before @ArmLoop!
@@ -938,7 +929,10 @@
   newLoop = loopStack[lastActivatedStackId]
   Call @MapLoopToMidi
 
-  // Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+  if debug
+    Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+  endif
+
   Call @SendMidiNoteOnOffToGtl
 @End
 
@@ -950,7 +944,10 @@
   newGroup = groupStack[lastActivatedStackId]
   Call @MapGroupToMidi
 
-  // Log {Selecting group by sending MIDI to GTL: }, midiToSend
+  if debug
+    Log {Selecting group by sending MIDI to GTL: }, midiToSend
+  endif
+
   Call @SendMidiNoteOnOffToGtl
 @End
 
@@ -962,7 +959,9 @@
   newClockLength = clockLengthStack[lastActivatedStackId]
   Call @MapClockLengthToMidi
 
-  // Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
+  if debug
+    Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
+  endif
 
   for i = 1 to timesToSend
     Call @SendMidiNoteOnOffToGtl
@@ -1048,7 +1047,9 @@
   midiDelay = 3000
   Call @AnnounceMidiWithDelay
 
-  // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+  if debug
+    Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+  endif
 
   Call @SendMidiNoteOnOffToGtl
 @End
@@ -1172,10 +1173,16 @@
 
   if guitarInstrActive
     Call @MapGuitarFxToMidi
-    // Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+
+    if debug
+      Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+    endif
   elseif keyboardInstrActive
     Call @MapKeyboardFxToMidi
-    // Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+
+    if debug
+      Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+    endif
   endif
 @End
 
