@@ -772,6 +772,9 @@
   newRecMode = recModeStack[lastActivatedStackId]
   Call @MapRecModeToMidi
 
+  midiDelay = 3000
+  Call @AnnounceMidiWithDelay
+
   // Log {Starting record mode by sending MIDI to GTL: }, midiToSend
 
   Call @SendMidiNoteOnOffToGtl
