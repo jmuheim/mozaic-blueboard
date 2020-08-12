@@ -324,6 +324,7 @@
 @SendMidiNoteOffToAum
   if debug
     Log {SendMidiNoteOnOffToAum}
+    Log {- midiToSend: }, midiToSend
   endif
 
   SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
@@ -332,6 +333,7 @@
 @SendMidiNoteOnOffToAum
   if debug
     Log {SendMidiNoteOnOffToAum}
+    Log {- midiToSend: }, midiToSend
   endif
 
   Call @SendMidiNoteOnToAum
