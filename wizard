@@ -155,7 +155,8 @@
   AUM_KEYBOARD_FX_6 = 32
 
   AUM_WELCOME = 39
-  AUM_CYCLE_ARMED = 40
+  AUM_CYCLE_ARMING_STARTED = 40
+  AUM_CYCLE_ARMING_COMPLETE = 51
   AUM_CYCLE_ADDED_AGAIN = 41
   AUM_NO_CYCLE_PROVIDED = 50
   AUM_NO_CYCLE_LEFT = 49
@@ -174,6 +175,9 @@
   currentStep = FIRST_STEP
 
   currentClockLength = 1 // GTL sets clock length to 1 when resetting session
+
+  firstArmPress = YES // Press "D" button the first time to arm CUE'able things in GTL; press second time to arm the rest immediately before the start of the next bar!
+  armRecSendsAndInstrFx = NO
 
   lastSelectedGroup       = UNDEFINED
   lastSelectedLoop        = UNDEFINED
@@ -195,24 +199,24 @@
   groupStack[0]       = GROUP_M
   loopStack[0]        = LOOP_1
   clockLengthStack[0] = CLOCK_LENGTH_2
-  gtlSendsStack[0]    = REC_SENDS_GUITAR
+  gtlSendsStack[0]    = REC_SENDS_KEYBOARD
   instrFxStack[0]     = INSTR_FX_3
   recModeStack[0]     = REC_MODE_RECORD_OVERDUB
 
   // Verse 1
   groupStack[1]       = GROUP_1
   loopStack[1]        = LOOP_1
-  clockLengthStack[1] = CLOCK_LENGTH_8
-  gtlSendsStack[1]    = REC_SENDS_GUITAR
+  clockLengthStack[1] = CLOCK_LENGTH_4
+  gtlSendsStack[1]    = REC_SENDS_KEYBOARD
   instrFxStack[1]     = INSTR_FX_1
   recModeStack[1]     = REC_MODE_RECORD_OVERDUB
 
   // Verse 1 (repeat)
   groupStack[2]       = GROUP_1
   loopStack[2]        = LOOP_2
-  clockLengthStack[2] = CLOCK_LENGTH_8
+  clockLengthStack[2] = CLOCK_LENGTH_4
   gtlSendsStack[2]    = REC_SENDS_MIC_AND_KEYBOARD
-  instrFxStack[2]     = INSTR_FX_4
+  instrFxStack[2]     = INSTR_FX_6
   recModeStack[2]     = REC_MODE_RECORD_OVERDUB
 
   // Go manually to chorus!
@@ -632,17 +636,27 @@
   else
     // Log {Arming cycle #}, lastActivatedStackId
 
-    Call @ArmGroup // Needs to be before @ArmLoop!
-    Call @ArmLoop
-    Call @ArmClockLength
-    Call @ArmRecSends
-    Call @ArmInstrFx
-    Call @ArmRecMode
+    if firstArmPress = YES
+      Call @ArmGroup // Needs to be before @ArmLoop!
+      Call @ArmLoop
+      Call @ArmClockLength
+      Call @AnnounceRecSends
+      Call @AnnounceInstrFx
+      Call @ArmRecMode
 
-    midiToSend = AUM_CYCLE_ARMED
-    Call @AnnounceMidi
+      midiToSend = AUM_CYCLE_ARMING_STARTED
+      Call @AnnounceMidi
 
-    Inc lastActivatedStackId
+      firstArmPress = NO
+    else
+      firstArmPress = YES
+      armRecSendsAndInstrFx = YES
+
+      midiToSend = AUM_CYCLE_ARMING_COMPLETE
+      Call @AnnounceMidi
+
+      Inc lastActivatedStackId
+    endif
   endif
 @End
 
@@ -730,11 +744,16 @@
   currentClockLength = newClockLength
 @End
 
-@ArmRecSends
+@AnnounceRecSends
   newRecSends = gtlSendsStack[lastActivatedStackId]
   Call @MapRecSendsToMidi
 
   Call @AnnounceMidiWithDelay
+@End
+
+@ArmRecSends
+  newRecSends = gtlSendsStack[lastActivatedStackId]
+  Call @MapRecSendsToMidi
 
   // Make sure that AUM does not toggle, and that it does invert!
 
@@ -760,12 +779,17 @@
   endif
 @End
 
-@ArmInstrFx
+@AnnounceInstrFx
   newInstrFx = instrFxStack[lastActivatedStackId]
   Call @MapInstrFxToMidi
 
   midiDelay = 2000
   Call @AnnounceMidiWithDelay
+@End
+
+@ArmInstrFx
+  newInstrFx = instrFxStack[lastActivatedStackId]
+  Call @MapInstrFxToMidi
 
   Call @SendMidiNoteOnOffToAum
 @End
@@ -915,7 +939,13 @@
   // Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
 
   if CurrentMetroPulse = pulsePerBar - 1
-    Log {Just before next bar!}
+    if armRecSendsAndInstrFx
+      // Log {Now arming rec mode and instr fx!}
+      Call @ArmRecSends
+      Call @ArmInstrFx
+
+      armRecSendsAndInstrFx = NO
+    endif
   endif
 @End 
 
