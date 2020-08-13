@@ -7,7 +7,7 @@
   // In addition you can put the logger script between this script and the receivers and compare its output to the previous one, too.
   debug = YES
   if debug
-    Log {OnLoad}
+    Log {@OnLoad}
   endif
 
   Call @InitConstants
@@ -31,7 +31,7 @@
 
 @InitConstants
   if debug
-    Log {InitConstants}
+    Log {@InitConstants}
   endif
 
   UNDEFINED = -1
@@ -111,7 +111,7 @@
 // GTL needs to have respective MIDI bindings assigned to these codes!
 @InitGtlMidiCodes
   if debug
-    Log {InitGtlMidiCodes}
+    Log {@InitGtlMidiCodes}
   endif
 
   GTL_SELECT_LOOP_QUESTION = 42
@@ -148,7 +148,7 @@
 
 @InitAumMidiCodes
   if debug
-    Log {InitAumMidiCodes}
+    Log {@InitAumMidiCodes}
   endif
 
   AUM_SEND_QUESTION = 46
@@ -184,7 +184,7 @@
 
 @InitVariables
   if debug
-    Log {InitVariables}
+    Log {@InitVariables}
   endif
 
   midiToSend = UNDEFINED
@@ -220,7 +220,7 @@
 
 @InitTestData
   if debug
-    Log {InitTestData}
+    Log {@InitTestData}
   endif
 
   // Mmmmh (intro)
@@ -276,13 +276,13 @@
 
 @ResetGtlSession
   if debug
-    Log {ResetGtlSession}
+    Log {@ResetGtlSession}
   endif
 
   midiToSend = GTL_RESET_SESSION
 
   if debug
-    Log {Resetting session by sending MIDI to GTL: }, midiToSend
+    Log {=> Resetting session by sending MIDI to GTL: }, midiToSend
   endif
 
   Call @SendMidiNoteOnOffToGtl
@@ -290,7 +290,7 @@
 
 @SendMidiNoteOnOffToGtl
   if debug
-    Log {SendMidiNoteOnOffToGtl}
+    Log {@SendMidiNoteOnOffToGtl}
     Log {- midiToSend: }, midiToSend
   endif
 
@@ -300,7 +300,7 @@
 
 @SendMidiNoteOnToAum
   if debug
-    Log {SendMidiNoteOnToAum}
+    Log {@SendMidiNoteOnToAum}
     Log {- midiToSend: }, midiToSend
   endif
 
@@ -309,7 +309,7 @@
 
 @SendMidiNoteOffToAum
   if debug
-    Log {SendMidiNoteOnOffToAum}
+    Log {@SendMidiNoteOnOffToAum}
     Log {- midiToSend: }, midiToSend
   endif
 
@@ -318,7 +318,7 @@
 
 @SendMidiNoteOnOffToAum
   if debug
-    Log {SendMidiNoteOnOffToAum}
+    Log {@SendMidiNoteOnOffToAum}
     Log {- midiToSend: }, midiToSend
   endif
 
@@ -328,7 +328,7 @@
 
 @AnnounceMidiWithDelay
   if debug
-    Log {AnnounceMidiWithDelay}
+    Log {@AnnounceMidiWithDelay}
   endif
 
   if midiDelay = 0
@@ -345,7 +345,7 @@
 
 @AnnounceMidi
   if debug
-    Log {AnnounceMidi}
+    Log {@AnnounceMidi}
   endif
 
   if midiToSend < 34
@@ -364,7 +364,7 @@
 
 @IlluminateAllbuttons
   if debug
-    Log {IlluminateAllbuttons}
+    Log {@IlluminateAllbuttons}
   endif
 
   SendMidiNoteOn BB_CHANNEL, BB_NOTE_A, 100
@@ -375,7 +375,7 @@
 
 @OnMidiNoteOn
   if debug
-    Log {OnMidiNoteOn}
+    Log {@OnMidiNoteOn}
     Log {- MidiNote: }, MidiNote
   endif
 
@@ -384,7 +384,7 @@
 
 @OnMidiNoteOff
   if debug
-    Log {OnMidiNoteOff}
+    Log {@OnMidiNoteOff}
     Log {- MidiNote: }, MidiNote
   endif
 
@@ -407,7 +407,7 @@
 
 @DispatchButtonPress
   if debug
-    Log {DispatchButtonPress}
+    Log {@DispatchButtonPress}
   endif
 
   wrongInputDetected = YES
@@ -442,7 +442,7 @@
     endif
 
     if wrongInputDetected = YES
-      Log {Wrong input! Try again.}
+      Log {=> Wrong input! Try again.}
     else
       if currentStep < LAST_STEP
         if debug
@@ -461,7 +461,7 @@
 
 @MapUserInputToRecSends
   if debug
-    Log {MapUserInputToRecSends}
+    Log {@MapUserInputToRecSends}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -498,7 +498,7 @@
 
 @MapUserInputToRecMode
   if debug
-    Log {MapUserInputToRecMode}
+    Log {@MapUserInputToRecMode}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -527,7 +527,7 @@
 
 @MapUserInputToInstrFx
   if debug
-    Log {MapUserInputToInstrFx}
+    Log {@MapUserInputToInstrFx}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -565,7 +565,7 @@
 
 @MapUserInputToLoop
   if debug
-    Log {MapUserInputToLoop}
+    Log {@MapUserInputToLoop}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -597,7 +597,7 @@
 
 @MapUserInputToClockLength
   if debug
-    Log {MapUserInputToClockLength}
+    Log {@MapUserInputToClockLength}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -635,7 +635,7 @@
 
 @MapUserInputToGroup
   if debug
-    Log {MapUserInputToGroup}
+    Log {@MapUserInputToGroup}
   endif
 
   if tapType = TAP_IMMEDIATE
@@ -673,7 +673,7 @@
 
 @AskForInput
   if debug
-    Log {AskForInput}
+    Log {@AskForInput}
   endif
 
   if debug
@@ -715,49 +715,49 @@
 
 @AddCycle
   if debug
-    Log {AddCycle}
+    Log {@AddCycle}
   endif
 
   configPartMissing = NO
 
   if lastSelectedLoop = UNDEFINED
     configPartMissing = YES
-    Log {No loop selected yet!}
+    Log {=> No loop selected yet!}
   else
     loopStack[stackSize] = lastSelectedLoop
   endif
 
   if lastSelectedGroup = UNDEFINED
     configPartMissing = YES
-    Log {No group selected yet!}
+    Log {=> No group selected yet!}
   else
     groupStack[stackSize] = lastSelectedGroup
   endif
 
   if lastSelectedClockLength = UNDEFINED
     configPartMissing = YES
-    Log {No clock length selected yet!}
+    Log {=> No clock length selected yet!}
   else
     clockLengthStack[stackSize] = lastSelectedClockLength
   endif
 
   if lastSelectedRecSends = UNDEFINED
     configPartMissing = YES
-    Log {No GTL sends selected yet!}
+    Log {=> No GTL sends selected yet!}
   else
     gtlSendsStack[stackSize] = lastSelectedRecSends
   endif
 
   if lastSelectedInstrFx = UNDEFINED
     configPartMissing = YES
-    Log {No instr fx selected yet!}
+    Log {=> No instr fx selected yet!}
   else
     instrFxStack[stackSize] = lastSelectedInstrFx
   endif
 
   if lastSelectedRecMode = UNDEFINED
     configPartMissing = YES
-    Log {No rec mode selected yet!}
+    Log {=> No rec mode selected yet!}
   else
     recModeStack[stackSize] = lastSelectedRecMode
   endif
@@ -782,7 +782,7 @@
 
 @ArmCycle
   if debug
-    Log {ArmCycle}
+    Log {@ArmCycle}
   endif
 
   if debug
@@ -803,7 +803,7 @@
     Call @AskForInput
   else
     if debug
-      Log {Arming cycle #}, lastActivatedStackId
+      Log {=> Arming cycle #}, lastActivatedStackId
     endif
 
     if firstArmPress = YES
@@ -832,7 +832,7 @@
 
 @AnnounceSelectedLoop
   if debug
-    Log {AnnounceSelectedLoop}
+    Log {@AnnounceSelectedLoop}
   endif
 
   newLoop = lastSelectedLoop
@@ -843,7 +843,7 @@
 
 @AnnounceSelectedGroup
   if debug
-    Log {AnnounceSelectedGroup}
+    Log {@AnnounceSelectedGroup}
   endif
 
   newGroup = lastSelectedGroup
@@ -854,7 +854,7 @@
 
 @AnnounceSelectedClockLength
   if debug
-    Log {AnnounceSelectedClockLength}
+    Log {@AnnounceSelectedClockLength}
   endif
 
   newClockLength = lastSelectedClockLength
@@ -878,7 +878,7 @@
 
 @AnnounceSelectedRecSends
   if debug
-    Log {AnnounceSelectedRecSends}
+    Log {@AnnounceSelectedRecSends}
   endif
 
   newRecSends = lastSelectedRecSends
@@ -889,7 +889,7 @@
 
 @AnnounceSelectedInstrFx
   if debug
-    Log {AnnounceSelectedInstrFx}
+    Log {@AnnounceSelectedInstrFx}
   endif
 
   newInstrFx = lastSelectedInstrFx
@@ -900,7 +900,7 @@
 
 @AnnounceSelectedRecMode
   if debug
-    Log {AnnounceSelectedRecMode}
+    Log {@AnnounceSelectedRecMode}
   endif
 
   newRecMode = lastSelectedRecMode
@@ -911,14 +911,14 @@
 
 @ArmLoop
   if debug
-    Log {ArmLoop}
+    Log {@ArmLoop}
   endif
 
   newLoop = loopStack[lastActivatedStackId]
   Call @MapLoopToMidi
 
   if debug
-    Log {Selecting loop by sending MIDI to GTL: }, midiToSend
+    Log {=> Selecting loop by sending MIDI to GTL: }, midiToSend
   endif
 
   Call @SendMidiNoteOnOffToGtl
@@ -926,14 +926,14 @@
 
 @ArmGroup
   if debug
-    Log {ArmGroup}
+    Log {@ArmGroup}
   endif
 
   newGroup = groupStack[lastActivatedStackId]
   Call @MapGroupToMidi
 
   if debug
-    Log {Selecting group by sending MIDI to GTL: }, midiToSend
+    Log {=> Selecting group by sending MIDI to GTL: }, midiToSend
   endif
 
   Call @SendMidiNoteOnOffToGtl
@@ -941,14 +941,14 @@
 
 @ArmClockLength
   if debug
-    Log {ArmClockLength}
+    Log {@ArmClockLength}
   endif
 
   newClockLength = clockLengthStack[lastActivatedStackId]
   Call @MapClockLengthToMidi
 
   if debug
-    Log {Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
+    Log {=> Setting clock length from }, currentClockLength, { to }, newClockLength, { by sending MIDI to GTL: }, midiToSend, { (*}, timesToSend, {)}
   endif
 
   for i = 1 to timesToSend
@@ -960,7 +960,7 @@
 
 @AnnounceRecSends
   if debug
-    Log {AnnounceRecSends}
+    Log {@AnnounceRecSends}
   endif
 
   newRecSends = gtlSendsStack[lastActivatedStackId]
@@ -971,7 +971,7 @@
 
 @ArmRecSends
   if debug
-    Log {ArmRecSends}
+    Log {@ArmRecSends}
   endif
 
   newRecSends = gtlSendsStack[lastActivatedStackId]
@@ -1003,7 +1003,7 @@
 
 @AnnounceInstrFx
   if debug
-    Log {AnnounceInstrFx}
+    Log {@AnnounceInstrFx}
   endif
 
   newInstrFx = instrFxStack[lastActivatedStackId]
@@ -1015,7 +1015,7 @@
 
 @ArmInstrFx
   if debug
-    Log {ArmInstrFx}
+    Log {@ArmInstrFx}
   endif
 
   newInstrFx = instrFxStack[lastActivatedStackId]
@@ -1026,7 +1026,7 @@
 
 @ArmRecMode
   if debug
-    Log {ArmRecMode}
+    Log {@ArmRecMode}
   endif
 
   newRecMode = recModeStack[lastActivatedStackId]
@@ -1036,7 +1036,7 @@
   Call @AnnounceMidiWithDelay
 
   if debug
-    Log {Starting record mode by sending MIDI to GTL: }, midiToSend
+    Log {=> Starting record mode by sending MIDI to GTL: }, midiToSend
   endif
 
   Call @SendMidiNoteOnOffToGtl
@@ -1044,7 +1044,7 @@
 
 @MapLoopToMidi
   if debug
-    Log {MapLoopToMidi}
+    Log {@MapLoopToMidi}
   endif
 
   if newLoop = LOOP_1
@@ -1064,7 +1064,7 @@
 
 @MapGroupToMidi
   if debug
-    Log {MapGroupToMidi}
+    Log {@MapGroupToMidi}
   endif
 
   if newGroup = GROUP_M
@@ -1088,7 +1088,7 @@
 
 @MapClockLengthToMidi
   if debug
-    Log {MapClockLengthToMidi}
+    Log {@MapClockLengthToMidi}
   endif
 
   difference = newClockLength - currentClockLength
@@ -1111,7 +1111,7 @@
 
 @MapRecSendsToMidi
   if debug
-    Log {MapRecSendsToMidi}
+    Log {@MapRecSendsToMidi}
   endif
 
   if newRecSends = REC_SENDS_GUITAR
@@ -1151,10 +1151,8 @@
 
 @MapInstrFxToMidi
   if debug
-    Log {MapInstrFxToMidi}
-  endif
+    Log {@MapInstrFxToMidi}
 
-  if debug
     Log {- guitarInstrActive: }, guitarInstrActive
     Log {- keyboardInstrActive: }, keyboardInstrActive
   endif
@@ -1163,20 +1161,20 @@
     Call @MapGuitarFxToMidi
 
     if debug
-      Log {Selecting guitar FX by sending MIDI to AUM: }, midiToSend
+      Log {=> Selecting guitar FX by sending MIDI to AUM: }, midiToSend
     endif
   elseif keyboardInstrActive
     Call @MapKeyboardFxToMidi
 
     if debug
-      Log {Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
+      Log {=> Selecting keyboard FX by sending MIDI to AUM: }, midiToSend
     endif
   endif
 @End
 
 @MapGuitarFxToMidi
   if debug
-    Log {MapGuitarFxToMidi}
+    Log {@MapGuitarFxToMidi}
   endif
 
   if newInstrFx = INSTR_FX_1
@@ -1200,7 +1198,7 @@
 
 @MapKeyboardFxToMidi
   if debug
-    Log {MapKeyboardFxToMidi}
+    Log {@MapKeyboardFxToMidi}
   endif
 
   if newInstrFx = INSTR_FX_1
@@ -1224,7 +1222,7 @@
 
 @MapRecModeToMidi
   if debug
-    Log {MapRecModeToMidi}
+    Log {@MapRecModeToMidi}
   endif
 
   if newRecMode = LOOP_1
@@ -1242,7 +1240,7 @@
 
 @OnLoadMetroPulse
   if debug
-    Log {OnLoadMetroPulse}
+    Log {@OnLoadMetroPulse}
   endif
 
   ppqn = 4
@@ -1256,7 +1254,7 @@
   if CurrentMetroPulse = pulsePerBar - 1
     if armRecSendsAndInstrFx
       if debug
-        Log {Now arming rec mode and instr fx!}
+        Log {=> Now arming rec mode and instr fx!}
       endif
 
       Call @ArmRecSends
