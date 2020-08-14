@@ -11,11 +11,21 @@
   endif
 
   Call @InitConstants
-  Call @InitVariables
-  Call @InitGtlMidiCodes
-  Call @InitAumMidiCodes
 
   Call @OnLoadMetroPulse
+  
+  Call @Welcome
+@End
+
+@Welcome
+  if debug
+    Log {@Welcome}
+  endif
+
+  Call @InitVariables
+
+  Call @InitGtlMidiCodes
+  Call @InitAumMidiCodes
 
   Call @ResetGtlSession
   Call @IlluminateAllbuttons
@@ -420,7 +430,7 @@
     if tapType = TAP_IMMEDIATE
       Call @ArmCycle
     elseif tapType = TAP_4_BARS
-      Call @AddCycle
+      Call @Welcome // Usually @AddCycle
     else
       Log {- ERROR! Unknown tapType: }, tapType
     endif
