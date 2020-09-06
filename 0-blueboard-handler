@@ -70,8 +70,6 @@
 
   MOZ_INST_BB_HANDLER     = 0
   MOZ_INST_MODE_SWITCHER  = 1
-  MOZ_INST_STEP_SEQUENCER = 21
-  MOZ_INST_FEEDBACKER     = 31
 
   // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
   BB_BUTTON_A = 60
@@ -81,13 +79,4 @@
 
   // Be aware that within apps MIDI channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   MIDI_CHANNEL_BB  = 0 // BlueBoard (listens only to channel 0)
-  MIDI_CHANNEL_GTL = 1 // Group The Loop
-
-  // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
-  // Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
-  // So we have to load more than one, each with its own channel.
-  MIDI_CHANNEL_FB_0_TO_33  = 2
-  MIDI_CHANNEL_FB_34_TO_XX = 3
-
-  MIDI_CHANNEL_AUM = 4 // AUM
 @End
