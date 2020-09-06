@@ -4,12 +4,16 @@
 
   Call @InitConstants
   Call @InitSharedConstants
+  Call @InitVariables
 @End
 
 @InitConstants
   MODE_STEP_SEQUENCER = 0
   MODE_STEP_SETUP     = 1
   MODE_STEP_SEQUENCER = 2
+@End
+
+@InitVariables
 @End
 
 @OnSysex
@@ -37,13 +41,12 @@
   elseif currentMode = MODE_STEP_PEDAL
     Call @SendButtonToPedal // No yet implemented
   else
-    Log {- ERROR! Unknown currentMode: }, currentMode
+    Log {ERROR! Unknown currentMode: }, currentMode
   endif
 @End
 
 @SendButtonToStepSequencer
-  data = [MOZ_INST_STEP_SEQUENCER, bbButton, tapType]
-  SendSysex data, 3
+  SendSysex [MOZ_INST_STEP_SEQUENCER, bbButton, tapType], 3
 @End
 
 
@@ -56,9 +59,12 @@
 // These constants are shared across all Mozaic scripts //
 //////////////////////////////////////////////////////////
 @InitSharedConstants
+  UNDEFINED = -1
+
   MOZ_INST_BB_HANDLER     = 0
   MOZ_INST_MODE_SWITCHER  = 1
   MOZ_INST_STEP_SEQUENCER = 21
+  MOZ_INST_FEEDBACKER     = 31
 
   // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
   BB_BUTTON_A = 60

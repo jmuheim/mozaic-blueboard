@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {21-StepSequencer}
+  SetShortName {0-31Feedbacker}
 
   Call @InitConstants
   Call @InitSharedConstants
@@ -10,16 +10,24 @@
 @InitConstants
 @End
 
+@InitVariables
+@End
+
 @OnSysex
   ReceiveSysex data
 
-  if data[0] = MOZ_INST_STEP_SEQUENCER
+  if data[0] = AUM_WELCOME
     bbButton = data[1]
     tapType  = data[2]
 
-    Log {Received button }, bbButton, { with tapType }, tapType
+    Log {Received message }, AUM_WELCOME
+
   endif
 @End
+
+
+
+
 
 
 
@@ -36,6 +44,7 @@
 
   MOZ_INST_BB_HANDLER     = 0
   MOZ_INST_MODE_SWITCHER  = 1
+  MOZ_INST_STEP_SEQUENCER = 21
   MOZ_INST_FEEDBACKER     = 31
 
   // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
