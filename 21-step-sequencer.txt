@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {1-ModeSwitcher}
+  SetShortName {21-StepSequencer}
 
   Call @InitConstants
   Call @InitSharedConstants
@@ -12,26 +12,14 @@
 @OnSysex
   ReceiveSysex data
 
-  if data[0] = MOZ_INST_MODE_SWITCHER
+  if data[0] = MOZ_INST_STEP_SEQUENCER
     bbButton = data[1]
     tapType  = data[2]
 
     Log {Received button }, bbButton, { with tapType }, tapType
-
-    if YES // Idea: we will use button combos for switching to a different mode, e.g. A+B, A+C, B+D, D+B (other way round) etc.
-      Call @SendButtonToStepSequencer
-    elseif NO
-      Call @SendButtonToSetup // No yet implemented
-    elseif NO
-      Call @SendButtonToPedal // No yet implemented
-    endif
   endif
 @End
 
-@SendButtonToStepSequencer
-  data = [MOZ_INST_STEP_SEQUENCER, bbButton, tapType]
-  SendSysex data, 3
-@End
 
 
 
