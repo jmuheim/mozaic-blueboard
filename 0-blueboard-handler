@@ -1,0 +1,86 @@
+// Make sure to start the BlueBoard while pressing the B button!
+@OnLoad
+  SetShortName {BBHandler}
+
+  Call @InitConstants
+  Call @InitSharedConstants
+
+  Call @IlluminateAllbuttons
+@End
+
+@InitConstants
+  TAP_TIME_1_BEAT   = 1000 / (HostTempo / 60)
+  TAP_TIME_1_BAR  = 4 * TAP_TIME_1_BEAT
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
+@End
+
+@IlluminateAllbuttons
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_A, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_B, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_C, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_D, 100
+@End
+
+@OnMidiNoteOn
+  buttonDownTime = SystemTime // Time at which button was pressed down
+  Log {Button }, MidiNote, { down @ }, buttonDownTime
+@End
+
+@OnMidiNoteOff
+  buttonUpTime = SystemTime
+  buttonPressedDuration = buttonUpTime - buttonDownTime
+
+  If buttonPressedDuration >= TAP_TIME_1_BAR
+    tapType = TAP_TYPE_1_BAR
+  Elseif buttonPressedDuration >= TAP_TIME_1_BEAT
+    tapType = TAP_TYPE_1_BEAT
+  Else
+    tapType = TAP_TYPE_IMMEDIATE
+  Endif
+
+  Log {Button }, MidiNote, { up   @ }, buttonUpTime, { => tapType: }, tapType
+
+  data = [MOZ_INST_MODE_SWITCHER, tapType]
+  SendSysex data, 2
+@End
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  MOZ_INST_BB_HANDLER    = 0
+  MOZ_INST_MODE_SWITCHER = 1
+
+  // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  // Be aware that within apps MIDI channels are displayed as +1! So GTL channel will display 2 (instead of 1).
+  MIDI_CHANNEL_BB  = 0 // BlueBoard (listens only to channel 0)
+  MIDI_CHANNEL_GTL = 1 // Group The Loop
+
+  // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
+  // Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+  // So we have to load more than one, each with its own channel.
+  MIDI_CHANNEL_FB_0_TO_33  = 2
+  MIDI_CHANNEL_FB_34_TO_XX = 3
+
+  MIDI_CHANNEL_AUM = 4 // AUM
+@End

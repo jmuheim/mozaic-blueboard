@@ -24,18 +24,18 @@
 @End
 
 @OnMidiNoteOn
-  buttonPressedStartTime = SystemTime // Time at which button was pressed down
+  buttonDownTime = SystemTime // Time at which button was pressed down
 
   timerCounter = veryLongTapTime
   StartTimer
 @End
 
 @OnMidiNoteOff
-  buttonPressedTime = SystemTime - buttonPressedStartTime
+  buttonPressedDuration = SystemTime - buttonDownTime
 
-  if buttonPressedTime >= veryLongTapTime
+  if buttonPressedDuration >= veryLongTapTime
     // Do nothing, the timer took care of activating the space already
-  elseif buttonPressedTime >= longTapTime
+  elseif buttonPressedDuration >= longTapTime
     Call @LongTap
   Else
     Call @ShortTap

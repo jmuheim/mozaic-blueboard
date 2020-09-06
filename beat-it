@@ -1,0 +1,137 @@
+@OnLoad
+  debug = YES
+
+  if debug
+    Log {@OnLoad}
+  endif
+
+  SetShortName {Beat It}
+  ShowLayout 0
+
+  Call @InitConstants
+  Call @InitVariables
+@End
+
+@InitConstants
+  if debug
+    Log {@InitConstants}
+  endif
+
+  UNDEFINED = -1
+  MIDI_CHANNEL_GTL = 1
+  GTL_RECORD_OVERDUB = 12
+
+  // Performance states
+  PERF_STATE_COUNT_IN = 0 // Pre-roll of metronome
+  PERF_STATE_ACTION   = 1 // Looping
+
+  LOOP_1 = 1
+  LOOP_2 = 2
+  LOOP_3 = 3
+  LOOP_4 = 4
+
+  GROUP_M = 1
+  GROUP_1 = 2
+  GROUP_2 = 3
+  GROUP_3 = 4
+  GROUP_4 = 5
+  GROUP_5 = 6
+@End
+
+@InitVariables
+  if debug
+    Log {@InitVariables}
+  endif
+
+  performanceState = PERF_STATE_COUNT_IN
+
+  barCounter  = 0
+  beatCounter = 0
+  barTotal    = -1 // 1 bar reserved for metronome pre-roll
+  beatTotal   = -3 // 4 beats reserved for metronome pre-roll
+
+  stackSize = 0
+  lastActivatedStackId = UNDEFINED
+@End
+
+@InitTestData
+  if debug
+    Log {@InitTestData}
+  endif
+
+  // Drums
+  groupStack[stackSize]       = GROUP_MAIN
+  loopStack[stackSize]        = LOOP_1
+  clockLengthStack[stackSize] = CLOCK_LENGTH_1
+  Inc stackSize
+
+  // Mmmmh (intro)
+  groupStack[stackSize]       = GROUP_1
+  loopStack[stackSize]        = LOOP_1
+  clockLengthStack[stackSize] = CLOCK_LENGTH_8
+  Inc stackSize
+
+  // By the rivers...
+  groupStack[stackSize]       = GROUP_2
+  loopStack[stackSize]        = LOOP_1
+  clockLengthStack[stackSize] = CLOCK_LENGTH_8
+  Inc stackSize
+
+  // When the wicked...
+  groupStack[stackSize]       = GROUP_3
+  loopStack[stackSize]        = LOOP_1
+  clockLengthStack[stackSize] = CLOCK_LENGTH_9
+  Inc stackSize
+
+  // By the rivers...
+  groupStack[stackSize]       = GROUP_1
+  loopStack[stackSize]        = LOOP_2
+  clockLengthStack[stackSize] = CLOCK_LENGTH_8
+  Inc stackSize
+@End
+
+@OnHostStart
+  if debug
+    Log {@OnHostStart}
+  endif
+@End
+
+@OnNewBar
+  Inc barTotal
+
+  if debug
+    Log {@OnNewBar (bar: }, barTotal, {)}
+  endif
+
+  if barTotal > 0
+    performanceState = PERF_STATE_ACTION
+  endif
+@End
+
+@OnNewBeat
+  Inc beatTotal
+
+  if debug
+    Log {@OnNewBeat (beat: }, beatTotal, {)}
+  endif
+
+  if performanceState = PERF_STATE_COUNT_IN
+    Log {Count in: }, 
+  elseif performanceState = PERF_STATE_ACTION
+  endif
+@End
+
+@OnHostEnd
+  if debug
+    Log {@OnHostEnd}
+  endif
+@End
+
+@SendMidiNoteOnOffToGtl
+  if debug
+    Log {@SendMidiNoteOnOffToGtl (midiToSend: }, midiToSend, {)}
+  endif
+
+  SendMidiNoteOn  MIDI_CHANNEL_GTL, midiToSend, 100
+  SendMidiNoteOff MIDI_CHANNEL_GTL, midiToSend, 0, 0
+@End

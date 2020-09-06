@@ -47,17 +47,17 @@
   UNDEFINED = -1
 
   // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
-  BB_NOTE_A = 60
-  BB_NOTE_B = 62
-  BB_NOTE_C = 64
-  BB_NOTE_D = 65
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
 
-  1_BEAT_TAP_TIME   = 1000 / (HostTempo / 60)
-  4_BEATS_TAP_TIME  = 4 * 1_BEAT_TAP_TIME
+  TAP_TIME_1_BEAT   = 1000 / (HostTempo / 60)
+  TAP_TIME_1_BAR  = 4 * TAP_TIME_1_BEAT
 
-  TAP_IMMEDIATE = 0
-  TAP_1_BAR  = 1
-  TAP_4_BARS = 2
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT  = 1
+  TAP_TYPE_1_BAR = 2
 
   STEP_LOOP = 1
   LOOP_1 = 1
@@ -106,15 +106,15 @@
   LAST_STEP  = STEP_REC_MODE
 
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
-  BB_CHANNEL  = 0 // BlueBoard (listens only to channel 0)
-  GTL_CHANNEL = 1 // Group The Loop
-  AUM_CHANNEL = 4 // AUM
+  MIDI_CHANNEL_BB  = 0 // BlueBoard (listens only to channel 0)
+  MIDI_CHANNEL_GTL = 1 // Group The Loop
+  MIDI_CHANNEL_AUM = 4 // AUM
 
   // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance!
   // Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
   // So we have to load more than one, each with its own channel.
-  FB_CHANNEL_0_TO_33  = 2
-  FB_CHANNEL_34_TO_XX = 3
+  MIDI_CHANNEL_FB_0_TO_33  = 2
+  MIDI_CHANNEL_FB_34_TO_XX = 3
 @End
 
 // These are the codes that are sent as MIDI to GTL.
@@ -281,7 +281,7 @@
   instrFxStack[5]     = INSTR_FX_2 // Marimba
   recModeStack[5]     = REC_MODE_RECORD_OVERDUB
 
-  stackSize = 7
+  stackSize = 6
 @End
 
 @ResetGtlSession
@@ -304,8 +304,8 @@
     Log {- midiToSend: }, midiToSend
   endif
 
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 100
-  SendMidiNoteOff GTL_CHANNEL, midiToSend, 0, 0
+  SendMidiNoteOn  MIDI_CHANNEL_GTL, midiToSend, 100
+  SendMidiNoteOff MIDI_CHANNEL_GTL, midiToSend, 0, 0
 @End
 
 @SendMidiNoteOnToAum
@@ -314,7 +314,7 @@
     Log {- midiToSend: }, midiToSend
   endif
 
-  SendMidiNoteOn AUM_CHANNEL, midiToSend, 100
+  SendMidiNoteOn MIDI_CHANNEL_AUM, midiToSend, 100
 @End
 
 @SendMidiNoteOffToAum
@@ -323,7 +323,7 @@
     Log {- midiToSend: }, midiToSend
   endif
 
-  SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
+  SendMidiNoteOff MIDI_CHANNEL_AUM, midiToSend, 0, 0
 @End
 
 @SendMidiNoteOnOffToAum
@@ -359,9 +359,9 @@
   endif
 
   if midiToSend < 34
-    channel = FB_CHANNEL_0_TO_33
+    channel = MIDI_CHANNEL_FB_0_TO_33
   else
-    channel = FB_CHANNEL_34_TO_XX
+    channel = MIDI_CHANNEL_FB_34_TO_XX
   endif
 
   if debug
@@ -377,10 +377,10 @@
     Log {@IlluminateAllbuttons}
   endif
 
-  SendMidiNoteOn BB_CHANNEL, BB_NOTE_A, 100
-  SendMidiNoteOn BB_CHANNEL, BB_NOTE_B, 100
-  SendMidiNoteOn BB_CHANNEL, BB_NOTE_C, 100
-  SendMidiNoteOn BB_CHANNEL, BB_NOTE_D, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_A, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_B, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_C, 100
+  SendMidiNoteOn MIDI_CHANNEL_BB, BB_BUTTON_D, 100
 @End
 
 @OnMidiNoteOn
@@ -389,7 +389,7 @@
     Log {- MidiNote: }, MidiNote
   endif
 
-  buttonPressedStartTime = SystemTime // Time at which button was pressed down
+  buttonDownTime = SystemTime // Time at which button was pressed down
 @End
 
 @OnMidiNoteOff
@@ -398,14 +398,14 @@
     Log {- MidiNote: }, MidiNote
   endif
 
-  buttonPressedTime = SystemTime - buttonPressedStartTime
+  buttonPressedDuration = SystemTime - buttonDownTime
 
-  If buttonPressedTime >= 4_BEATS_TAP_TIME
-    tapType = TAP_4_BARS
-  Elseif buttonPressedTime >= 1_BEAT_TAP_TIME
-    tapType = TAP_1_BAR
+  If buttonPressedDuration >= TAP_TIME_1_BAR
+    tapType = TAP_TYPE_1_BAR
+  Elseif buttonPressedDuration >= TAP_TIME_1_BEAT
+    tapType = TAP_TYPE_1_BEAT
   Else
-    tapType = TAP_IMMEDIATE
+    tapType = TAP_TYPE_IMMEDIATE
   Endif
 
   if debug
@@ -426,10 +426,10 @@
     Log {- MidiNote: }, MidiNote
   endif
 
-  if MidiNote = BB_NOTE_D
-    if tapType = TAP_IMMEDIATE
+  if MidiNote = BB_BUTTON_D
+    if tapType = TAP_TYPE_IMMEDIATE
       Call @ArmCycle
-    elseif tapType = TAP_4_BARS
+    elseif tapType = TAP_TYPE_1_BAR
       Call @Welcome // Usually @AddCycle
     else
       Log {- ERROR! Unknown tapType: }, tapType
@@ -474,24 +474,24 @@
     Log {@MapUserInputToRecSends}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedRecSends = REC_SENDS_GUITAR
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedRecSends = REC_SENDS_MIC
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedRecSends = REC_SENDS_MIC_AND_GUITAR
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
+  elseif tapType = TAP_TYPE_1_BEAT
+    if MidiNote = BB_BUTTON_A
       lastSelectedRecSends = REC_SENDS_KEYBOARD
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       // Some day maybe some voice FX, e.g. Vocoder?
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedRecSends = REC_SENDS_MIC_AND_KEYBOARD
       wrongInputDetected = NO
     endif
@@ -511,18 +511,18 @@
     Log {@MapUserInputToRecMode}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedRecMode = REC_MODE_RECORD_OVERDUB
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedRecMode = REC_MODE_RECORD_MUTE
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedRecMode = REC_MODE_RECORD_SELECT_NEXT
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
+  elseif tapType = TAP_TYPE_1_BEAT
     // TODO: Advanced stuff!
   endif
 
@@ -540,25 +540,25 @@
     Log {@MapUserInputToInstrFx}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedInstrFx = INSTR_FX_1
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedInstrFx = INSTR_FX_2
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedInstrFx = INSTR_FX_3
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
+  elseif tapType = TAP_TYPE_1_BEAT
+    if MidiNote = BB_BUTTON_A
       lastSelectedInstrFx = INSTR_FX_4
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedInstrFx = INSTR_FX_5
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedInstrFx = INSTR_FX_6
       wrongInputDetected = NO
     endif
@@ -578,19 +578,19 @@
     Log {@MapUserInputToLoop}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedLoop = LOOP_1
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedLoop = LOOP_2
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedLoop = LOOP_3
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
+  elseif tapType = TAP_TYPE_1_BEAT
+    if MidiNote = BB_BUTTON_A
       lastSelectedLoop = LOOP_4
       wrongInputDetected = NO
     endif
@@ -610,25 +610,25 @@
     Log {@MapUserInputToClockLength}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedClockLength = CLOCK_LENGTH_2
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedClockLength = CLOCK_LENGTH_4
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedClockLength = CLOCK_LENGTH_8
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
+  elseif tapType = TAP_TYPE_1_BEAT
+    if MidiNote = BB_BUTTON_A
       lastSelectedClockLength = CLOCK_LENGTH_10
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedClockLength = CLOCK_LENGTH_12
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedClockLength = CLOCK_LENGTH_16
       wrongInputDetected = NO
     endif
@@ -648,25 +648,25 @@
     Log {@MapUserInputToGroup}
   endif
 
-  if tapType = TAP_IMMEDIATE
-    if MidiNote = BB_NOTE_A
+  if tapType = TAP_TYPE_IMMEDIATE
+    if MidiNote = BB_BUTTON_A
       lastSelectedGroup = GROUP_1
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedGroup = GROUP_2
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedGroup = GROUP_3
       wrongInputDetected = NO
     endif
-  elseif tapType = TAP_1_BAR
-    if MidiNote = BB_NOTE_A
+  elseif tapType = TAP_TYPE_1_BEAT
+    if MidiNote = BB_BUTTON_A
       lastSelectedGroup = GROUP_M
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_B
+    elseif MidiNote = BB_BUTTON_B
       lastSelectedGroup = GROUP_4
       wrongInputDetected = NO
-    elseif MidiNote = BB_NOTE_C
+    elseif MidiNote = BB_BUTTON_C
       lastSelectedGroup = GROUP_5
       wrongInputDetected = NO
     endif
