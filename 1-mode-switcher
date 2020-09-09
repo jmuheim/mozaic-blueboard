@@ -9,8 +9,8 @@
 
 @InitConstants
   MODE_STEP_SEQUENCER = 0
-  MODE_STEP_SETUP     = 1
-  MODE_STEP_SEQUENCER = 2
+  MODE_SETUP          = 1
+  MODE_PEDAL          = 2
 @End
 
 @InitVariables
@@ -23,22 +23,21 @@
     bbButton = data[1]
     tapType  = data[2]
 
-    Log {Received button }, bbButton, { with tapType }, tapType
+    Log {Received button=}, bbButton, {, tapType=}, tapType
 
     Call @DispatchButtonPress
   endif
 @End
 
 @DispatchButtonPress
-  // TODO: No real switch here yet...
   // Idea: we could use button combos for switching to a different mode, e.g. A+B, A+C, B+D, D+B (other way round) etc.
-  currentMode = MODE_STEP_SEQUENCER
+  currentMode = MODE_STEP_SEQUENCER // TODO: No real switch here yet...
 
   if currentMode = MODE_STEP_SEQUENCER
     Call @SendButtonToStepSequencer
-  elseif currentMode = MODE_STEP_SETUP
+  elseif currentMode = MODE_SETUP
     Call @SendButtonToSetup // No yet implemented
-  elseif currentMode = MODE_STEP_PEDAL
+  elseif currentMode = MODE_PEDAL
     Call @SendButtonToPedal // No yet implemented
   else
     Log {ERROR! Unknown currentMode: }, currentMode

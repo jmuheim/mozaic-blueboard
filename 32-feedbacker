@@ -1,6 +1,6 @@
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {0-31Feedbacker}
+  SetShortName {93-Feedbacker}
 
   Call @InitConstants
   Call @InitSharedConstants
@@ -16,12 +16,10 @@
 @OnSysex
   ReceiveSysex data
 
-  if data[0] = AUM_WELCOME
-    bbButton = data[1]
-    tapType  = data[2]
+  if data[0] = MOZ_INST_FEEDBACKER
+    feedbackId = data[1]
 
-    Log {Received message }, AUM_WELCOME
-
+    Log {Received feedback ID=}, feedbackId
   endif
 @End
 
@@ -41,4 +39,6 @@
 //////////////////////////////////////////////////////////
 @InitSharedConstants
   UNDEFINED = -1
+
+  MOZ_INST_FEEDBACKER = 93
 @End

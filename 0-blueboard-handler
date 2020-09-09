@@ -10,7 +10,7 @@
 @End
 
 @InitConstants
-  TAP_TIME_1_BEAT   = 1000 / (HostTempo / 60)
+  TAP_TIME_1_BEAT = 1000 / (HostTempo / 60)
   TAP_TIME_1_BAR  = 4 * TAP_TIME_1_BEAT
 
   TAP_TYPE_IMMEDIATE = 0
@@ -68,7 +68,6 @@
 @InitSharedConstants
   UNDEFINED = -1
 
-  MOZ_INST_BB_HANDLER     = 0
   MOZ_INST_MODE_SWITCHER  = 1
 
   // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!

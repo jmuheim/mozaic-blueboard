@@ -17,7 +17,7 @@
     bbButton = data[1]
     tapType  = data[2]
 
-    Log {Received button }, bbButton, { with tapType }, tapType
+    Log {Received button=}, bbButton, {, tapType=}, tapType
   endif
 @End
 
@@ -33,4 +33,6 @@
 //////////////////////////////////////////////////////////
 @InitSharedConstants
   UNDEFINED = -1
+
+  MOZ_INST_STEP_SEQUENCER = 21
 @End
