@@ -24,6 +24,9 @@
 @InitConstants
 @End
 
+@InitVariables
+@End
+
 @OnSysex
   ReceiveSysex data
 

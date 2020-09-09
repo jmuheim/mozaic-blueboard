@@ -55,7 +55,8 @@
 
   Log {Button }, MidiNote, { up   @ }, buttonUpTime, { => tapType: }, tapType
 
-  SendSysex [MOZ_INST_MODE_SWITCHER, MidiNote, tapType], 3
+  data = [MOZ_INST_MODE_SWITCHER, MidiNote, tapType]
+  SendSysex data, 3
 @End
 
 

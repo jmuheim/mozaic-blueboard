@@ -55,7 +55,8 @@
 @End
 
 @SendButtonToStepSequencer
-  SendSysex [MOZ_INST_STEP_SEQUENCER, bbButton, tapType], 3
+  data = [MOZ_INST_STEP_SEQUENCER, bbButton, tapType]
+  SendSysex data, 3
 @End
 
 

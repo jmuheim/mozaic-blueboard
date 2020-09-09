@@ -1,8 +1,11 @@
 // Feedbacker sends audio signals that are meant for the performer only, like ...
 //
-// Feedback is done through two instances of Chameleon (each with preset "Group The Loop Wizard 1" or 2 loaded).
-// It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+// Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
 // So we have to load more than one, each with its own channel.
+//
+// - Midi event  0 to 33 is directed to channel 2 (Chameleon with preset "Group The Loop Wizard 1" loaded)
+// - Midi event 34 to 67 is directed to channel 3 (Chameleon with preset "Group The Loop Wizard 2" loaded)
+//
 // Make sure that AUM only sends the right channel to the respective Chameleon instance!
 //
 // AUM routing:
@@ -16,10 +19,18 @@
   Call @InitConstants
   Call @InitSharedConstants
   Call @InitVariables
+
+  feedbackId = 32
+  feedbackLength = 1000
+  Call @GiveFeedback
+
+  feedbackId = 31
+  feedbackLength = 3000
+  Call @GiveFeedback
 @End
 
 @InitConstants
-  CHAMELEON_TRIGGER_DELAY = 50 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample.
+  CHAMELEON_TRIGGER_DELAY = 500 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample.
 
   // The length of the audio samples (in ms)
   AUDIO_SAMPLES_LENGTHS[0] = 1230
@@ -27,6 +38,7 @@
 @End
 
 @InitVariables
+  channel = MIDI_CHANNEL_FB_0_TO_33
   audioChannelOccupiedUntil = SystemTime
   delayForCurrentPlay = 0
 @End
@@ -45,26 +57,29 @@
 @End
 
 @GiveFeedback
-  if feedbackId < 34
-    channel = MIDI_CHANNEL_FB_0_TO_33
-  else
-    channel = MIDI_CHANNEL_FB_34_TO_XX
-  endif
+  Call @SetChannel
 
-  if SystemTime < audioChannelOccupiedUntil // Still occupied!
-    delayForCurrentPlay = SystemTime - audioChannelOccupiedUntil // Delay next feedback
-  else
+  if SystemTime > audioChannelOccupiedUntil // Not occupied anymore
     delayForCurrentPlay = 0 // Play right away
+  else // Still occupied
+    delayForCurrentPlay = audioChannelOccupiedUntil - SystemTime // Delay next feedback until the audio channel isn't occupied anymore
   endif
-  delayForCurrentPlay = delayForCurrentPlay + CHAMELEON_TRIGGER_DELAY
 
   SendMidiNoteOn  channel, feedbackId, 100, delayForCurrentPlay
   SendMidiNoteOff channel, feedbackId,   0, delayForCurrentPlay + feedbackLength
 
   audioChannelOccupiedUntil = audioChannelOccupiedUntil + feedbackLength + CHAMELEON_TRIGGER_DELAY
+
+  Log {Played feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength, {, delayForCurrentPlay=}, delayForCurrentPlay, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
 @End
 
-
+@SetChannel
+  if feedbackId < 34
+    channel = MIDI_CHANNEL_FB_0_TO_33
+  else
+    channel = MIDI_CHANNEL_FB_34_TO_67
+  endif
+@End
 
 
 
@@ -82,5 +97,5 @@
   MOZ_INST_FEEDBACKER = 93
 
   MIDI_CHANNEL_FB_0_TO_33  = 2
-  MIDI_CHANNEL_FB_34_TO_XX = 3
+  MIDI_CHANNEL_FB_34_TO_67 = 3
 @End
