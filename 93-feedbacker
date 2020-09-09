@@ -1,4 +1,15 @@
-// Make sure to start the BlueBoard while pressing the B button!
+// Feedbacker sends audio signals that are meant for the performer only, like ...
+//
+// Feedback is done through two instances of Chameleon (each with preset "Group The Loop Wizard 1" or 2 loaded).
+// It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+// So we have to load more than one, each with its own channel.
+// Make sure that AUM only sends the right channel to the respective Chameleon instance!
+//
+// AUM routing:
+// - Receives from ModeSwitcher
+// - Recieves from StepSequencer
+// - (mostly everything)
+
 @OnLoad
   SetShortName {93-Feedbacker}
 
@@ -8,22 +19,50 @@
 @End
 
 @InitConstants
+  CHAMELEON_TRIGGER_DELAY = 50 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample.
+
+  // The length of the audio samples (in ms)
+  AUDIO_SAMPLES_LENGTHS[0] = 1230
+  AUDIO_SAMPLES_LENGTHS[1] = 3121
 @End
 
 @InitVariables
+  audioChannelOccupiedUntil = SystemTime
+  delayForCurrentPlay = 0
 @End
 
 @OnSysex
   ReceiveSysex data
 
   if data[0] = MOZ_INST_FEEDBACKER
-    feedbackId = data[1]
+    feedbackId     = data[1]
+    feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
 
-    Log {Received feedback ID=}, feedbackId
+    Log {Received feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength
+
+    Call @GiveFeedback
   endif
 @End
 
+@GiveFeedback
+  if feedbackId < 34
+    channel = MIDI_CHANNEL_FB_0_TO_33
+  else
+    channel = MIDI_CHANNEL_FB_34_TO_XX
+  endif
 
+  if SystemTime < audioChannelOccupiedUntil // Still occupied!
+    delayForCurrentPlay = SystemTime - audioChannelOccupiedUntil // Delay next feedback
+  else
+    delayForCurrentPlay = 0 // Play right away
+  endif
+  delayForCurrentPlay = delayForCurrentPlay + CHAMELEON_TRIGGER_DELAY
+
+  SendMidiNoteOn  channel, feedbackId, 100, delayForCurrentPlay
+  SendMidiNoteOff channel, feedbackId,   0, delayForCurrentPlay + feedbackLength
+
+  audioChannelOccupiedUntil = audioChannelOccupiedUntil + feedbackLength + CHAMELEON_TRIGGER_DELAY
+@End
 
 
 
@@ -41,4 +80,7 @@
   UNDEFINED = -1
 
   MOZ_INST_FEEDBACKER = 93
+
+  MIDI_CHANNEL_FB_0_TO_33  = 2
+  MIDI_CHANNEL_FB_34_TO_XX = 3
 @End

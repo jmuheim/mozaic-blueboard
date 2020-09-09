@@ -1,4 +1,12 @@
+// BlueBoardHandler receives the button presses from the BlueBoard and sends them to ModeSwitcher.
+//
 // Make sure to start the BlueBoard while pressing the B button!
+//
+// No other Mozaic instance should listen to the BlueBoard!
+//
+// AUM routing:
+// - Receives from BlueBoard
+
 @OnLoad
   SetShortName {0-BBHandler}
 

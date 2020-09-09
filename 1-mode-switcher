@@ -1,4 +1,14 @@
-// Make sure to start the BlueBoard while pressing the B button!
+// ModeSwitcher decides which mode is active.
+//
+// If a mode switch button combination is pressed (e.g. A+D), then the active mode is switched. Every other received button presses are sent to the active mode's instance.
+//
+// Available modes:
+// - Setup: Configuration of the current song, e.g. time signature, beats per minute
+// - Step sequencer: State handling of and interplay between all the apps needed during a live looping performance
+//
+// AUM routing:
+// - Receives from BlueBoardHandler
+
 @OnLoad
   SetShortName {1-ModeSwitcher}
 

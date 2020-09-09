@@ -1,4 +1,18 @@
-// Make sure to start the BlueBoard while pressing the B button!
+// StepSequencer handles all the state handling of and interplay between all the apps needed during a live looping performance. These apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
+//
+// It allows to define sets of configurations. Each set contains the following chunks:
+// - Group to select (GTL)
+// - Loop to select (GTL)
+// - Clock length (GTL)
+// - Record sends: which input(s) are sent to GTL to be recorded. It can be only one or a combo of mic and guitar/keyboard.
+// - Instrument FX: which effects are applied to the record sends
+// - Recording mode (in GTL)
+//
+// Each of these chunks are represented by their own Mozaic instance. They handle both the interaction with the user, as well as the appliance of their specific info.
+//
+// AUM routing:
+// - Receives from ModeSwitcher
+
 @OnLoad
   SetShortName {21-StepSequencer}
 
