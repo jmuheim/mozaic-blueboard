@@ -19,12 +19,18 @@
   Call @InitConstants
   Call @InitSharedConstants
   Call @InitVariables
+  Call @Reset
 @End
 
 @InitConstants
 @End
 
 @InitVariables
+@End
+
+@Reset
+  data = [MOZ_INST_FEEDBACKER, FEEDBACK_WELCOME]
+  SendSysex data, 2
 @End
 
 @OnSysex
@@ -52,4 +58,7 @@
   UNDEFINED = -1
 
   MOZ_INST_STEP_SEQUENCER = 21
+  MOZ_INST_FEEDBACKER     = 93
+
+  FEEDBACK_WELCOME = 0
 @End

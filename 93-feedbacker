@@ -6,7 +6,7 @@
 // - Midi event  0 to 33 is directed to channel 2 (Chameleon with preset "Group The Loop Wizard 1" loaded)
 // - Midi event 34 to 67 is directed to channel 3 (Chameleon with preset "Group The Loop Wizard 2" loaded)
 //
-// Make sure that AUM only sends the right channel to the respective Chameleon instance!
+// Make sure that AUM only sends the right channel to the respective Chameleon instance (in the instance's routing menu, use "Channel filter" to toggle all channels off except the appropriate one)!
 //
 // AUM routing:
 // - Receives from ModeSwitcher
@@ -20,7 +20,7 @@
   Call @InitSharedConstants
   Call @InitVariables
 
-  feedbackId = 32
+  feedbackId = 39
   feedbackLength = 1000
   Call @GiveFeedback
 

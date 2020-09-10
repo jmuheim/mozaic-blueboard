@@ -8,7 +8,7 @@
 // - Receives from BlueBoard
 
 @OnLoad
-  SetShortName {0-BBHandler}
+  SetShortName {0-BlueBoardHandler}
 
   Call @InitConstants
   Call @InitSharedConstants
