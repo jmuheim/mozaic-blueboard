@@ -14,6 +14,10 @@
 
   Call @InitConstants
   Call @InitSharedConstants
+  Call @Reset
+@End
+
+@Reset
   Call @InitVariables
 @End
 

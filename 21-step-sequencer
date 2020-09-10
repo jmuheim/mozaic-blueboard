@@ -18,7 +18,6 @@
 
   Call @InitConstants
   Call @InitSharedConstants
-  Call @InitVariables
   Call @Reset
 @End
 
@@ -29,6 +28,11 @@
 @End
 
 @Reset
+  Call @InitVariables
+  Call @SayWelcome
+@End
+
+@SayWelcome
   data = [MOZ_INST_FEEDBACKER, FEEDBACK_WELCOME]
   SendSysex data, 2
 @End

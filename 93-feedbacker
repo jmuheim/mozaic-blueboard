@@ -18,15 +18,11 @@
 
   Call @InitConstants
   Call @InitSharedConstants
+  Call @Reset
+@End
+
+@Reset
   Call @InitVariables
-
-  feedbackId = 39
-  feedbackLength = 1000
-  Call @GiveFeedback
-
-  feedbackId = 31
-  feedbackLength = 3000
-  Call @GiveFeedback
 @End
 
 @InitConstants

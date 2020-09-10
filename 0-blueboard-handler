@@ -12,9 +12,7 @@
 
   Call @InitConstants
   Call @InitSharedConstants
-  Call @InitVariables
-
-  Call @IlluminateAllbuttons
+  Call @Reset
 @End
 
 @InitConstants
@@ -24,6 +22,11 @@
   TAP_TYPE_IMMEDIATE = 0
   TAP_TYPE_1_BEAT    = 1
   TAP_TYPE_1_BAR     = 2
+@End
+
+@Reset
+  Call @InitVariables
+  Call @IlluminateAllbuttons
 @End
 
 @InitVariables
