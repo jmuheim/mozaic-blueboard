@@ -6,7 +6,7 @@
 // - Midi event  0 to 33 is directed to channel 2 (Chameleon with preset "Group The Loop Wizard 1" loaded)
 // - Midi event 34 to 67 is directed to channel 3 (Chameleon with preset "Group The Loop Wizard 2" loaded)
 //
-// Make sure that AUM only sends the right channel to the respective Chameleon instance (in the instance's routing menu, use "Channel filter" to toggle all channels off except the appropriate one)!
+// Make sure that each Chameleon instance only receives from the respective channel (in AUM, in the instance's routing menu, use "Channel filter" to toggle all channels off except the appropriate one)!
 //
 // AUM routing:
 // - Receives from ModeSwitcher
@@ -24,13 +24,14 @@
 @InitConstants
   CHAMELEON_TRIGGER_DELAY = 500 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample.
 
-  // The length of the audio samples (in ms)
-  AUDIO_SAMPLES_LENGTHS[0] = 1230
-  AUDIO_SAMPLES_LENGTHS[1] = 3121
+  // The length of the audio samples in ms (needed for playing them after each other)
+  AUDIO_SAMPLES_LENGTHS[0] = 1032 // FEEDBACK_WELCOME
+  AUDIO_SAMPLES_LENGTHS[1] =  936 // FEEDBACK_STEP_SEQUENCER_ACTIVE
+  AUDIO_SAMPLES_LENGTHS[2] =  432 // FEEDBACK_SELECT
+  AUDIO_SAMPLES_LENGTHS[2] =  312 // FEEDBACK_GROUP
 @End
 
 @InitVariables
-  channel = MIDI_CHANNEL_FB_0_TO_33
   audioChannelOccupiedUntil = SystemTime
   delayForCurrentPlay = 0
 @End
@@ -55,8 +56,10 @@
 @GiveFeedback
   Call @SetChannel
 
+  Log {SystemTime=}, SystemTime, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
   if SystemTime > audioChannelOccupiedUntil // Not occupied anymore
     delayForCurrentPlay = 0 // Play right away
+    audioChannelOccupiedUntil = SystemTime
   else // Still occupied
     delayForCurrentPlay = audioChannelOccupiedUntil - SystemTime // Delay next feedback until the audio channel isn't occupied anymore
   endif
