@@ -17,10 +17,6 @@
   Call @Reset
 @End
 
-@Reset
-  Call @InitVariables
-@End
-
 @InitConstants
   MODE_STEP_SEQUENCER = 0
   MODE_SETUP          = 1
@@ -28,6 +24,16 @@
 @End
 
 @InitVariables
+@End
+
+@Reset
+  Call @InitVariables
+  Call @SayWelcome
+@End
+
+@SayWelcome
+  data = [MOZ_INST_FEEDBACKER, FEEDBACK_WELCOME]
+  SendSysex data, 2
 @End
 
 @OnSysex

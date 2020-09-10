@@ -24,12 +24,12 @@
   TAP_TYPE_1_BAR     = 2
 @End
 
+@InitVariables
+@End
+
 @Reset
   Call @InitVariables
   Call @IlluminateAllbuttons
-@End
-
-@InitVariables
 @End
 
 @IlluminateAllbuttons
