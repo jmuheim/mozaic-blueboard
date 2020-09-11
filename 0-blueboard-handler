@@ -58,8 +58,8 @@
 
   Log {Button }, MidiNote, { up   @ }, buttonUpTime, { => tapType: }, tapType
 
-  data = [MOZ_INST_MODE_SWITCHER, MidiNote, tapType]
-  SendSysex data, 3
+  data = [MOZ_INST_MODE_SWITCHER, SYSEX_DISPATCH_BUTTON, MidiNote, tapType]
+  SendSysex data, 4 // TODO: Is length really needed, when it is always the same for a sysex action?
 @End
 
 
@@ -90,4 +90,6 @@
 
   // Be aware that within apps MIDI channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   MIDI_CHANNEL_BB  = 0 // BlueBoard (listens only to channel 0)
+
+  SYSEX_DISPATCH_BUTTON = 0
 @End

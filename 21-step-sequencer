@@ -29,16 +29,30 @@
 
 @Reset
   Call @InitVariables
+  Call @GroupManager
+@End
+
+@GroupManager
+  data = [MOZ_INST_GROUP_MANAGER, PROCEED_WITH_WORKFLOW]
+  SendSysex data, 2
 @End
 
 @OnSysex
   ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
 
-  if data[0] = MOZ_INST_STEP_SEQUENCER
-    bbButton = data[1]
-    tapType  = data[2]
+  if sysexTarget = MOZ_INST_STEP_SEQUENCER
+    if sysexAction = SYSEX_DISPATCH_BUTTON
+      bbButton = data[2]
+      tapType  = data[3]
 
-    Log {Received button=}, bbButton, {, tapType=}, tapType
+      Log {Received button=}, bbButton, {, tapType=}, tapType
+
+      Call @DispatchButtonPress
+    else
+      Log {Error: Unknown sysexTarget=}, sysexTarget
+    endif
   endif
 @End
 
@@ -56,5 +70,8 @@
   UNDEFINED = -1
 
   MOZ_INST_STEP_SEQUENCER = 21
+  MOZ_INST_GROUP_MANAGER  = 31
   MOZ_INST_FEEDBACKER     = 93
+
+  SYSEX_DISPATCH_BUTTON = 0
 @End

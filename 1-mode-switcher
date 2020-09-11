@@ -41,14 +41,20 @@
 
 @OnSysex
   ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
 
-  if data[0] = MOZ_INST_MODE_SWITCHER
-    bbButton = data[1]
-    tapType  = data[2]
+  if sysexTarget = MOZ_INST_MODE_SWITCHER
+    if sysexAction = SYSEX_DISPATCH_BUTTON
+      bbButton = data[2]
+      tapType  = data[3]
 
-    Log {Received button=}, bbButton, {, tapType=}, tapType
+      Log {Received button=}, bbButton, {, tapType=}, tapType
 
-    Call @DispatchButtonPress
+      Call @DispatchButtonPress
+    else
+      Log {Error: Unknown sysexTarget=}, sysexTarget
+    endif
   endif
 @End
 
@@ -68,8 +74,8 @@
 @End
 
 @SendButtonToStepSequencer
-  data = [MOZ_INST_STEP_SEQUENCER, bbButton, tapType]
-  SendSysex data, 3
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+  SendSysex data, 4
 @End
 
 
@@ -87,6 +93,8 @@
   MOZ_INST_MODE_SWITCHER  = 1
   MOZ_INST_FEEDBACKER     = 93
   MOZ_INST_STEP_SEQUENCER = 21
+
+  SYSEX_DISPATCH_BUTTON = 0
 
   FEEDBACK_WELCOME               = 0
   FEEDBACK_STEP_SEQUENCER_ACTIVE = 1

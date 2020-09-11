@@ -1,0 +1,58 @@
+// AUM routing:
+// - Receives from StepSequencer
+
+@OnLoad
+  SetShortName {31-GroupManager}
+
+  Call @InitConstants
+  Call @InitSharedConstants
+  Call @Reset
+@End
+
+@InitConstants
+@End
+
+@InitVariables
+@End
+
+@Reset
+  Call @InitVariables
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
+
+  if sysexTarget = MOZ_INST_GROUP_MANAGER
+    if sysexAction = SYSEX_DISPATCH_BUTTON
+      bbButton = data[2]
+      tapType  = data[3]
+
+      Log {Received button=}, bbButton, {, tapType=}, tapType
+
+      Call @DispatchButtonPress
+    else
+      Log {Error: Unknown sysexTarget=}, sysexTarget
+    endif
+  endif
+@End
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  MOZ_INST_GROUP_MANAGER = 31
+  MOZ_INST_FEEDBACKER    = 93
+
+  SYSEX_DISPATCH_BUTTON = 0
+@End
