@@ -35,7 +35,7 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     else
-      Log {Error: Unknown sysexTarget=}, sysexTarget
+      Log {Error: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End

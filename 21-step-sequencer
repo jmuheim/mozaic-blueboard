@@ -51,7 +51,7 @@
 
       Call @DispatchButtonPress
     else
-      Log {Error: Unknown sysexTarget=}, sysexTarget
+      Log {Error: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End
