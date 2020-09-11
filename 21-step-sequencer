@@ -29,6 +29,10 @@
 
 @Reset
   Call @InitVariables
+  Call @ProceedWithWorkflow
+@End
+
+@ProceedWithWorkflow
   Call @GroupManager
 @End
 
