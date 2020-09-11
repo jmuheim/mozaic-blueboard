@@ -12,6 +12,9 @@
 // - Receives from ModeSwitcher
 // - Recieves from StepSequencer
 // - (mostly everything)
+//
+// Notes:
+// - Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample. As we know the length of each sample, we don't have to account this.
 
 @OnLoad
   SetShortName {93-Feedbacker}
@@ -22,19 +25,19 @@
 @End
 
 @InitConstants
-  CHAMELEON_TRIGGER_DELAY = 500 // Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample.
-
   // The length of the audio samples in ms (needed for playing them after each other)
   AUDIO_SAMPLES_LENGTHS[0] = 1032 // FEEDBACK_WELCOME
   AUDIO_SAMPLES_LENGTHS[1] =  936 // FEEDBACK_STEP_SEQUENCER_ACTIVE
-  AUDIO_SAMPLES_LENGTHS[2] =  432 // FEEDBACK_SELECT
-  AUDIO_SAMPLES_LENGTHS[3] =  312 // FEEDBACK_GROUP
+  AUDIO_SAMPLES_LENGTHS[2] =  515 // FEEDBACK_SELECT
+  AUDIO_SAMPLES_LENGTHS[3] =  221 // FEEDBACK_GROUP
   AUDIO_SAMPLES_LENGTHS[4] =  480 // FEEDBACK_ONE
 @End
 
 @InitVariables
-  audioChannelOccupiedUntil = SystemTime
-  delayForCurrentPlay = 0
+  audioPlayingUntil = SystemTime
+
+  delayForCurrentMidiOn  = 0
+  delayForCurrentMidiOff = 0
 @End
 
 @Reset
@@ -68,26 +71,25 @@
 @End
 
 @CueFeedback
-  Log {@CueFeedback: feedbackId=}, feedbackId
-
   Call @SetChannel
-
-  Log {SystemTime=}, SystemTime, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
-  if SystemTime > audioChannelOccupiedUntil // Not occupied anymore
-    delayForCurrentPlay = 0 // Play right away
-    audioChannelOccupiedUntil = SystemTime
-  else // Still occupied
-    delayForCurrentPlay = audioChannelOccupiedUntil - SystemTime // Delay next feedback until the audio channel isn't occupied anymore
-  endif
 
   feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
 
-  SendMidiNoteOn  channel, feedbackId, 127, delayForCurrentPlay
-  SendMidiNoteOff channel, feedbackId,   0, delayForCurrentPlay + feedbackLength
+  now = SystemTime
+  if audioPlayingUntil < now // Not occupied anymore
+    delayForCurrentMidiOn = 0 // Play right away
+    audioPlayingUntil = now + feedbackLength
+  else // Still occupied
+    delayForCurrentMidiOn = audioPlayingUntil - now // Delay next feedback until the audio channel isn't occupied anymore
+    audioPlayingUntil = audioPlayingUntil + feedbackLength
+  endif
 
-  audioChannelOccupiedUntil = audioChannelOccupiedUntil + feedbackLength + CHAMELEON_TRIGGER_DELAY
+  delayForCurrentMidiOff = delayForCurrentMidiOn + feedbackLength
 
-  //Log {Played feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, delayForCurrentPlay=}, delayForCurrentPlay, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
+  Log {@CueFeedback feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, now=}, now, {, delayForCurrentMidiOn=}, delayForCurrentMidiOn, {, delayForCurrentMidiOff=}, delayForCurrentMidiOff, {, audioPlayingUntil=}, audioPlayingUntil
+
+  SendMidiNoteOn  channel, feedbackId, 127, delayForCurrentMidiOn
+  SendMidiNoteOff channel, feedbackId,   0, delayForCurrentMidiOff
 @End
 
 @SetChannel

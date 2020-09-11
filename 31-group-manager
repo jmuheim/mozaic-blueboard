@@ -43,8 +43,8 @@
 
 @ProceedWithWorkflow
   Log {Proceeding with workflow}
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT]
-  SendSysex data, 3
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_GROUP]
+  SendSysex data, 4
 @End
 
 
