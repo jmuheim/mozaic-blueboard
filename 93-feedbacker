@@ -43,24 +43,33 @@
 
 @OnSysex
   ReceiveSysex data
+  sysexLength = SysexSize
   sysexTarget = data[0]
   sysexAction = data[1]
 
   if sysexTarget = MOZ_INST_FEEDBACKER
     if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
-      feedbackId     = data[1]
-      feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
-
-      Log {Received feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength
-
-      Call @AnnounceFeedback
+      Call @IterateOverFeedbacks
     else
       Log {Error: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End
 
-@AnnounceFeedback
+@IterateOverFeedbacks
+  Log {@IterateOverFeedbacks}
+
+  i = 2
+  while i < sysexLength
+    feedbackId = data[i]
+    Call @CueFeedback
+    Inc i
+  endwhile
+@End
+
+@CueFeedback
+  Log {@CueFeedback: feedbackId=}, feedbackId
+
   Call @SetChannel
 
   Log {SystemTime=}, SystemTime, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
@@ -71,12 +80,14 @@
     delayForCurrentPlay = audioChannelOccupiedUntil - SystemTime // Delay next feedback until the audio channel isn't occupied anymore
   endif
 
-  SendMidiNoteOn  channel, feedbackId, 100, delayForCurrentPlay
+  feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
+
+  SendMidiNoteOn  channel, feedbackId, 127, delayForCurrentPlay
   SendMidiNoteOff channel, feedbackId,   0, delayForCurrentPlay + feedbackLength
 
   audioChannelOccupiedUntil = audioChannelOccupiedUntil + feedbackLength + CHAMELEON_TRIGGER_DELAY
 
-  Log {Played feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength, {, delayForCurrentPlay=}, delayForCurrentPlay, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
+  //Log {Played feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, delayForCurrentPlay=}, delayForCurrentPlay, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
 @End
 
 @SetChannel

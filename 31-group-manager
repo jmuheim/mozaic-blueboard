@@ -17,6 +17,7 @@
 
 @Reset
   Call @InitVariables
+  Call @ProceedWithWorkflow
 @End
 
 @OnSysex
