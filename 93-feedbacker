@@ -43,18 +43,24 @@
 
 @OnSysex
   ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
 
-  if data[0] = MOZ_INST_FEEDBACKER
-    feedbackId     = data[1]
-    feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
+  if sysexTarget = MOZ_INST_FEEDBACKER
+    if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
+      feedbackId     = data[1]
+      feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
 
-    Log {Received feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength
+      Log {Received feedback ID=}, feedbackId, {, feedbackLength=}, feedbackLength
 
-    Call @GiveFeedback
+      Call @AnnounceFeedback
+    else
+      Log {Error: Unknown sysexTarget=}, sysexTarget
+    endif
   endif
 @End
 
-@GiveFeedback
+@AnnounceFeedback
   Call @SetChannel
 
   Log {SystemTime=}, SystemTime, {, audioChannelOccupiedUntil=}, audioChannelOccupiedUntil
@@ -98,4 +104,6 @@
 
   MIDI_CHANNEL_FB_0_TO_33  = 2
   MIDI_CHANNEL_FB_34_TO_67 = 3
+
+  SYSEX_ANNOUNCE_FEEDBACK = 1599809361
 @End
