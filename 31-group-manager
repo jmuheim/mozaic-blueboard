@@ -32,13 +32,18 @@
       Log {Received button=}, bbButton, {, tapType=}, tapType
 
       Call @DispatchButtonPress
+    elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
+      Call @ProceedWithWorkflow
     else
       Log {Error: Unknown sysexTarget=}, sysexTarget
     endif
   endif
 @End
 
-
+@ProceedWithWorkflow
+  data = [MOZ_INST_FEEDBACKER, FEEDBACK_SELECT]
+  SendSysex data, 3
+@End
 
 
 
@@ -55,4 +60,8 @@
   MOZ_INST_FEEDBACKER    = 93
 
   SYSEX_DISPATCH_BUTTON = 0
+  SYSEX_PROCEED_WITH_WORKFLOW = 1
+
+  FEEDBACK_SELECT = 2
+  FEEDBACK_GROUP  = 3
 @End
