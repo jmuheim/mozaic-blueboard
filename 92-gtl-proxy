@@ -1,0 +1,70 @@
+// GtlProxy handles interaction with Group the Loop (GTL).
+//
+// AUM routing:
+// - Receives from LoopManager
+// - Receives from GroupManager
+
+@OnLoad
+  SetShortName {92-GtlProxy}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@InitConstants
+@End
+
+@InitVariables
+@End
+
+@Reset
+  Call @InitVariables
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexLength = SysexSize
+  sysexTarget = data[0]
+  sysexAction = data[1]
+
+  if sysexTarget = MOZ_INST_GTL_PROXY
+    if sysexAction = SYSEX_GTL_SELECT_LOOP
+      loop = data[2]
+      Call @SelectLoopInGtl
+    elseif sysexAction = SYSEX_GTL_SELECT_GROUP
+      group = data[2]
+      Call @SelectGroupInGtl
+    else
+      Log {ERROR: Unknown sysexAction=}, sysexAction
+    endif
+  endif
+@End
+
+@SelectLoopInGtl
+  Log {Selecting loop=}, loop
+@End
+
+@SelectGroupInGtl
+  Log {Selecting group=}, group
+@End
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  MOZ_INST_GTL_PROXY = 92
+
+  SYSEX_GTL_SELECT_LOOP  = 4
+  SYSEX_GTL_SELECT_GROUP = 5
+
+  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
+  MIDI_CHANNEL_GTL = 1 // Group The Loop
+@End

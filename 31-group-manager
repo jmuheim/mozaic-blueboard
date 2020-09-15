@@ -127,6 +127,9 @@
 
 @ArmConfig
   Log {Arming config with stackId=}, stackId, {, which means group=}, groupStack[stackId]
+
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, groupStack[stackId]]
+  SendSysex data, 3
 @End
 
 
@@ -140,13 +143,15 @@
   UNDEFINED = -1
 
   MOZ_INST_STEP_SEQUENCER = 21
-  MOZ_INST_GROUP_MANAGER = 32
-  MOZ_INST_FEEDBACKER    = 93
+  MOZ_INST_GROUP_MANAGER  = 32
+  MOZ_INST_GTL_PROXY      = 92
+  MOZ_INST_FEEDBACKER     = 93
 
   SYSEX_DISPATCH_BUTTON        = 0
   SYSEX_PROCEED_WITH_WORKFLOW  = 1
   SYSEX_ANNOUNCE_FEEDBACK      = 2
   SYSEX_SELECTION_CONFIRMATION = 3
+  SYSEX_GTL_SELECT_GROUP       = 5
   SYSEX_ARM_CONFIG             = 6
 
   FEEDBACK_SELECT    = 15
