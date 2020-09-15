@@ -12,6 +12,8 @@
 //
 // AUM routing:
 // - Receives from ModeSwitcher
+// - Receives from LoopManager
+// - Receives from GroupManager
 
 @OnLoad
   SetShortName {21-StepSequencer}
