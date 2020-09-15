@@ -43,6 +43,9 @@
       Call @DispatchButtonPress
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
+    elseif sysexAction = SYSEX_ARM_CONFIG
+      stackId = data[2]
+      Call @ArmConfig
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
@@ -122,7 +125,9 @@
   SendSysex data, 3
 @End
 
-
+@ArmConfig
+  Log {Arming config with stackId=}, stackId
+@End
 
 
 
@@ -138,10 +143,11 @@
   MOZ_INST_GROUP_MANAGER = 32
   MOZ_INST_FEEDBACKER    = 93
 
-  SYSEX_DISPATCH_BUTTON       = 0
-  SYSEX_PROCEED_WITH_WORKFLOW = 1
-  SYSEX_ANNOUNCE_FEEDBACK     = 2
-  SYSEX_SELECTION_CONFIRMATION  = 3
+  SYSEX_DISPATCH_BUTTON        = 0
+  SYSEX_PROCEED_WITH_WORKFLOW  = 1
+  SYSEX_ANNOUNCE_FEEDBACK      = 2
+  SYSEX_SELECTION_CONFIRMATION = 3
+  SYSEX_ARM_CONFIG             = 6
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_GROUP     = 16

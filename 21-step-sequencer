@@ -93,8 +93,7 @@
 @ArmConfig
   if stackSize > 0
     if lastActivatedStackId < stackSize - 1
-      Inc lastActivatedStackId
-      Call @SayConfigXOfYArmed
+      Call @ArmNextConfig
     else
       Call @SayNoConfigsLeft
       Call @SayAddConfigs
@@ -110,6 +109,17 @@
 @SayAddedConfigX
   data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ADDED, FEEDBACK_CONFIG, stackSize]
   SendSysex data, 5
+@End
+
+@ArmNextConfig
+  Inc lastActivatedStackId
+
+  for i = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
+    data = [i, SYSEX_ARM_CONFIG, lastActivatedStackId]
+    SendSysex data, 3
+  endfor
+
+  Call @SayConfigXOfYArmed
 @End
 
 @SayConfigXOfYArmed
@@ -153,6 +163,7 @@
   SYSEX_PROCEED_WITH_WORKFLOW  = 1
   SYSEX_ANNOUNCE_FEEDBACK      = 2
   SYSEX_SELECTION_CONFIRMATION = 3
+  SYSEX_ARM_CONFIG             = 6
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62
