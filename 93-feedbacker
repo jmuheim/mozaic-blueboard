@@ -25,9 +25,9 @@
 @End
 
 @InitConstants
-  AUDIO_OVERLAP_DURATION = 100 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
+  AUDIO_OVERLAP_DURATION = 150 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
 
-  PAUSE_BETWEEN_FEEDBACKS = 500 // After a group of feedbacks was played, add some silence before the next group.
+  PAUSE_BETWEEN_FEEDBACKS = 300 // After a group of feedbacks was played, add some silence before the next group.
 
   // The length of the audio samples in ms (needed for playing them after each other)
   AUDIO_SAMPLES_LENGTHS[0]  =  432 // FEEDBACK_ZERO
