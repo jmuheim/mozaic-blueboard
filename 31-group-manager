@@ -10,9 +10,16 @@
 @End
 
 @InitConstants
+  GROUP_M = 0
+  GROUP_1 = 1
+  GROUP_2 = 2
+  GROUP_3 = 3
+  GROUP_4 = 4
+  GROUP_5 = 5
 @End
 
 @InitVariables
+  selectedGroup = UNDEFINED
 @End
 
 @Reset
@@ -47,6 +54,49 @@
   SendSysex data, 4
 @End
 
+@DispatchButtonPress
+  selectedGroup = UNDEFINED
+
+  if tapType = TAP_TYPE_IMMEDIATE
+    if bbButton = BB_BUTTON_A
+      selectedGroup = GROUP_1
+    elseif bbButton = BB_BUTTON_B
+      selectedGroup = GROUP_2
+    elseif bbButton = BB_BUTTON_C
+      selectedGroup = GROUP_3
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  elseif tapType = TAP_TYPE_1_BEAT
+    if bbButton = BB_BUTTON_A
+      selectedGroup = GROUP_M
+    elseif bbButton = BB_BUTTON_B
+      selectedGroup = GROUP_4
+    elseif bbButton = BB_BUTTON_C
+      selectedGroup = GROUP_5
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  else
+    Log {ERROR! Unknown tapType=}, tapType
+  endif
+
+  if selectedGroup = UNDEFINED
+    Log {Unknown group input, try again!}
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP, FEEDBACK_INPUT]
+    SendSysex data, 5
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
+    SendSysex data, 3
+  else
+    Log {Group selected with selectedGroup=}, selectedGroup
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, FEEDBACK_SELECTED]
+    SendSysex data, 4
+  endif
+@End
+
 
 
 
@@ -65,6 +115,19 @@
   SYSEX_PROCEED_WITH_WORKFLOW = 1
   SYSEX_ANNOUNCE_FEEDBACK     = 2
 
-  FEEDBACK_SELECT = 2
-  FEEDBACK_GROUP  = 3
+  FEEDBACK_SELECT    = 2
+  FEEDBACK_GROUP     = 3
+  FEEDBACK_UNKNOWN   = 5
+  FEEDBACK_INPUT     = 6
+  FEEDBACK_TRY_AGAIN = 7
+  FEEDBACK_SELECTED  = 8
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
 @End

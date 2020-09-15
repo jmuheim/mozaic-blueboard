@@ -60,7 +60,14 @@
   endif
 @End
 
+@DispatchButtonPress
+  Call @SendButtonToStepSequencer
+@End
 
+@SendButtonToStepSequencer
+  data = [MOZ_INST_GROUP_MANAGER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+  SendSysex data, 4
+@End
 
 
 
@@ -79,4 +86,13 @@
 
   SYSEX_DISPATCH_BUTTON       = 0
   SYSEX_PROCEED_WITH_WORKFLOW = 1
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
 @End
