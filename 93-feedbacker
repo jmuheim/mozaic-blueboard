@@ -1,4 +1,4 @@
-// Feedbacker sends audio signals that are meant for the performer only, like ...
+// Feedbacker sends audio signals that are meant for the ears of the performer only, like ...
 //
 // Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
 // So we have to load more than one, each with its own channel.
@@ -52,6 +52,13 @@
   AUDIO_SAMPLES_LENGTHS[19] =  600 // FEEDBACK_TRY_AGAIN
   AUDIO_SAMPLES_LENGTHS[20] =  456 // FEEDBACK_SELECTED
   AUDIO_SAMPLES_LENGTHS[21] =  360 // FEEDBACK_LOOP
+  AUDIO_SAMPLES_LENGTHS[22] =  576 // FEEDBACK_STACK_EMPTY
+  AUDIO_SAMPLES_LENGTHS[23] =  264 // FEEDBACK_ADD
+  AUDIO_SAMPLES_LENGTHS[24] =  456 // FEEDBACK_CONFIG
+  AUDIO_SAMPLES_LENGTHS[25] =  528 // FEEDBACK_CONFIGS
+  AUDIO_SAMPLES_LENGTHS[26] =  384 // FEEDBACK_ARMED
+  AUDIO_SAMPLES_LENGTHS[27] =  384 // FEEDBACK_OF
+  AUDIO_SAMPLES_LENGTHS[28] =  384 // FEEDBACK_LEFT
 @End
 
 @InitVariables

@@ -31,6 +31,7 @@
 @InitVariables
   currentManagerInstance = FIRST_MANAGER_INSTANCE
   stackSize = 0
+  lastActivatedStackId = UNDEFINED
 @End
 
 @Reset
@@ -67,20 +68,68 @@
 @End
 
 @DispatchButtonPress
-  data = [currentManagerInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
-  SendSysex data, 4
+  if bbButton = BB_BUTTON_D and tapType = TAP_TYPE_IMMEDIATE
+    Call @ArmConfig
+  else
+    data = [currentManagerInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+    SendSysex data, 4
+  endif
 @End
 
 @CommitCurrentManager
   if currentManagerInstance < LAST_MANAGER_INSTANCE
     Inc currentManagerInstance
+    Log {Proceeding with next manager instance=}, currentManagerInstance
   else
     currentManagerInstance = FIRST_MANAGER_INSTANCE
     Inc stackSize
+    Call @SayAddedConfigX
+    Log {Added config to stack, stackSize=}, stackSize
   endif
 
   Call @ProceedWithWorkflow
 @End
+
+@ArmConfig
+  if stackSize > 0
+    if lastActivatedStackId < stackSize
+      Inc lastActivatedStackId
+      Call @SayConfigXOfYArmed
+    else
+      Call @SayNoConfigsLeft
+      Call @SayAddConfigs
+    endif
+  else
+    Call @SayStackEmpty
+    Call @SayAddConfigs
+  endif
+@End
+
+@SayAddedConfigX
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ADD, FEEDBACK_CONFIG, stackSize]
+  SendSysex data, 5
+@End
+
+@SayConfigXOfYArmed
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ARMED, FEEDBACK_CONFIG, lastActivatedStackId, FEEDBACK_OF, stackSize]
+  SendSysex data, 7
+@End
+
+@SayNoConfigsLeft
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ZERO, FEEDBACK_CONFIGS, FEEDBACK_LEFT]
+  SendSysex data, 5
+@End
+
+@SayStackEmpty
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ZERO, FEEDBACK_CONFIGS]
+  SendSysex data, 4
+@End
+
+@SayAddConfigs
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ADD, FEEDBACK_CONFIGS]
+  SendSysex data, 4
+@End
+
 
 
 
@@ -110,4 +159,12 @@
   TAP_TYPE_IMMEDIATE = 0
   TAP_TYPE_1_BEAT    = 1
   TAP_TYPE_1_BAR     = 2
+
+  FEEDBACK_STACK_EMPTY = 22
+  FEEDBACK_ADD         = 23
+  FEEDBACK_CONFIG      = 24
+  FEEDBACK_CONFIGS     = 25
+  FEEDBACK_ARMED       = 26
+  FEEDBACK_OF          = 27
+  FEEDBACK_LEFT        = 28
 @End
