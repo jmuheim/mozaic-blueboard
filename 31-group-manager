@@ -4,8 +4,8 @@
 @OnLoad
   SetShortName {31-GroupManager}
 
-  Call @InitConstants
   Call @InitSharedConstants
+  Call @InitConstants
   Call @Reset
 @End
 
@@ -19,7 +19,9 @@
 @End
 
 @InitVariables
-  selectedGroup = UNDEFINED
+  lastSelectedGroup = UNDEFINED
+  groupStack = []
+  stackSize
 @End
 
 @Reset
@@ -55,25 +57,25 @@
 @End
 
 @DispatchButtonPress
-  selectedGroup = UNDEFINED
+  lastSelectedGroup = UNDEFINED
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      selectedGroup = GROUP_1
+      lastSelectedGroup = GROUP_1
     elseif bbButton = BB_BUTTON_B
-      selectedGroup = GROUP_2
+      lastSelectedGroup = GROUP_2
     elseif bbButton = BB_BUTTON_C
-      selectedGroup = GROUP_3
+      lastSelectedGroup = GROUP_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      selectedGroup = GROUP_M
+      lastSelectedGroup = GROUP_M
     elseif bbButton = BB_BUTTON_B
-      selectedGroup = GROUP_4
+      lastSelectedGroup = GROUP_4
     elseif bbButton = BB_BUTTON_C
-      selectedGroup = GROUP_5
+      lastSelectedGroup = GROUP_5
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -81,16 +83,16 @@
     Log {ERROR! Unknown tapType=}, tapType
   endif
 
-  if selectedGroup = UNDEFINED
+  if lastSelectedGroup = UNDEFINED
     Log {Unknown group input, try again!}
 
-    Call @SayGroupLoop
+    Call @SayUnknownGroup
     Call @SayTryAgain
   else
-    Log {Group selected with selectedGroup=}, selectedGroup
+    Log {Group selected with lastSelectedGroup=}, lastSelectedGroup
 
-    Call @SayLoopSelected
-    Call @ConfirmSelectionSuccess
+    Call @SayGroupSelected
+    Call @AddGroupToStack
   endif
 @End
 
@@ -105,13 +107,18 @@
 @End
 
 @SayGroupSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, selectedGroup, FEEDBACK_SELECTED]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastSelectedGroup, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
-@ConfirmSelectionSuccess
-  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_SUCCESSFUL]
-  SendSysex data, 2
+@AddGroupToStack
+  groupStack[stackSize] = lastSelectedGroup
+  Inc stackSize
+@End
+
+@ConfirmSelection
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_GROUP_MANAGER]
+  SendSysex data, 3
 @End
 
 
@@ -133,7 +140,7 @@
   SYSEX_DISPATCH_BUTTON       = 0
   SYSEX_PROCEED_WITH_WORKFLOW = 1
   SYSEX_ANNOUNCE_FEEDBACK     = 2
-  SYSEX_SELECTION_SUCCESSFUL  = 3
+  SYSEX_SELECTION_CONFIRMATION  = 3
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_GROUP     = 16

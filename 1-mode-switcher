@@ -12,8 +12,8 @@
 @OnLoad
   SetShortName {1-ModeSwitcher}
 
-  Call @InitConstants
   Call @InitSharedConstants
+  Call @InitConstants
   Call @Reset
 @End
 

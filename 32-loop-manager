@@ -4,8 +4,8 @@
 @OnLoad
   SetShortName {32-LoopManager}
 
-  Call @InitConstants
   Call @InitSharedConstants
+  Call @InitConstants
   Call @Reset
 @End
 
@@ -17,7 +17,9 @@
 @End
 
 @InitVariables
-  selectedLoop = UNDEFINED
+  lastSelectedLoop = UNDEFINED
+  loopStack = []
+  stackSize = 0
 @End
 
 @Reset
@@ -53,21 +55,21 @@
 @End
 
 @DispatchButtonPress
-  selectedLoop = UNDEFINED
+  lastSelectedLoop = UNDEFINED
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      selectedLoop = LOOP_1
+      lastSelectedLoop = LOOP_1
     elseif bbButton = BB_BUTTON_B
-      selectedLoop = LOOP_2
+      lastSelectedLoop = LOOP_2
     elseif bbButton = BB_BUTTON_C
-      selectedLoop = LOOP_3
+      lastSelectedLoop = LOOP_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      selectedLoop = LOOP_4
+      lastSelectedLoop = LOOP_4
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -75,16 +77,16 @@
     Log {ERROR! Unknown tapType=}, tapType
   endif
 
-  if selectedLoop = UNDEFINED
+  if lastSelectedLoop = UNDEFINED
     Log {Unknown group input, try again!}
 
     Call @SayUnknownLoop
     Call @SayTryAgain
   else
-    Log {Loop selected with selectedLoop=}, selectedLoop
+    Log {Loop selected with lastSelectedLoop=}, lastSelectedLoop
 
     Call @SayLoopSelected
-    Call @ConfirmSelectionSuccess
+    Call @AddLoopToStack
   endif
 @End
 
@@ -99,13 +101,18 @@
 @End
 
 @SayLoopSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, selectedLoop, FEEDBACK_SELECTED]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastSelectedLoop, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
-@ConfirmSelectionSuccess
-  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_SUCCESSFUL]
-  SendSysex data, 2
+@AddLoopToStack
+  loopStack[stackSize] = lastSelectedLoop
+  Inc stackSize
+@End
+
+@ConfirmSelection
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_LOOP_MANAGER]
+  SendSysex data, 3
 @End
 
 
@@ -124,7 +131,7 @@
   SYSEX_DISPATCH_BUTTON       = 0
   SYSEX_PROCEED_WITH_WORKFLOW = 1
   SYSEX_ANNOUNCE_FEEDBACK     = 2
-  SYSEX_SELECTION_SUCCESSFUL  = 3
+  SYSEX_SELECTION_CONFIRMATION  = 3
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_LOOP      = 21

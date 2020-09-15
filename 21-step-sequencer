@@ -18,18 +18,19 @@
 @OnLoad
   SetShortName {21-StepSequencer}
 
-  Call @InitConstants
   Call @InitSharedConstants
+  Call @InitConstants
   Call @Reset
 @End
 
 @InitConstants
-  STEP_GROUP = 1
-  STEP_LOOP = 2
+  FIRST_MANAGER_INSTANCE = MOZ_INST_LOOP_MANAGER
+  LAST_MANAGER_INSTANCE  = MOZ_INST_GROUP_MANAGER
 @End
 
 @InitVariables
-  currentMozaicInstance = MOZ_INST_LOOP_MANAGER
+  currentManagerInstance = FIRST_MANAGER_INSTANCE
+  stackSize = 0
 @End
 
 @Reset
@@ -38,7 +39,7 @@
 @End
 
 @ProceedWithWorkflow
-  data = [currentMozaicInstance, SYSEX_PROCEED_WITH_WORKFLOW]
+  data = [currentManagerInstance, SYSEX_PROCEED_WITH_WORKFLOW]
   SendSysex data, 2
 @End
 
@@ -55,8 +56,10 @@
       Log {Received button=}, bbButton, {, tapType=}, tapType
 
       Call @DispatchButtonPress
-    elseif sysexAction = SYSEX_SELECTION_SUCCESSFUL
-      Log {Yeah!}
+    elseif sysexAction = SYSEX_SELECTION_CONFIRMATION
+      Log {Received selection success from manager instance=}, data[2]
+
+      Call @CommitCurrentManager
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
@@ -64,8 +67,19 @@
 @End
 
 @DispatchButtonPress
-  data = [currentMozaicInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+  data = [currentManagerInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
   SendSysex data, 4
+@End
+
+@CommitCurrentManager
+  if currentManagerInstance < LAST_MANAGER_INSTANCE
+    Inc currentManagerInstance
+  else
+    currentManagerInstance = FIRST_MANAGER_INSTANCE
+    Inc stackSize
+  endif
+
+  Call @ProceedWithWorkflow
 @End
 
 
@@ -86,7 +100,7 @@
 
   SYSEX_DISPATCH_BUTTON       = 0
   SYSEX_PROCEED_WITH_WORKFLOW = 1
-  SYSEX_SELECTION_SUCCESSFUL  = 3
+  SYSEX_SELECTION_CONFIRMATION  = 3
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62
