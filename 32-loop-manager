@@ -120,7 +120,7 @@
 @End
 
 @ArmConfig
-  Log {Arming config with stackId=}, stackId
+  Log {Arming config with stackId=}, stackId, {, which means loop=}, loopStack[stackId]
 @End
 
 
