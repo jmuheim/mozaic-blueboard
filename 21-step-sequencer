@@ -55,17 +55,28 @@
 
       Call @DispatchButtonPress
     else
-      Log {Error: Unknown sysexAction=}, sysexAction
+      Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End
 
 @DispatchButtonPress
-  Call @SendButtonToStepSequencer
+  if currentStep = STEP_GROUP
+    Call @SendButtonToGroupManager
+  elseif currentStep = STEP_LOOP
+    Call @SendButtonToLoopManager
+  else
+    Log {ERROR: Unknown currentStep=}, currentStep
+  endif
 @End
 
-@SendButtonToStepSequencer
+@SendButtonToGroupManager
   data = [MOZ_INST_GROUP_MANAGER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+  SendSysex data, 4
+@End
+
+@SendButtonToLoopManager
+  data = [MOZ_INST_LOOP_MANAGER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
   SendSysex data, 4
 @End
 

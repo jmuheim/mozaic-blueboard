@@ -53,7 +53,7 @@
 
       Call @DispatchButtonPress
     else
-      Log {Error: Unknown sysexAction=}, sysexAction
+      Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End

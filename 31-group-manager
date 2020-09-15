@@ -43,7 +43,7 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     else
-      Log {Error: Unknown sysexAction=}, sysexAction
+      Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End
@@ -84,8 +84,8 @@
   if selectedGroup = UNDEFINED
     Log {Unknown group input, try again!}
 
-    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP, FEEDBACK_INPUT]
-    SendSysex data, 5
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP]
+    SendSysex data, 4
 
     data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
     SendSysex data, 3
