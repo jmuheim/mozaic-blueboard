@@ -5,7 +5,7 @@
 //
 // We use the following table for reference, to make sure that no collisions happen (i.e. accidentally assigning the same value to different IDs).
 //
-// Whenever introducing a new ID, please consult this table!
+// Whenever introducing a new ID, please consult this table! (Except for feedback IDs, which are consolidated in the feedbacker's code.)
 
 
 MOZ_INST_BLUEBOARD_HANDLER = 0 // Is actually never used, as nobody sends Sysex to it

@@ -25,14 +25,32 @@
 @End
 
 @InitConstants
-  AUDIO_OVERLAP_DURATION = 200 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
+  AUDIO_OVERLAP_DURATION = 100 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
+
+  PAUSE_BETWEEN_FEEDBACKS = 500 // After a group of feedbacks was played, add some silence before the next group.
 
   // The length of the audio samples in ms (needed for playing them after each other)
-  AUDIO_SAMPLES_LENGTHS[0] = 1032 // FEEDBACK_WELCOME
-  AUDIO_SAMPLES_LENGTHS[1] =  936 // FEEDBACK_STEP_SEQUENCER_ACTIVE
-  AUDIO_SAMPLES_LENGTHS[2] =  432 // FEEDBACK_SELECT
-  AUDIO_SAMPLES_LENGTHS[3] =  312 // FEEDBACK_GROUP
-  AUDIO_SAMPLES_LENGTHS[4] =  480 // FEEDBACK_ONE
+  AUDIO_SAMPLES_LENGTHS[0]  =  432 // FEEDBACK_ZERO
+  AUDIO_SAMPLES_LENGTHS[1]  =  480 // FEEDBACK_ONE
+  AUDIO_SAMPLES_LENGTHS[2]  =  312 // FEEDBACK_TWO
+  AUDIO_SAMPLES_LENGTHS[3]  =  432 // FEEDBACK_THREE
+  AUDIO_SAMPLES_LENGTHS[4]  =  480 // FEEDBACK_FOUR
+  AUDIO_SAMPLES_LENGTHS[5]  =  504 // FEEDBACK_FIVE
+  AUDIO_SAMPLES_LENGTHS[6]  =  456 // FEEDBACK_SIX
+  AUDIO_SAMPLES_LENGTHS[7]  =  504 // FEEDBACK_SEVEN
+  AUDIO_SAMPLES_LENGTHS[8]  =  360 // FEEDBACK_EIGHT
+  AUDIO_SAMPLES_LENGTHS[9]  =  480 // FEEDBACK_NINE
+  AUDIO_SAMPLES_LENGTHS[10] =  336 // FEEDBACK_TEN
+  AUDIO_SAMPLES_LENGTHS[11] =  480 // FEEDBACK_ELEVEN
+  AUDIO_SAMPLES_LENGTHS[12] =  480 // FEEDBACK_TWELVE
+  AUDIO_SAMPLES_LENGTHS[13] = 1032 // FEEDBACK_WELCOME
+  AUDIO_SAMPLES_LENGTHS[14] =  936 // FEEDBACK_STEP_SEQUENCER_ACTIVE
+  AUDIO_SAMPLES_LENGTHS[15] =  432 // FEEDBACK_SELECT
+  AUDIO_SAMPLES_LENGTHS[16] =  350 // FEEDBACK_GROUP
+  AUDIO_SAMPLES_LENGTHS[17] =  456 // FEEDBACK_UNKNOWN
+  AUDIO_SAMPLES_LENGTHS[18] =  408 // FEEDBACK_INPUT
+  AUDIO_SAMPLES_LENGTHS[19] =  600 // FEEDBACK_TRY_AGAIN
+  AUDIO_SAMPLES_LENGTHS[20] =  456 // FEEDBACK_SELECTED
 @End
 
 @InitVariables
@@ -70,6 +88,8 @@
     Call @CueFeedback
     Inc i
   endwhile
+
+  audioPlayingUntil = audioPlayingUntil + PAUSE_BETWEEN_FEEDBACKS
 @End
 
 @CueFeedback
