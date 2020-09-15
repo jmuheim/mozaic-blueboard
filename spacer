@@ -1,3 +1,7 @@
+// Instead of having only 4 buttons on your BlueBoard, have 4 sets (or "spaces") of 4 buttons each - which makes 16 in total!
+//
+// Just press-and-hold a button to activate its set of 4 buttons. For example, by pressing A for a while, you'll activate space A. Now just use the BlueBoard's buttons, and you will see that they're sending different MIDI codes now than in space B, C, or D.
+//
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
   SetShortName {Spacer}
