@@ -27,7 +27,7 @@
 @End
 
 @InitVariables
-  currentStep = STEP_GROUP
+  currentMozaicInstance = MOZ_INST_LOOP_MANAGER
 @End
 
 @Reset
@@ -36,11 +36,7 @@
 @End
 
 @ProceedWithWorkflow
-  Call @GroupManager
-@End
-
-@GroupManager
-  data = [MOZ_INST_GROUP_MANAGER, SYSEX_PROCEED_WITH_WORKFLOW]
+  data = [currentMozaicInstance, SYSEX_PROCEED_WITH_WORKFLOW]
   SendSysex data, 2
 @End
 
@@ -64,22 +60,7 @@
 @End
 
 @DispatchButtonPress
-  if currentStep = STEP_GROUP
-    Call @SendButtonToGroupManager
-  elseif currentStep = STEP_LOOP
-    Call @SendButtonToLoopManager
-  else
-    Log {ERROR: Unknown currentStep=}, currentStep
-  endif
-@End
-
-@SendButtonToGroupManager
-  data = [MOZ_INST_GROUP_MANAGER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
-  SendSysex data, 4
-@End
-
-@SendButtonToLoopManager
-  data = [MOZ_INST_LOOP_MANAGER, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
+  data = [currentMozaicInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
   SendSysex data, 4
 @End
 
@@ -95,8 +76,8 @@
   UNDEFINED = -1
 
   MOZ_INST_STEP_SEQUENCER = 21
-  MOZ_INST_GROUP_MANAGER  = 31
-  MOZ_INST_LOOP_MANAGER   = 32
+  MOZ_INST_LOOP_MANAGER   = 31
+  MOZ_INST_GROUP_MANAGER  = 32
   MOZ_INST_FEEDBACKER     = 93
 
   SYSEX_DISPATCH_BUTTON       = 0
