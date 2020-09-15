@@ -92,7 +92,7 @@
 
 @ArmConfig
   if stackSize > 0
-    if lastActivatedStackId < stackSize
+    if lastActivatedStackId < stackSize - 1
       Inc lastActivatedStackId
       Call @SayConfigXOfYArmed
     else
@@ -103,6 +103,8 @@
     Call @SayStackEmpty
     Call @SayAddConfigs
   endif
+
+  Call @ProceedWithWorkflow
 @End
 
 @SayAddedConfigX
@@ -161,6 +163,7 @@
   TAP_TYPE_1_BEAT    = 1
   TAP_TYPE_1_BAR     = 2
 
+  FEEDBACK_ZERO        =  0
   FEEDBACK_STACK_EMPTY = 22
   FEEDBACK_ADD         = 23
   FEEDBACK_CONFIG      = 24
