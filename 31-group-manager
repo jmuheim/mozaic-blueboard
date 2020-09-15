@@ -21,7 +21,7 @@
 @InitVariables
   lastSelectedGroup = UNDEFINED
   groupStack = []
-  stackSize
+  stackSize = 0
 @End
 
 @Reset
@@ -114,9 +114,11 @@
 @AddGroupToStack
   groupStack[stackSize] = lastSelectedGroup
   Inc stackSize
+
+  Call @ConfirmGroupSelection
 @End
 
-@ConfirmSelection
+@ConfirmGroupSelection
   data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_GROUP_MANAGER]
   SendSysex data, 3
 @End

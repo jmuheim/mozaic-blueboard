@@ -108,9 +108,11 @@
 @AddLoopToStack
   loopStack[stackSize] = lastSelectedLoop
   Inc stackSize
+
+  Call @ConfirmLoopSelection
 @End
 
-@ConfirmSelection
+@ConfirmLoopSelection
   data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_LOOP_MANAGER]
   SendSysex data, 3
 @End
