@@ -22,9 +22,12 @@
 @End
 
 @InitConstants
+  STEP_GROUP = 1
+  STEP_LOOP = 2
 @End
 
 @InitVariables
+  currentStep = STEP_GROUP
 @End
 
 @Reset
@@ -93,6 +96,7 @@
 
   MOZ_INST_STEP_SEQUENCER = 21
   MOZ_INST_GROUP_MANAGER  = 31
+  MOZ_INST_LOOP_MANAGER   = 32
   MOZ_INST_FEEDBACKER     = 93
 
   SYSEX_DISPATCH_BUTTON       = 0

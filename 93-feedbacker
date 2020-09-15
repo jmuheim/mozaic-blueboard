@@ -51,6 +51,7 @@
   AUDIO_SAMPLES_LENGTHS[18] =  408 // FEEDBACK_INPUT
   AUDIO_SAMPLES_LENGTHS[19] =  600 // FEEDBACK_TRY_AGAIN
   AUDIO_SAMPLES_LENGTHS[20] =  456 // FEEDBACK_SELECTED
+  AUDIO_SAMPLES_LENGTHS[21] =  360 // FEEDBACK_LOOP
 @End
 
 @InitVariables
@@ -74,7 +75,7 @@
     if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
       Call @IterateOverFeedbacks
     else
-      Log {Error: Unknown sysexAction=}, sysexAction
+      Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
   endif
 @End

@@ -1,0 +1,127 @@
+// AUM routing:
+// - Receives from StepSequencer
+
+@OnLoad
+  SetShortName {32-LoopManager}
+
+  Call @InitConstants
+  Call @InitSharedConstants
+  Call @Reset
+@End
+
+@InitConstants
+  LOOP_1 = 1
+  LOOP_2 = 2
+  LOOP_3 = 3
+  LOOP_4 = 4
+@End
+
+@InitVariables
+  selectedLoop = UNDEFINED
+@End
+
+@Reset
+  Call @InitVariables
+  Call @ProceedWithWorkflow
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
+
+  if sysexTarget = MOZ_INST_LOOP_MANAGER
+    if sysexAction = SYSEX_DISPATCH_BUTTON
+      bbButton = data[2]
+      tapType  = data[3]
+
+      Log {Received button=}, bbButton, {, tapType=}, tapType
+
+      Call @DispatchButtonPress
+    elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
+      Call @ProceedWithWorkflow
+    else
+      Log {ERROR: Unknown sysexAction=}, sysexAction
+    endif
+  endif
+@End
+
+@ProceedWithWorkflow
+  Log {Proceeding with workflow}
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_LOOP]
+  SendSysex data, 4
+@End
+
+@DispatchButtonPress
+  selectedLoop = UNDEFINED
+
+  if tapType = TAP_TYPE_IMMEDIATE
+    if bbButton = BB_BUTTON_A
+      selectedLoop = LOOP_1
+    elseif bbButton = BB_BUTTON_B
+      selectedLoop = LOOP_2
+    elseif bbButton = BB_BUTTON_C
+      selectedLoop = LOOP_3
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  elseif tapType = TAP_TYPE_1_BEAT
+    if bbButton = BB_BUTTON_A
+      selectedLoop = LOOP_4
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  else
+    Log {ERROR! Unknown tapType=}, tapType
+  endif
+
+  if selectedLoop = UNDEFINED
+    Log {Unknown group input, try again!}
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_LOOP]
+    SendSysex data, 4
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
+    SendSysex data, 3
+  else
+    Log {Loop selected with selectedLoop=}, selectedLoop
+
+    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, selectedLoop, FEEDBACK_SELECTED]
+    SendSysex data, 5
+  endif
+@End
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  MOZ_INST_LOOP_MANAGER = 32
+  MOZ_INST_FEEDBACKER   = 93
+
+  SYSEX_DISPATCH_BUTTON       = 0
+  SYSEX_PROCEED_WITH_WORKFLOW = 1
+  SYSEX_ANNOUNCE_FEEDBACK     = 2
+
+  FEEDBACK_SELECT    = 15
+  FEEDBACK_LOOP      = 21
+  FEEDBACK_UNKNOWN   = 17
+  FEEDBACK_INPUT     = 18
+  FEEDBACK_TRY_AGAIN = 19
+  FEEDBACK_SELECTED  = 20
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
+@End
