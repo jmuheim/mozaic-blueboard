@@ -29,12 +29,15 @@
 @Reset
   Call @InitVariables
   Call @SayWelcome
+  Call @AnnounceActiveMode
 @End
 
 @SayWelcome
   data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
   SendSysex data, 3
+@End
 
+@AnnounceActiveMode
   data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_STEP_SEQUENCER_ACTIVE]
   SendSysex data, 3
 @End

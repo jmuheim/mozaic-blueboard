@@ -53,6 +53,8 @@
       Log {Received button=}, bbButton, {, tapType=}, tapType
 
       Call @DispatchButtonPress
+    elseif sysexAction = SYSEX_SELECTION_SUCCESSFUL
+      Log {Yeah!}
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
