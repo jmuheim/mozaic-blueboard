@@ -84,18 +84,35 @@
   if selectedGroup = UNDEFINED
     Log {Unknown group input, try again!}
 
-    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP]
-    SendSysex data, 4
-
-    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
-    SendSysex data, 3
+    Call @SayGroupLoop
+    Call @SayTryAgain
   else
     Log {Group selected with selectedGroup=}, selectedGroup
 
-    data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, selectedGroup, FEEDBACK_SELECTED]
-    SendSysex data, 5
+    Call @SayLoopSelected
+    Call @ConfirmSelectionSuccess
   endif
 @End
+
+@SayUnknownGroup
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP]
+  SendSysex data, 4
+@End
+
+@SayTryAgain
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
+  SendSysex data, 3
+@End
+
+@SayGroupSelected
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, selectedGroup, FEEDBACK_SELECTED]
+  SendSysex data, 5
+@End
+
+@ConfirmSelectionSuccess
+  // TODO
+@End
+
 
 
 
