@@ -35,8 +35,15 @@
 @End
 
 @Reset
+  Log {Reset}
+  Call @ResetDependingMozaicInstances
   Call @InitVariables
   Call @ProceedWithWorkflow
+@End
+
+@ResetDependingMozaicInstances
+  data = [MOZ_INST_ALL, SYSEX_RESET_STEP_SEQUENCER]
+  SendSysex data, 2
 @End
 
 @ProceedWithWorkflow

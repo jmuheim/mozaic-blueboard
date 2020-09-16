@@ -25,6 +25,7 @@
 @End
 
 @Reset
+  Log {Reset}
   Call @InitVariables
 @End
 
