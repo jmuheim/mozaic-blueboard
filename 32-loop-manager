@@ -17,9 +17,9 @@
 @End
 
 @InitVariables
-  lastSelectedLoop = UNDEFINED
-  loopStack = []
-  loopStackSize = 0
+  lastInput = UNDEFINED
+  inputStack = []
+  inputStackSize = 0
 @End
 
 @Reset
@@ -43,7 +43,7 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     elseif sysexAction = SYSEX_ARM_CONFIG
-      loopStackId = data[2]
+      inputStackId = data[2]
       Call @ArmConfig
     elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
       Call @DuplicateLastInput
@@ -64,21 +64,21 @@
 @End
 
 @DispatchButtonPress
-  lastSelectedLoop = UNDEFINED
+  lastInput = UNDEFINED
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      lastSelectedLoop = LOOP_1
+      lastInput = LOOP_1
     elseif bbButton = BB_BUTTON_B
-      lastSelectedLoop = LOOP_2
+      lastInput = LOOP_2
     elseif bbButton = BB_BUTTON_C
-      lastSelectedLoop = LOOP_3
+      lastInput = LOOP_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      lastSelectedLoop = LOOP_4
+      lastInput = LOOP_4
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -86,18 +86,18 @@
     Log {ERROR! Unknown tapType=}, tapType
   endif
 
-  if lastSelectedLoop = UNDEFINED
-    Log {Unknown group input, try again!}
+  if lastInput = UNDEFINED
+    Log {Unknown input, try again!}
 
-    Call @SayUnknownLoop
+    Call @SayUnknownInput
     Call @SayTryAgain
   else
-    Call @SayLoopSelected
-    Call @AddLoopToStack
+    Call @SayInputSelected
+    Call @AddInputToStack
   endif
 @End
 
-@SayUnknownLoop
+@SayUnknownInput
   data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_LOOP]
   SendSysex data, 4
 @End
@@ -107,34 +107,34 @@
   SendSysex data, 3
 @End
 
-@SayLoopSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastSelectedLoop, FEEDBACK_SELECTED]
+@SayInputSelected
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastInput, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
-@AddLoopToStack
-  Log {Adding loop to loopStack[}, loopStackSize, {] = }, lastSelectedLoop
-  loopStack[loopStackSize] = lastSelectedLoop
-  Inc loopStackSize
+@AddInputToStack
+  Log {Adding loop to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
 
-  Call @ConfirmLoopSelection
+  Call @ConfirmInputSelection
 @End
 
 @DuplicateLastInput
-  Log {Duplicating loop to loopStack[}, loopStackSize, {] = }, lastSelectedLoop
-  loopStack[loopStackSize] = lastSelectedLoop
-  Inc loopStackSize
+  Log {Duplicating loop to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
 @End
 
-@ConfirmLoopSelection
+@ConfirmInputSelection
   data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_LOOP_MANAGER]
   SendSysex data, 3
 @End
 
 @ArmConfig
-  Log {Arming config with loopStack[}, loopStackId, {] = }, loopStack[loopStackId]
+  Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, loopStack[loopStackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, inputStack[inputStackId]]
   SendSysex data, 3
 @End
 

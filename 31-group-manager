@@ -19,9 +19,9 @@
 @End
 
 @InitVariables
-  lastSelectedGroup = UNDEFINED
-  groupStack = []
-  groupStackSize = 0
+  lastInput = UNDEFINED
+  inputStack = []
+  inputStackSize = 0
 @End
 
 @Reset
@@ -45,7 +45,7 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     elseif sysexAction = SYSEX_ARM_CONFIG
-      groupStackId = data[2]
+      inputStackId = data[2]
       Call @ArmConfig
     elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
       Call @DuplicateLastInput
@@ -66,25 +66,25 @@
 @End
 
 @DispatchButtonPress
-  lastSelectedGroup = UNDEFINED
+  lastInput = UNDEFINED
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      lastSelectedGroup = GROUP_1
+      lastInput = GROUP_1
     elseif bbButton = BB_BUTTON_B
-      lastSelectedGroup = GROUP_2
+      lastInput = GROUP_2
     elseif bbButton = BB_BUTTON_C
-      lastSelectedGroup = GROUP_3
+      lastInput = GROUP_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      lastSelectedGroup = GROUP_M
+      lastInput = GROUP_M
     elseif bbButton = BB_BUTTON_B
-      lastSelectedGroup = GROUP_4
+      lastInput = GROUP_4
     elseif bbButton = BB_BUTTON_C
-      lastSelectedGroup = GROUP_5
+      lastInput = GROUP_5
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -92,18 +92,18 @@
     Log {ERROR! Unknown tapType=}, tapType
   endif
 
-  if lastSelectedGroup = UNDEFINED
-    Log {Unknown group input, try again!}
+  if lastInput = UNDEFINED
+    Log {Unknown input, try again!}
 
-    Call @SayUnknownGroup
+    Call @SayUnknownInput
     Call @SayTryAgain
   else
-    Call @SayGroupSelected
-    Call @AddGroupToStack
+    Call @SayInputSelected
+    Call @AddInputToStack
   endif
 @End
 
-@SayUnknownGroup
+@SayUnknownInput
   data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP]
   SendSysex data, 4
 @End
@@ -113,34 +113,34 @@
   SendSysex data, 3
 @End
 
-@SayGroupSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastSelectedGroup, FEEDBACK_SELECTED]
+@SayInputSelected
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastInput, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
-@AddGroupToStack
-  Log {Adding group to groupStack[}, groupStackSize, {] = }, lastSelectedGroup
-  groupStack[groupStackSize] = lastSelectedGroup
-  Inc groupStackSize
+@AddInputToStack
+  Log {Adding group to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
 
-  Call @ConfirmGroupSelection
+  Call @ConfirmInputSelection
 @End
 
 @DuplicateLastInput
-  Log {Duplicating group to groupStack[}, groupStackSize, {] = }, lastSelectedGroup
-  groupStack[groupStackSize] = lastSelectedGroup
-  Inc groupStackSize
+  Log {Duplicating group to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
 @End
 
-@ConfirmGroupSelection
+@ConfirmInputSelection
   data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_GROUP_MANAGER]
   SendSysex data, 3
 @End
 
 @ArmConfig
-  Log {Arming config with groupStack[}, groupStackId, {] = }, groupStack[groupStackId]
+  Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, groupStack[groupStackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, inputStack[inputStackId]]
   SendSysex data, 3
 @End
 

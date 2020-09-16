@@ -102,7 +102,7 @@
 
 @AddPreconfirmedConfig
   if stackSize = 0
-    // Call @SayPreConfirmNotPossible
+    // TODO Call @SayPreConfirmNotPossible
     Log {Pre-confirmation not possible on config 1}
   else
     // Tell remaining managers to push their last input to their stack again
@@ -115,6 +115,8 @@
 
     Call @AddConfig
   endif
+
+  Call @ProceedWithWorkflow
 @End
 
 @AddConfig
