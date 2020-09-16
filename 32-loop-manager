@@ -47,6 +47,10 @@
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
+  elseif sysexTarget = MOZ_INST_ALL
+    if sysexAction = SYSEX_RESET_STEP_SEQUENCER
+      Call @Reset
+    endif
   endif
 @End
 
@@ -139,6 +143,7 @@
   MOZ_INST_LOOP_MANAGER   = 31
   MOZ_INST_GTL_PROXY      = 92
   MOZ_INST_FEEDBACKER     = 93
+  MOZ_INST_ALL            = 100
 
   SYSEX_DISPATCH_BUTTON        = 0
   SYSEX_PROCEED_WITH_WORKFLOW  = 1
@@ -146,6 +151,7 @@
   SYSEX_SELECTION_CONFIRMATION = 3
   SYSEX_GTL_SELECT_LOOP        = 4
   SYSEX_ARM_CONFIG             = 6
+  SYSEX_RESET_STEP_SEQUENCER   = 7
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_LOOP      = 21

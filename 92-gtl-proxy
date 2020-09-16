@@ -38,6 +38,10 @@
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
+  elseif sysexTarget = MOZ_INST_ALL
+    if sysexAction = SYSEX_RESET_STEP_SEQUENCER
+      Call @Reset
+    endif
   endif
 @End
 
@@ -61,9 +65,12 @@
   UNDEFINED = -1
 
   MOZ_INST_GTL_PROXY = 92
+  MOZ_INST_ALL       = 100
 
-  SYSEX_GTL_SELECT_LOOP  = 4
-  SYSEX_GTL_SELECT_GROUP = 5
+
+  SYSEX_GTL_SELECT_LOOP      = 4
+  SYSEX_GTL_SELECT_GROUP     = 5
+  SYSEX_RESET_STEP_SEQUENCER = 7
 
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   MIDI_CHANNEL_GTL = 1 // Group The Loop
