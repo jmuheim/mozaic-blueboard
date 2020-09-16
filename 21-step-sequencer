@@ -81,6 +81,8 @@
 @DispatchButtonPress
   if bbButton = BB_BUTTON_D and tapType = TAP_TYPE_IMMEDIATE
     Call @ArmConfig
+  elseif bbButton = BB_BUTTON_D and tapType = TAP_TYPE_1_BAR
+    Call @AddPreconfirmedConfig
   else
     data = [currentManagerInstance, SYSEX_DISPATCH_BUTTON, bbButton, tapType]
     SendSysex data, 4
@@ -92,13 +94,35 @@
     Inc currentManagerInstance
     Log {Proceeding with next manager instance=}, currentManagerInstance
   else
-    currentManagerInstance = FIRST_MANAGER_INSTANCE
-    Inc stackSize
-    Call @SayAddedConfigX
-    Log {Added config to stack, stackSize=}, stackSize
+    Call @AddConfig
   endif
 
   Call @ProceedWithWorkflow
+@End
+
+@AddPreconfirmedConfig
+  if stackSize = 0
+    // Call @SayPreConfirmNotPossible
+    Log {Pre-confirmation not possible on config 1}
+  else
+    // Tell remaining managers to push their last input to their stack again
+    while currentManagerInstance <= LAST_MANAGER_INSTANCE
+      data = [currentManagerInstance, SYSEX_DUPLICATE_LAST_INPUT]
+      SendSysex data, 2
+
+      Inc currentManagerInstance
+    endwhile
+
+    Call @AddConfig
+  endif
+@End
+
+@AddConfig
+  Inc stackSize
+  currentManagerInstance = FIRST_MANAGER_INSTANCE
+
+  Call @SayAddedConfigX
+  Log {Added config to stack, stackSize=}, stackSize
 @End
 
 @ArmConfig
@@ -125,10 +149,8 @@
 @ArmNextConfig
   Inc lastActivatedStackId
 
-  for i = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
-    managerId = i
-
-    // The LoopManager comes before the GroupManager, as usually it's of more interest to choose the next loop than the next group, and the user might pre-confirm the current config (by holding the D button for one beat) right after choosing the loop.
+  for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
+    // The LoopManager comes before the GroupManager, as usually it's of more interest to choose the next loop than the next group, and the user might pre-confirm the current config (by holding the D button for 1 bar) right after choosing the loop.
     // However, the LoopManager needs to run *after* the GroupManager; otherwise, if the loop selection is done first in GTL, it will be reset through the group selection.
     // To fix this, we simply switch places of the two.
     if managerId = MOZ_INST_LOOP_MANAGER
@@ -145,7 +167,7 @@
 @End
 
 @SayConfigXOfYArmed
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ARMED, FEEDBACK_CONFIG, lastActivatedStackId, FEEDBACK_OF, stackSize]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_ARMED, FEEDBACK_CONFIG, lastActivatedStackId + 1, FEEDBACK_OF, stackSize]
   SendSysex data, 7
 @End
 
@@ -188,6 +210,7 @@
   SYSEX_SELECTION_CONFIRMATION = 3
   SYSEX_ARM_CONFIG             = 6
   SYSEX_RESET_STEP_SEQUENCER   = 7
+  SYSEX_DUPLICATE_LAST_INPUT   = 8
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62

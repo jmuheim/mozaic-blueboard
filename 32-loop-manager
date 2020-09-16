@@ -19,7 +19,7 @@
 @InitVariables
   lastSelectedLoop = UNDEFINED
   loopStack = []
-  stackSize = 0
+  loopStackSize = 0
 @End
 
 @Reset
@@ -43,8 +43,10 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     elseif sysexAction = SYSEX_ARM_CONFIG
-      stackId = data[2]
+      loopStackId = data[2]
       Call @ArmConfig
+    elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
+      Call @DuplicateLastInput
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
@@ -90,8 +92,6 @@
     Call @SayUnknownLoop
     Call @SayTryAgain
   else
-    Log {Loop selected with lastSelectedLoop=}, lastSelectedLoop
-
     Call @SayLoopSelected
     Call @AddLoopToStack
   endif
@@ -113,10 +113,17 @@
 @End
 
 @AddLoopToStack
-  loopStack[stackSize] = lastSelectedLoop
-  Inc stackSize
+  Log {Adding loop to loopStack[}, loopStackSize, {] = }, lastSelectedLoop
+  loopStack[loopStackSize] = lastSelectedLoop
+  Inc loopStackSize
 
   Call @ConfirmLoopSelection
+@End
+
+@DuplicateLastInput
+  Log {Duplicating loop to loopStack[}, loopStackSize, {] = }, lastSelectedLoop
+  loopStack[loopStackSize] = lastSelectedLoop
+  Inc loopStackSize
 @End
 
 @ConfirmLoopSelection
@@ -125,9 +132,9 @@
 @End
 
 @ArmConfig
-  Log {Arming config with stackId=}, stackId, {, which means loop=}, loopStack[stackId]
+  Log {Arming config with loopStack[}, loopStackId, {] = }, loopStack[loopStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, loopStack[stackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, loopStack[loopStackId]]
   SendSysex data, 3
 @End
 
@@ -153,6 +160,7 @@
   SYSEX_GTL_SELECT_LOOP        = 4
   SYSEX_ARM_CONFIG             = 6
   SYSEX_RESET_STEP_SEQUENCER   = 7
+  SYSEX_DUPLICATE_LAST_INPUT   = 8
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_LOOP      = 21

@@ -21,7 +21,7 @@
 @InitVariables
   lastSelectedGroup = UNDEFINED
   groupStack = []
-  stackSize = 0
+  groupStackSize = 0
 @End
 
 @Reset
@@ -45,8 +45,10 @@
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
     elseif sysexAction = SYSEX_ARM_CONFIG
-      stackId = data[2]
+      groupStackId = data[2]
       Call @ArmConfig
+    elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
+      Call @DuplicateLastInput
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
@@ -96,8 +98,6 @@
     Call @SayUnknownGroup
     Call @SayTryAgain
   else
-    Log {Group selected with lastSelectedGroup=}, lastSelectedGroup
-
     Call @SayGroupSelected
     Call @AddGroupToStack
   endif
@@ -119,10 +119,17 @@
 @End
 
 @AddGroupToStack
-  groupStack[stackSize] = lastSelectedGroup
-  Inc stackSize
+  Log {Adding group to groupStack[}, groupStackSize, {] = }, lastSelectedGroup
+  groupStack[groupStackSize] = lastSelectedGroup
+  Inc groupStackSize
 
   Call @ConfirmGroupSelection
+@End
+
+@DuplicateLastInput
+  Log {Duplicating group to groupStack[}, groupStackSize, {] = }, lastSelectedGroup
+  groupStack[groupStackSize] = lastSelectedGroup
+  Inc groupStackSize
 @End
 
 @ConfirmGroupSelection
@@ -131,9 +138,9 @@
 @End
 
 @ArmConfig
-  Log {Arming config with stackId=}, stackId, {, which means group=}, groupStack[stackId]
+  Log {Arming config with groupStack[}, groupStackId, {] = }, groupStack[groupStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, groupStack[stackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, groupStack[groupStackId]]
   SendSysex data, 3
 @End
 
@@ -160,6 +167,7 @@
   SYSEX_GTL_SELECT_GROUP       = 5
   SYSEX_ARM_CONFIG             = 6
   SYSEX_RESET_STEP_SEQUENCER   = 7
+  SYSEX_DUPLICATE_LAST_INPUT   = 8
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_GROUP     = 16
