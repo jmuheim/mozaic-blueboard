@@ -1,5 +1,36 @@
 // GtlProxy handles interaction with Group the Loop (GTL).
 //
+// GTL needs to receive MIDI from AUM: Click the Routing button (the "backwards S"), then route GtlProxy's output to "Group the Loop".
+//
+// GTL needs to be configured properly:
+// - Settings -> MIDI -> MIDI Input Port is set to "Virtual MIDI"
+// - Settings -> Clock Settings -> CUE is active
+//                              -> 1234 is active
+//                              -> Clock Multiplier Mode is set to "Add"
+//                              -> Ableton Link is enabled
+//                              -> Ableton Link Tempo is set to "Follow"
+//                              -> Sync Quantum is set to "Longest Loop"
+//
+// GTL needs the following MIDI Bindings (all set as "Tap"):
+// - Decrease Clock Length: 10
+// - Increase Clock Length: 11
+// - Reset Session: 15
+// - Select loop 1 (in selected group): 6
+// - Select loop 2 (in selected group): 7
+// - Select loop 3 (in selected group): 8
+// - Select loop 4 (in selected group): 9
+// - Decrease Clock Length: 10
+// - Increase Clock Length: 11
+// - Record/Overdub (selected loop): 12
+// - Record/Mute (selected loop): 13
+// - Record and select next (selected loop): 14
+// - Select group Master: 0
+// - Select group 1: 1
+// - Select group 2: 2
+// - Select group 3: 3
+// - Select group 4: 4
+// - Select group 5: 5
+//
 // AUM routing:
 // - Receives from LoopManager
 // - Receives from GroupManager
@@ -13,6 +44,7 @@
 @End
 
 @InitConstants
+  MIDI_DELAY = 50 // GTL doesn't need a delay between on and off
 @End
 
 @InitVariables
@@ -21,6 +53,17 @@
 @Reset
   Log {Reset}
   Call @InitVariables
+  Call @ResetGtl
+@End
+
+@ResetGtl
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiOnAndOffToGtl
+@End
+
+@SendMidiOnAndOffToGtl
+  SendMidiNoteOn  MIDI_CHANNEL_GTL, midiToSend, 127
+  SendMidiNoteOff MIDI_CHANNEL_GTL, midiToSend,   0, MIDI_DELAY
 @End
 
 @OnSysex
@@ -75,4 +118,25 @@
 
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   MIDI_CHANNEL_GTL = 1 // Group The Loop
+
+  GTL_SELECT_GROUP_M = 0
+  GTL_SELECT_GROUP_1 = 1
+  GTL_SELECT_GROUP_2 = 2
+  GTL_SELECT_GROUP_3 = 3
+  GTL_SELECT_GROUP_4 = 4
+  GTL_SELECT_GROUP_5 = 5
+
+  GTL_SELECT_LOOP_1 = 6
+  GTL_SELECT_LOOP_2 = 7
+  GTL_SELECT_LOOP_3 = 8
+  GTL_SELECT_LOOP_4 = 9
+
+  GTL_DECREASE_CLOCK = 10
+  GTL_INCREASE_CLOCK = 11
+
+  GTL_RECORD_OVERDUB     = 12
+  GTL_RECORD_MUTE        = 13
+  GTL_RECORD_SELECT_NEXT = 14
+
+  GTL_RESET_SESSION = 15
 @End
