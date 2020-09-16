@@ -36,8 +36,8 @@
 
 @Reset
   Log {Reset}
-  Call @ResetDependingMozaicInstances
   Call @InitVariables
+  Call @ResetDependingMozaicInstances
   Call @ProceedWithWorkflow
 @End
 
