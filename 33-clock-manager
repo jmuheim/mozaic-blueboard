@@ -1,0 +1,187 @@
+// AUM routing:
+// - Receives from StepSequencer
+
+@OnLoad
+  SetShortName {33-ClockManager}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@InitConstants
+  CLOCK_LENGTH_1  = 1
+  CLOCK_LENGTH_2  = 2
+  CLOCK_LENGTH_4  = 4
+  CLOCK_LENGTH_8  = 8
+  CLOCK_LENGTH_10 = 10
+  CLOCK_LENGTH_12 = 12
+@End
+
+@InitVariables
+  lastInput = UNDEFINED
+  inputStack = []
+  inputStackSize = 0
+@End
+
+@Reset
+  Log {Reset}
+  Call @InitVariables
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexTarget = data[0]
+  sysexAction = data[1]
+
+  if sysexTarget = MOZ_INST_CLOCK_MANAGER
+    if sysexAction = SYSEX_DISPATCH_BUTTON
+      bbButton = data[2]
+      tapType  = data[3]
+
+      Log {Received button=}, bbButton, {, tapType=}, tapType
+
+      Call @DispatchButtonPress
+    elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
+      Call @ProceedWithWorkflow
+    elseif sysexAction = SYSEX_ARM_CONFIG
+      inputStackId = data[2]
+      Call @ArmConfig
+    elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
+      Call @DuplicateLastInput
+    else
+      Log {ERROR: Unknown sysexAction=}, sysexAction
+    endif
+  elseif sysexTarget = MOZ_INST_ALL
+    if sysexAction = SYSEX_RESET_STEP_SEQUENCER
+      Call @Reset
+    endif
+  endif
+@End
+
+@ProceedWithWorkflow
+  Log {Proceeding with workflow}
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_CLOCK]
+  SendSysex data, 4
+@End
+
+@DispatchButtonPress
+  lastInput = UNDEFINED
+
+  if tapType = TAP_TYPE_IMMEDIATE
+    if bbButton = BB_BUTTON_A
+      lastInput = CLOCK_LENGTH_2
+    elseif bbButton = BB_BUTTON_B
+      lastInput = CLOCK_LENGTH_4
+    elseif bbButton = BB_BUTTON_C
+      lastInput = CLOCK_LENGTH_8
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  elseif tapType = TAP_TYPE_1_BEAT
+    if bbButton = BB_BUTTON_A
+      lastInput = CLOCK_LENGTH_1
+    elseif bbButton = BB_BUTTON_B
+      lastInput = CLOCK_LENGTH_10
+    elseif bbButton = BB_BUTTON_C
+      lastInput = CLOCK_LENGTH_12
+    else
+      Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
+    endif
+  else
+    Log {ERROR! Unknown tapType=}, tapType
+  endif
+
+  if lastInput = UNDEFINED
+    Log {Unknown input, try again!}
+
+    Call @SayUnknownInput
+    Call @SayTryAgain
+  else
+    Call @SayInputSelected
+    Call @AddInputToStack
+  endif
+@End
+
+@SayUnknownInput
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_CLOCK]
+  SendSysex data, 4
+@End
+
+@SayTryAgain
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_TRY_AGAIN]
+  SendSysex data, 3
+@End
+
+@SayInputSelected
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_CLOCK, lastInput, FEEDBACK_SELECTED]
+  SendSysex data, 5
+@End
+
+@AddInputToStack
+  Log {Adding group to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
+
+  Call @ConfirmInputSelection
+@End
+
+@DuplicateLastInput
+  Log {Duplicating group to inputStack[}, inputStackSize, {] = }, lastInput
+  inputStack[inputStackSize] = lastInput
+  Inc inputStackSize
+@End
+
+@ConfirmInputSelection
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_CLOCK_MANAGER]
+  SendSysex data, 3
+@End
+
+@ArmConfig
+  Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
+
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_CLOCK, inputStack[inputStackId]]
+  SendSysex data, 3
+@End
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  MOZ_INST_STEP_SEQUENCER = 21
+  MOZ_INST_CLOCK_MANAGER  = 33
+  MOZ_INST_GTL_PROXY      = 92
+  MOZ_INST_FEEDBACKER     = 93
+  MOZ_INST_ALL            = 100
+
+  SYSEX_DISPATCH_BUTTON        = 0
+  SYSEX_PROCEED_WITH_WORKFLOW  = 1
+  SYSEX_ANNOUNCE_FEEDBACK      = 2
+  SYSEX_SELECTION_CONFIRMATION = 3
+  SYSEX_GTL_SELECT_CLOCK       = 5
+  SYSEX_ARM_CONFIG             = 6
+  SYSEX_RESET_STEP_SEQUENCER   = 7
+  SYSEX_DUPLICATE_LAST_INPUT   = 8
+
+  FEEDBACK_SELECT    = 15
+  FEEDBACK_UNKNOWN   = 17
+  FEEDBACK_INPUT     = 18
+  FEEDBACK_TRY_AGAIN = 19
+  FEEDBACK_SELECTED  = 20
+  FEEDBACK_CLOCK     = 30
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
+@End

@@ -14,6 +14,7 @@
 // - Receives from ModeSwitcher
 // - Receives from LoopManager
 // - Receives from GroupManager
+// - Receives from ClockManager
 
 @OnLoad
   SetShortName {21-StepSequencer}
@@ -25,7 +26,7 @@
 
 @InitConstants
   FIRST_MANAGER_INSTANCE = MOZ_INST_LOOP_MANAGER
-  LAST_MANAGER_INSTANCE  = MOZ_INST_GROUP_MANAGER
+  LAST_MANAGER_INSTANCE  = MOZ_INST_CLOCK_MANAGER
 @End
 
 @InitVariables
@@ -203,6 +204,7 @@
   MOZ_INST_STEP_SEQUENCER = 21
   MOZ_INST_LOOP_MANAGER   = 31
   MOZ_INST_GROUP_MANAGER  = 32
+  MOZ_INST_CLOCK_MANAGER  = 33
   MOZ_INST_FEEDBACKER     = 93
   MOZ_INST_ALL            = 100
 
