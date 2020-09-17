@@ -2,7 +2,7 @@
 // - Receives from StepSequencer
 
 @OnLoad
-  SetShortName {32-LoopManager}
+  SetShortName {34-GuitarManager}
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -10,10 +10,12 @@
 @End
 
 @InitConstants
-  LOOP_1 = 1
-  LOOP_2 = 2
-  LOOP_3 = 3
-  LOOP_4 = 4
+  GUITAR_1 = 1
+  GUITAR_2 = 2
+  GUITAR_3 = 3
+  GUITAR_4 = 4
+  GUITAR_5 = 5
+  GUITAR_6 = 6
 @End
 
 @InitVariables
@@ -32,7 +34,7 @@
   sysexTarget = data[0]
   sysexAction = data[1]
 
-  if sysexTarget = MOZ_INST_LOOP_MANAGER
+  if sysexTarget = MOZ_INST_GUITAR_MANAGER
     if sysexAction = SYSEX_DISPATCH_BUTTON
       bbButton = data[2]
       tapType  = data[3]
@@ -59,7 +61,7 @@
 
 @ProceedWithWorkflow
   Log {Proceeding with workflow}
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_LOOP]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_GUITAR]
   SendSysex data, 4
 @End
 
@@ -68,17 +70,21 @@
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      lastInput = LOOP_1
+      lastInput = GUITAR_1
     elseif bbButton = BB_BUTTON_B
-      lastInput = LOOP_2
+      lastInput = GUITAR_2
     elseif bbButton = BB_BUTTON_C
-      lastInput = LOOP_3
+      lastInput = GUITAR_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      lastInput = LOOP_4
+      lastInput = GUITAR_4
+    elseif bbButton = BB_BUTTON_B
+      lastInput = GUITAR_5
+    elseif bbButton = BB_BUTTON_C
+      lastInput = GUITAR_6
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -98,7 +104,7 @@
 @End
 
 @SayUnknownInput
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_LOOP]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GUITAR]
   SendSysex data, 4
 @End
 
@@ -108,7 +114,7 @@
 @End
 
 @SayInputSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastInput, FEEDBACK_SELECTED]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, lastInput, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
@@ -127,14 +133,14 @@
 @End
 
 @ConfirmInputSelection
-  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_LOOP_MANAGER]
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_GUITAR_MANAGER]
   SendSysex data, 3
 @End
 
 @ArmConfig
   Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, inputStack[inputStackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_AUM_SELECT_GUITAR, inputStack[inputStackId]]
   SendSysex data, 3
 @End
 
@@ -147,27 +153,27 @@
 @InitSharedConstants
   UNDEFINED = -1
 
-  MOZ_INST_STEP_SEQUENCER = 21
-  MOZ_INST_LOOP_MANAGER   = 31
-  MOZ_INST_GTL_PROXY      = 92
-  MOZ_INST_FEEDBACKER     = 93
+  MOZ_INST_STEP_SEQUENCER =  21
+  MOZ_INST_GUITAR_MANAGER =  34
+  MOZ_INST_GTL_PROXY      =  92
+  MOZ_INST_FEEDBACKER     =  93
   MOZ_INST_ALL            = 100
 
-  SYSEX_DISPATCH_BUTTON        = 0
-  SYSEX_PROCEED_WITH_WORKFLOW  = 1
-  SYSEX_ANNOUNCE_FEEDBACK      = 2
-  SYSEX_SELECTION_CONFIRMATION = 3
-  SYSEX_GTL_SELECT_LOOP        = 4
-  SYSEX_ARM_CONFIG             = 6
-  SYSEX_RESET_STEP_SEQUENCER   = 7
-  SYSEX_DUPLICATE_LAST_INPUT   = 8
+  SYSEX_DISPATCH_BUTTON        =  0
+  SYSEX_PROCEED_WITH_WORKFLOW  =  1
+  SYSEX_ANNOUNCE_FEEDBACK      =  2
+  SYSEX_SELECTION_CONFIRMATION =  3
+  SYSEX_ARM_CONFIG             =  6
+  SYSEX_RESET_STEP_SEQUENCER   =  7
+  SYSEX_DUPLICATE_LAST_INPUT   =  8
+  SYSEX_GTL_SELECT_GUITAR      = 10
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_UNKNOWN   = 17
   FEEDBACK_INPUT     = 18
   FEEDBACK_TRY_AGAIN = 19
   FEEDBACK_SELECTED  = 20
-  FEEDBACK_LOOP      = 21
+  FEEDBACK_GUITAR    = 31
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62
