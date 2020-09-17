@@ -1,12 +1,12 @@
 // Feedbacker sends audio signals that are meant for the ears of the performer only, like ...
 //
 // Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
-// So we have to load more than one, each with its own channel.
 //
-// - Midi event  0 to 33 is directed to channel 2 (Chameleon with preset "Group The Loop Wizard 1" loaded)
-// - Midi event 34 to 67 is directed to channel 3 (Chameleon with preset "Group The Loop Wizard 2" loaded)
+// So we have to load more than one instance:
+// - Chameleon with preset "Group The Loop Wizard 1" loaded => Midi event  0 to 33
+// - Chameleon with preset "Group The Loop Wizard 2" loaded => Midi event 34 to 67
 //
-// Make sure that each Chameleon instance only receives from the respective channel: in AUM, in the instance's routing menu, use "Channel filter" to toggle all channels off except the appropriate one (in the AUM GUI, the channel numbers start from 1, not 0, so channel 2 will be 3, and channel 3 will be 4)!
+// Make sure that these Chameleon instances receive MIDI only from Feedbacker!
 //
 // AUM routing:
 // - Receives from ModeSwitcher
@@ -102,8 +102,6 @@
 @End
 
 @CueFeedback
-  Call @SetChannel
-
   feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
 
   now = SystemTime
@@ -119,17 +117,10 @@
 
   Log {@CueFeedback feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, now=}, now, {, delayForCurrentMidiOn=}, delayForCurrentMidiOn, {, delayForCurrentMidiOff=}, delayForCurrentMidiOff, {, audioPlayingUntil=}, audioPlayingUntil
 
-  SendMidiNoteOn  channel, feedbackId, 127, delayForCurrentMidiOn
-  SendMidiNoteOff channel, feedbackId,   0, delayForCurrentMidiOff
+  SendMidiNoteOn  MIDI_CHANNEL_FB, feedbackId, 127, delayForCurrentMidiOn
+  SendMidiNoteOff MIDI_CHANNEL_FB, feedbackId,   0, delayForCurrentMidiOff
 @End
 
-@SetChannel
-  if feedbackId < 34
-    channel = MIDI_CHANNEL_FB_0_TO_33
-  else
-    channel = MIDI_CHANNEL_FB_34_TO_67
-  endif
-@End
 
 
 
@@ -146,8 +137,7 @@
 
   MOZ_INST_FEEDBACKER = 93
 
-  MIDI_CHANNEL_FB_0_TO_33  = 2
-  MIDI_CHANNEL_FB_34_TO_67 = 3
+  MIDI_CHANNEL_FB = 2
 
   SYSEX_ANNOUNCE_FEEDBACK = 2
 @End

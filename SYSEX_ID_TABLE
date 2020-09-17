@@ -5,16 +5,26 @@
 //
 // We use the following table for reference, to make sure that no collisions happen (i.e. accidentally assigning the same value to different IDs).
 //
-// Whenever introducing a new ID, please consult this table! (Except for feedback IDs, which are consolidated in the feedbacker's code.)
+// Whenever introducing a new ID, please consult this table! (Except for feedback IDs, which are consolidated in Feedbacker's AUDIO_SAMPLES_LENGTHS array.)
 
+// MIDI channels: There are 16 channels available (0 to 15).
+// Some apps/instruments/devices are programmed to listen to a specific channel, while others just listen to all of them. This allows to separate MIDI communication from each other (e.g. a synth would only listen to channel 6, so it is not triggered by some other MIDI communication on e.g. channel 1, 2, or 4).
+// In AUM we can route the general MIDI flow between involved elements: each element has its own MIDI Routing menu (the "turned around S" button) where the element's sources can be selected. As we're having multiple Mozaic instances, the MIDI flow is already separated, which removes the need for separate MIDI channels.
+// However, we are still making some use of separated MIDI channels here, just to add another layer of clarity (and to prevent some newly connected element to accidentally mess things up).
+// Side note: Be aware that in app GUIs all channels are displayed as +1 (they start counting from 1 instead of 0)! So e.g. AUM or GTL will display channel 1 as 2.
+MIDI_CHANNEL_BB  = 0 // BlueBoard
+MIDI_CHANNEL_GTL = 1 // Group The Loop
+MIDI_CHANNEL_FB  = 2 // Feedbacker
+MIDI_CHANNEL_AUM = 3 // AUM
 
-MOZ_INST_BLUEBOARD_HANDLER = 0 // Is actually never used, as nobody sends Sysex to it
-MOZ_INST_MODE_SWITCHER     = 1
-MOZ_INST_STEP_SEQUENCER    = 21
-MOZ_INST_LOOP_MANAGER      = 31
-MOZ_INST_GROUP_MANAGER     = 32
-MOZ_INST_GTL_PROXY         = 92
-MOZ_INST_FEEDBACKER        = 93
+// Mozaic instances: each Mozaic script has its own ID which is used for inter-script-communication (using Sysex).
+MOZ_INST_BLUEBOARD_HANDLER =   0 // Is actually never used, as nobody sends Sysex to it
+MOZ_INST_MODE_SWITCHER     =   1
+MOZ_INST_STEP_SEQUENCER    =  21
+MOZ_INST_LOOP_MANAGER      =  31
+MOZ_INST_GROUP_MANAGER     =  32
+MOZ_INST_GTL_PROXY         =  92
+MOZ_INST_FEEDBACKER        =  93
 MOZ_INST_ALL               = 100
 
 SYSEX_DISPATCH_BUTTON        = 0

@@ -88,8 +88,7 @@
   TAP_TYPE_1_BEAT    = 1
   TAP_TYPE_1_BAR     = 2
 
-  // Be aware that within apps MIDI channels are displayed as +1! So GTL channel will display 2 (instead of 1).
-  MIDI_CHANNEL_BB  = 0 // BlueBoard (listens only to channel 0)
+  MIDI_CHANNEL_BB = 0 // BlueBoard (listens only to channel 0)
 
   SYSEX_DISPATCH_BUTTON = 0 // To prevent accidental value collisions across instances, just use the current timestamp => type "date +%s" in UNIX prompt
 @End

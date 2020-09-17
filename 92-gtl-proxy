@@ -124,8 +124,7 @@
   SYSEX_GTL_SELECT_GROUP     = 5
   SYSEX_RESET_STEP_SEQUENCER = 7
 
-  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
-  MIDI_CHANNEL_GTL = 1 // Group The Loop
+  MIDI_CHANNEL_GTL = 1
 
   GTL_SELECT_GROUP_BASE = 0 // Added group numbers translate exactly to the required MIDI, e.g. main group (0) sends 0, group 1 sends 1, etc., up to group 5 sends 5.
   GTL_SELECT_LOOP_BASE  = 5 // Added loop numbers translate exactly to the required MIDI, e.g. loop 1 sends 6, loop 2 sends 7, etc., up to loop 4 sends 9.
