@@ -52,6 +52,10 @@
 @InitVariables
   clock = 1 // Resetting the GTL session sets this clock length
   newClock = UNDEFINED // Holds the interim new value when setting the clock (as we need to know the difference between current and new value)
+
+  // See @TryToExecuteGroupAndLoopSelection
+  nextGroup = UNDEFINED // Holds the interim next value when setting the group
+  nextLoop  = UNDEFINED // Same for loop
 @End
 
 @Reset
@@ -79,10 +83,10 @@
   if sysexTarget = MOZ_INST_GTL_PROXY
     if sysexAction = SYSEX_GTL_SELECT_LOOP
       loop = data[2]
-      Call @SelectLoopInGtl
+      Call @prepareLoopSelection
     elseif sysexAction = SYSEX_GTL_SELECT_GROUP
       group = data[2]
-      Call @SelectGroupInGtl
+      Call @prepareGroupSelection
     elseif sysexAction = SYSEX_GTL_UPDATE_CLOCK
       newClock = data[2]
       Call @UpdateClockInGtl
@@ -96,18 +100,33 @@
   endif
 @End
 
-@SelectLoopInGtl
-  Log {Selecting loop=}, loop
-
-  midiToSend = GTL_SELECT_LOOP_BASE + loop
-  Call @SendMidiOnAndOffToGtl
+@prepareLoopSelection
+  Log {Preparing nextLoop=}, loop
+  nextLoop = loop
+  Call @TryToExecuteGroupAndLoopSelection
 @End
 
-@SelectGroupInGtl
-  Log {Selecting group=}, group
+@prepareGroupSelection
+  Log {Preparing nextGroup=}, group
+  nextGroup = group
+  Call @TryToExecuteGroupAndLoopSelection
+@End
 
-  midiToSend = GTL_SELECT_GROUP_BASE + group
-  Call @SendMidiOnAndOffToGtl
+// Execution of selecting group and loop needs to happen in the correct order: group, then loop. For this, we wait until we have both values, and then send them together. This makes us independent from the managers' execution order.
+@TryToExecuteGroupAndLoopSelection
+  // Both selections ready? Then apply them!
+  if nextGroup <> UNDEFINED and nextLoop <> UNDEFINED
+    Log {Executing selection of both group=}, group, { and loop=}, loop
+
+    midiToSend = GTL_SELECT_GROUP_BASE + nextGroup
+    Call @SendMidiOnAndOffToGtl
+
+    midiToSend = GTL_SELECT_LOOP_BASE + nextLoop
+    Call @SendMidiOnAndOffToGtl
+
+    nextGroup = UNDEFINED
+    nextLoop  = UNDEFINED
+  endif
 @End
 
 @UpdateClockInGtl
@@ -122,7 +141,7 @@
     timesToSend = difference * -1
   endif
 
-  Log {Setting clock length from clock=}, clock, { to newClock=}, newClock, { by sending midiToSend=}, midiToSend, { }, timesToSend, { times}
+  Log {Setting clock length from clock=}, clock, { to newClock=}, newClock, { by sending midiToSend=}, midiToSend, { (}, timesToSend, {x)}
 
   for i = 1 to timesToSend
     Call @SendMidiOnAndOffToGtl

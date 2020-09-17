@@ -151,17 +151,9 @@
 
 @ArmNextConfig
   Inc lastActivatedStackId
+  Log {Arming lastActivatedStackId=}, lastActivatedStackId
 
   for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
-    // The LoopManager comes before the GroupManager, as usually it's of more interest to choose the next loop than the next group, and the user might pre-confirm the current config (by holding the D button for 1 bar) right after choosing the loop.
-    // However, the LoopManager needs to run *after* the GroupManager; otherwise, if the loop selection is done first in GTL, it will be reset through the group selection.
-    // To fix this, we simply switch places of the two.
-    if managerId = MOZ_INST_LOOP_MANAGER
-      managerId = MOZ_INST_GROUP_MANAGER
-    elseif managerId = MOZ_INST_GROUP_MANAGER
-      managerId = MOZ_INST_LOOP_MANAGER
-    endif
-
     data = [managerId, SYSEX_ARM_CONFIG, lastActivatedStackId]
     SendSysex data, 3
   endfor
