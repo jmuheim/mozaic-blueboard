@@ -4,6 +4,8 @@
 //
 // No other Mozaic instance should listen to the BlueBoard!
 //
+// The BlueBoard needs to receive MIDI from BlueBoardHandler: In AUM, click the Routing button (the "backwards S"), then route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
+//
 // AUM routing:
 // - Receives from BlueBoard
 
