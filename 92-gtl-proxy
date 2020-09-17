@@ -50,6 +50,8 @@
 @End
 
 @InitVariables
+  clock = 1 // Resetting the GTL session sets this clock length
+  newClock = UNDEFINED // Holds the interim new value when setting the clock (as we need to know the difference between current and new value)
 @End
 
 @Reset
@@ -81,6 +83,9 @@
     elseif sysexAction = SYSEX_GTL_SELECT_GROUP
       group = data[2]
       Call @SelectGroupInGtl
+    elseif sysexAction = SYSEX_GTL_UPDATE_CLOCK
+      newClock = data[2]
+      Call @UpdateClockInGtl
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif
@@ -105,6 +110,27 @@
   Call @SendMidiOnAndOffToGtl
 @End
 
+@UpdateClockInGtl
+  difference = newClock - clock
+
+  timesToSend = 0
+  if difference > 0
+    midiToSend = GTL_INCREASE_CLOCK
+    timesToSend = difference
+  elseif difference < 0
+    midiToSend = GTL_DECREASE_CLOCK
+    timesToSend = difference * -1
+  endif
+
+  Log {Setting clock length from clock=}, clock, { to newClock=}, newClock, { by sending midiToSend=}, midiToSend, { }, timesToSend, { times}
+
+  for i = 1 to timesToSend
+    Call @SendMidiOnAndOffToGtl
+  endfor
+
+  clock = newClock
+@End
+
 
 
 
@@ -123,6 +149,7 @@
   SYSEX_GTL_SELECT_LOOP      = 4
   SYSEX_GTL_SELECT_GROUP     = 5
   SYSEX_RESET_STEP_SEQUENCER = 7
+  SYSEX_GTL_UPDATE_CLOCK     = 9
 
   MIDI_CHANNEL_GTL = 1
 
