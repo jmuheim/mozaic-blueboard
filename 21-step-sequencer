@@ -155,6 +155,7 @@
   Log {Arming lastActivatedStackId=}, lastActivatedStackId
 
   for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
+    // TODO: Find out how much time is left in the current loop, so GuitarManager can delay the activation of the next guitar preset!
     data = [managerId, SYSEX_ARM_CONFIG, lastActivatedStackId]
     SendSysex data, 3
   endfor

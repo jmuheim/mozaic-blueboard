@@ -6,6 +6,8 @@
 //
 // The BlueBoard needs to receive MIDI from BlueBoardHandler: In AUM, click the Routing button (the "backwards S"), then route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
 //
+// After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard
+//
 // AUM routing:
 // - Receives from BlueBoard
 

@@ -2,16 +2,17 @@
 //
 // Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
 //
-// So we have to load more than one instance:
-// - Chameleon with preset "Group The Loop Wizard 1" loaded => Midi event  0 to 33
-// - Chameleon with preset "Group The Loop Wizard 2" loaded => Midi event 34 to 67
+// So we have to load more than one instance; see AumProxy for details.
 //
 // Make sure that these Chameleon instances receive MIDI only from Feedbacker!
 //
 // AUM routing:
 // - Receives from ModeSwitcher
-// - Recieves from StepSequencer
-// - (mostly everything)
+// - Receives from StepSequencer
+// - Receives from LoopManager
+// - Receives from GroupManager
+// - Receives from ClockManager
+// - Receives from GuitarManager
 //
 // Notes:
 // - Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample. As we know the length of each sample, we don't have to account this.

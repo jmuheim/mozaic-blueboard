@@ -1,19 +1,25 @@
 // GtlProxy handles interaction with Group the Loop (GTL).
 //
-// GTL needs to receive MIDI from AUM: Click the Routing button (the "backwards S"), then route GtlProxy's output to "Group the Loop".
+// GTL needs to receive MIDI from GtlProxy: Click the Routing button (the "backwards S"), then route GtlProxy's output to "Group the Loop".
 //
 // The loaded session in GTL needs 5 groups (just click "Add Group" a few times).
 //
 // GTL needs to be configured properly:
-// - Settings -> MIDI -> MIDI Input Port is set to "Virtual MIDI"
-// - Settings -> Clock Settings -> CUE is active
-//                              -> 1234 is active
-//                              -> Clock Multiplier Mode is set to "Add"
-//                              -> Ableton Link is enabled
-//                              -> Ableton Link Tempo is set to "Follow"
-//                              -> Sync Quantum is set to "Longest Loop"
+//
+// - Settings -> MIDI -> MIDI Input Port -> Virtual MIDI
+//            -> Clock Settings -> CUE -> Active
+//                              -> 1234 -> Active
+//                              -> Clock Multiplier Mode -> Add
+//                              -> Ableton Link -> Enabled
+//                              -> Ableton Link Tempo -> Follow
+//                              -> Sync Quantum -> Longest Loop
+//            -> Audio Input -> Input Monitoring -> Off
+//                           -> Input Source -> Kymatica: AUM Port 1 (GTL will send here)
+//                           -> Latency Compensation -> On (TODO: does this work??)
+//                           -> Mic Gain -> 100%
 //
 // GTL needs the following MIDI Bindings (all set as "Tap"):
+//
 // - Decrease Clock Length: 10
 // - Increase Clock Length: 11
 // - Reset Session: 15
@@ -46,7 +52,7 @@
 @End
 
 @InitConstants
-  MIDI_DELAY = 50 // GTL doesn't need a delay between on and off
+  MIDI_DELAY = 0 // GTL doesn't need a delay between on and off
 @End
 
 @InitVariables
