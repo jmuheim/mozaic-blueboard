@@ -39,7 +39,7 @@
 // - Select group 4: 4
 // - Select group 5: 5
 //
-// AUM routing:
+// MIDI sources (in Mozaic's window, click the "backward S" button):
 // - Receives from LoopManager
 // - Receives from GroupManager
 

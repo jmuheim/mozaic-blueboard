@@ -10,7 +10,7 @@
 //
 // Each of these chunks are represented by their own Mozaic instance. They handle both the interaction with the user, as well as the appliance of their specific info.
 //
-// AUM routing:
+// MIDI sources (in Mozaic's window, click the "backward S" button):
 // - Receives from ModeSwitcher
 // - Receives from LoopManager
 // - Receives from GroupManager

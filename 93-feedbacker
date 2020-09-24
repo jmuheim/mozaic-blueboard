@@ -6,7 +6,7 @@
 //
 // Make sure that these Chameleon instances receive MIDI only from Feedbacker!
 //
-// AUM routing:
+// MIDI sources (in Mozaic's window, click the "backward S" button):
 // - Receives from ModeSwitcher
 // - Receives from StepSequencer
 // - Receives from LoopManager

@@ -6,8 +6,8 @@
 // - Setup: Configuration of the current song, e.g. time signature, beats per minute
 // - Step sequencer: State handling of and interplay between all the apps needed during a live looping performance
 //
-// AUM routing:
-// - Receives from BlueBoardHandler
+// MIDI sources (in Mozaic's window, click the "backward S" button):
+// - BlueBoardHandler
 
 @OnLoad
   SetShortName {1-ModeSwitcher}

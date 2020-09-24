@@ -2,14 +2,12 @@
 //
 // Make sure to start the BlueBoard while pressing the B button!
 //
-// No other Mozaic instance should listen to the BlueBoard!
-//
-// The BlueBoard needs to receive MIDI from BlueBoardHandler: In AUM, click the Routing button (the "backwards S"), then route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
-//
 // After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard
 //
-// AUM routing:
-// - Receives from BlueBoard
+// MIDI sources (in Mozaic's window, click the "backward S" button):
+// - iRig BlueBoard Bluetooth
+//
+// The BlueBoard itself needs to receive MIDI from BlueBoardHandler: In AUM, click the Routing button (the "backwards S"), then route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
 
 @OnLoad
   SetShortName {0-BlueBoardHandler}
