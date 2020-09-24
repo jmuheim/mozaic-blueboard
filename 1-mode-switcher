@@ -7,7 +7,7 @@
 // - Step sequencer: State handling of and interplay between all the apps needed during a live looping performance
 //
 // MIDI sources (in Mozaic's window, click the "backward S" button):
-// - BlueBoardHandler
+// - BlueBoardHandler (Mozaic @M1:1)
 
 @OnLoad
   SetShortName {1-ModeSwitcher}

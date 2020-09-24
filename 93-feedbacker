@@ -7,12 +7,14 @@
 // Make sure that these Chameleon instances receive MIDI only from Feedbacker!
 //
 // MIDI sources (in Mozaic's window, click the "backward S" button):
-// - Receives from ModeSwitcher
-// - Receives from StepSequencer
-// - Receives from LoopManager
-// - Receives from GroupManager
-// - Receives from ClockManager
-// - Receives from GuitarManager
+// - ModeSwitcher (Mozaic @M1:2)
+// - StepSequencer (Mozaic @M1:3)
+// - LoopManager (Mozaic @M1:4)
+// - GroupManager (Mozaic @M1:5)
+// - ClockManager (Mozaic @M1:6)
+// - GuitarManager (Mozaic @M1:7)
+// - AumProxu (Mozaic @M1:8)
+// - GtlProxy (Mozaic @M1:9)
 //
 // Notes:
 // - Chameleon needs a short delay between on and off, otherwise it doesn't trigger the audio sample. As we know the length of each sample, we don't have to account this.

@@ -1,5 +1,5 @@
 // MIDI sources (in Mozaic's window, click the "backward S" button):
-// - Receives from StepSequencer
+// - StepSequencer (Mozaic @M1:3)
 
 @OnLoad
   SetShortName {33-ClockManager}
