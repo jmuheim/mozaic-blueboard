@@ -1,13 +1,34 @@
 // BlueBoardHandler receives the button presses from the BlueBoard and sends them to ModeSwitcher.
+// ===============================================================================================
 //
-// Make sure to start the BlueBoard while pressing the B button!
+// In general:
+// -----------
 //
-// After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard
+// - Make sure to start the BlueBoard while pressing the B button!
+// - After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard
 //
-// MIDI sources (in Mozaic's window, click the "backward S" button):
-// - iRig BlueBoard Bluetooth
+// Installation:
+// -------------
 //
-// The BlueBoard itself needs to receive MIDI from BlueBoardHandler: In AUM, click the Routing button (the "backwards S"), then route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
+// - Start AUM
+// - Create a new MIDI channel
+// - Press the "+" button
+// - Select "Audio Unit MIDI Processor"
+// - Select "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+//
+// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+//
+// - Click iRig BlueBoard Bluetooth
+//
+// The BlueBoard itself needs to receive MIDI from BlueBoardHandler, too:
+//
+// - Close Mozaic's window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
 
 @OnLoad
   SetShortName {0-BlueBoardHandler}

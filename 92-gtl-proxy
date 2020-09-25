@@ -39,10 +39,11 @@
 // - Select group 4: 4
 // - Select group 5: 5
 //
-// MIDI sources (in Mozaic's window, click the "backward S" button):
-// - LoopManager (Mozaic @M1:4)
-// - GroupManager (Mozaic @M1:5)
-// - ClockManager (Mozaic @M1:6)
+// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+//
+// - Click "Mozaic @M1:4" (LoopManager)
+// - Click "Mozaic @M1:5" (GroupManager)
+// - Click "Mozaic @M1:6" (ClockManager)
 
 @OnLoad
   SetShortName {92-GtlProxy}

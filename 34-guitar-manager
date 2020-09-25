@@ -1,5 +1,6 @@
-// MIDI sources (in Mozaic's window, click the "backward S" button):
-// - StepSequencer (Mozaic @M1:3)
+// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+//
+// - Click "Mozaic @M1:3" (StepSequencer)
 
 @OnLoad
   SetShortName {34-GuitarManager}
@@ -140,7 +141,7 @@
 @ArmConfig
   Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_AUM_SELECT_GUITAR, inputStack[inputStackId]]
+  data = [MOZ_INST_AUM_PROXY, SYSEX_AUM_SELECT_GUITAR, inputStack[inputStackId]]
   SendSysex data, 3
 @End
 
@@ -155,6 +156,7 @@
 
   MOZ_INST_STEP_SEQUENCER =  21
   MOZ_INST_GUITAR_MANAGER =  34
+  MOZ_INST_AUM_PROXY      =  91
   MOZ_INST_GTL_PROXY      =  92
   MOZ_INST_FEEDBACKER     =  93
   MOZ_INST_ALL            = 100
@@ -167,6 +169,7 @@
   SYSEX_RESET_STEP_SEQUENCER   =  7
   SYSEX_DUPLICATE_LAST_INPUT   =  8
   SYSEX_GTL_SELECT_GUITAR      = 10
+  SYSEX_AUM_SELECT_GUITAR      = 11
 
   FEEDBACK_SELECT    = 15
   FEEDBACK_UNKNOWN   = 17

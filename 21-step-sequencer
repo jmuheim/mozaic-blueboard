@@ -1,6 +1,7 @@
 // StepSequencer handles all the state handling of and interplay between all the apps needed during a live looping performance. These apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
 //
 // It allows to define sets of configurations. Each set contains the following chunks:
+//
 // - Group to select (GTL)
 // - Loop to select (GTL)
 // - Clock length (GTL)
@@ -10,12 +11,13 @@
 //
 // Each of these chunks are represented by their own Mozaic instance. They handle both the interaction with the user, as well as the appliance of their specific info.
 //
-// MIDI sources (in Mozaic's window, click the "backward S" button):
-// - ModeSwitcher (Mozaic @M1:2)
-// - LoopManager (Mozaic @M1:4)
-// - GroupManager (Mozaic @M1:5)
-// - ClockManager (Mozaic @M1:6)
-// - GuitarManager (Mozaic @M1:7)
+// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+//
+// - Click "Mozaic @M1:2" (ModeSwitcher)
+// - Click "Mozaic @M1:4" (LoopManager)
+// - Click "Mozaic @M1:5" (GroupManager)
+// - Click "Mozaic @M1:6" (ClockManager)
+// - Click "Mozaic @M1:7" (GuitarManager)
 
 @OnLoad
   SetShortName {21-StepSequencer}

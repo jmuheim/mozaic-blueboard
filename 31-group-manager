@@ -1,5 +1,6 @@
-// MIDI sources (in Mozaic's window, click the "backward S" button):
-// - StepSequencer (Mozaic @M1:3)
+// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+//
+// - Click "Mozaic @M1:3" (StepSequencer)
 
 @OnLoad
   SetShortName {31-GroupManager}
