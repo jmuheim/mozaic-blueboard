@@ -1,6 +1,27 @@
-// StepSequencer handles all the state handling of and interplay between all the apps needed during a live looping performance. These apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
+// StepSequencer handles all the state handling of and interplay between all the apps needed during a live looping performance.
+// ============================================================================================================================
 //
-// It allows to define sets of configurations. Each set contains the following chunks:
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click "Mozaic @M1:2" (ModeSwitcher)
+// - Click "Mozaic @M1:4" (LoopManager)
+// - Click "Mozaic @M1:5" (GroupManager)
+// - Click "Mozaic @M1:6" (ClockManager)
+// - Click "Mozaic @M1:7" (GuitarManager)
+//
+// Usage:
+// ------
+//
+// These apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
+//
+// StepSequencer allows to define sets of configurations. Each set contains the following chunks:
 //
 // - Group to select (GTL)
 // - Loop to select (GTL)
@@ -10,14 +31,6 @@
 // - Recording mode (in GTL)
 //
 // Each of these chunks are represented by their own Mozaic instance. They handle both the interaction with the user, as well as the appliance of their specific info.
-//
-// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
-//
-// - Click "Mozaic @M1:2" (ModeSwitcher)
-// - Click "Mozaic @M1:4" (LoopManager)
-// - Click "Mozaic @M1:5" (GroupManager)
-// - Click "Mozaic @M1:6" (ClockManager)
-// - Click "Mozaic @M1:7" (GuitarManager)
 
 @OnLoad
   SetShortName {21-StepSequencer}

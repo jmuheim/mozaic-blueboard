@@ -1,13 +1,15 @@
 // Feedbacker sends audio signals that are meant for the ears of the performer only, like ...
+// ==========================================================================================
 //
-// Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+// Installation:
+// -------------
 //
-// So we have to load more than one instance; see AumProxy for details.
-//
-// Make sure that these Chameleon instances receive MIDI only from Feedbacker!
-//
-// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
-//
+// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
 // - Click "Mozaic @M1:2" (ModeSwitcher)
 // - Click "Mozaic @M1:3" (StepSequencer)
 // - Click "Mozaic @M1:4" (LoopManager)
@@ -16,6 +18,15 @@
 // - Click "Mozaic @M1:7" (GuitarManager)
 // - Click "Mozaic @M1:8" (AumProxu)
 // - Click "Mozaic @M1:9" (GtlProxy)
+//
+// Usage:
+// ------
+//
+// Feedback is done through two instances of Chameleon: It would be nicer to have only one Chameleon instance, but it only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+//
+// So we have to load more than one instance; see AumProxy for details.
+//
+// Make sure that these Chameleon instances receive MIDI only from Feedbacker!
 //
 // Notes:
 //

@@ -1,4 +1,21 @@
 // GtlProxy handles interaction with Group the Loop (GTL).
+// =======================================================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click "Mozaic @M1:4" (LoopManager)
+// - Click "Mozaic @M1:5" (GroupManager)
+// - Click "Mozaic @M1:6" (ClockManager)
+//
+// Usage:
+// ------
 //
 // GTL needs to receive MIDI from GtlProxy: Click the Routing button (the "backwards S"), then route GtlProxy's output to "Group the Loop".
 //
@@ -38,12 +55,6 @@
 // - Select group 3: 3
 // - Select group 4: 4
 // - Select group 5: 5
-//
-// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
-//
-// - Click "Mozaic @M1:4" (LoopManager)
-// - Click "Mozaic @M1:5" (GroupManager)
-// - Click "Mozaic @M1:6" (ClockManager)
 
 @OnLoad
   SetShortName {92-GtlProxy}

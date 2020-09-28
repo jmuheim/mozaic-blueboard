@@ -1,5 +1,15 @@
-// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
+// Manages the state handling of the selected loop.
+// ================================================
 //
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
 // - Click "Mozaic @M1:3" (StepSequencer)
 
 @OnLoad

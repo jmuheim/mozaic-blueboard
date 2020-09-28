@@ -1,17 +1,11 @@
 // BlueBoardHandler receives the button presses from the BlueBoard and sends them to ModeSwitcher.
 // ===============================================================================================
 //
-// In general:
-// -----------
-//
-// - Make sure to start the BlueBoard while pressing the B button!
-// - After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard
-//
 // Installation:
 // -------------
 //
 // - Start AUM
-// - Create a new MIDI channel
+// - Create a new MIDI channel and call it "Mozaic"
 // - Press the "+" button
 // - Select "Audio Unit MIDI Processor"
 // - Select "Mozaic"
@@ -19,16 +13,17 @@
 // - Click "Code"
 // - Replace the default code with the one in this file
 // - Click "Upload"
-//
-// For selecting MIDI sources, click the "MIDI Route" button (the "backwards S" in Mozaic's window):
-//
-// - Click iRig BlueBoard Bluetooth
-//
-// The BlueBoard itself needs to receive MIDI from BlueBoardHandler, too:
-//
+// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click "iRig BlueBoard Bluetooth"
 // - Close Mozaic's window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
 // - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
+//
+// Usage:
+// ------
+//
+// - Make sure to start the BlueBoard while pressing the B button!
+// - After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard Bluetooth
 
 @OnLoad
   SetShortName {0-BlueBoardHandler}
@@ -113,5 +108,5 @@
 
   MIDI_CHANNEL_BB = 0 // BlueBoard (listens only to channel 0)
 
-  SYSEX_DISPATCH_BUTTON = 0 // To prevent accidental value collisions across instances, just use the current timestamp => type "date +%s" in UNIX prompt
+  SYSEX_DISPATCH_BUTTON = 0
 @End
