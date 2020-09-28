@@ -16,8 +16,9 @@
 // - Click "Mozaic @M1:5" (GroupManager)
 // - Click "Mozaic @M1:6" (ClockManager)
 // - Click "Mozaic @M1:7" (GuitarManager)
-// - Click "Mozaic @M1:8" (AumProxu)
+// - Click "Mozaic @M1:8" (AumProxy)
 // - Click "Mozaic @M1:9" (GtlProxy)
+// - Close Mozaic's window by pressing the "X" button
 //
 // Usage:
 // ------

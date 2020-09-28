@@ -23,15 +23,17 @@ The goal of GTL-Wiz is to enable a single person to become a 1-person-band by le
     - I'm using an ESI UGM96 as it is ultra portable, but there are [many options available](https://forum.audiob.us/discussion/39270/what-is-the-smallest-2-channel-guitar-mic-usb-audio-interface/p1)
 - Some cables to connect the guitar and microphone to the audio interface (probably 1/4 TRS and XLR ones)
 - An [Apple lightning to USB camera adapter](https://www.amazon.com/Apple-Lightning-USB3-Camera-Adapter/dp/B01F7KJDIM/) to connect the audio interface to the iOS device
+    - The audio interface will probably need an additional power source, so make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
 - A [stereo breakout cable](https://www.amazon.com/Hosa-YMM-261-Stereo-Breakout-Cable/dp/B000068O5H/)
     - Possibly a [1/4 to 1/8 adapter](https://www.amazon.com/6-35mm-Female-Adapter-Converter-Headphones/dp/B07SM4ZM33/) to connect the breakout cable to the external sound interface's output
-- Headphones, connected to left mono output channel of the breakout cable (for receiving audio feedback from GTL-Wiz, ie. clicks of the metronome, instruction and confirmation messages, etc.)
-- External speakers, connected to right mono output channel of the breakout cable (for the performance's audio)
+- Headphones, connected to the left mono output channel of the breakout cable (for receiving audio feedback from GTL-Wiz, ie. clicks of the metronome, instruction and confirmation messages, etc.)
+- External speakers, connected to the right mono output channel of the breakout cable (for the performance's audio)
 - An [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/)
+    - Be sure to have its [firmware updated](https://cgi.ikmultimedia.com/ikforum/viewtopic.php?f=9&t=24780)
+
+**Note:** To be fully mobile (i.e. when performing on the streets), I'm using an [ExplorAudio H-Clamp](https://exploraudio.com/categories/giltrap-signature-h-clamp/24/) to attach the microphone to my guitar. I also attach my iPhone to it using some additional elements that I was generously sponsored by ExplorAudio (thank you so much, Robert). However, any [microphone stand](https://www.amazon.co.uk/Tiger-Music-MCA7-BK-Professional-Microphone/dp/B002GODR1W) and [iPhone/iPad holder](https://www.aliexpress.com/item/32717839677.html) will do.
 
 ## Needed Apps
-
-Required:
 
 - [Group the Loop](https://apps.apple.com/us/app/group-the-loop/id1029416579) (14$)
     - Provides the foundation for recording and playing loops (and groups of loops, so song structures can be built)
@@ -39,9 +41,6 @@ Required:
     - Hosts the input channels and virtual instruments, routes them as needed to GTL, receives the played back loops, and runs the Mozaic scripts
 - [Mozaic Plugin Workshop](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653) (8$)
     - Runs the present collection of scripts that manage the interplay between all involved software (using MIDI signals)
-
-Optional:
-
 - [Chameleon AUv3 Sampler Plugin](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) (6$)
     - Or a similar sampler plugin that lets you create your own patches (with a specific audio file per MIDI note)
 - [MIDI Guitar](https://apps.apple.com/us/app/midi-guitar/id523095780) (~30$)
@@ -49,9 +48,20 @@ Optional:
 - [RoughRider3](https://apps.apple.com/us/app/roughrider3/id1496058931?ls=1) (free)
     - A simple compressor which enhances the main output (just discard it if you don't want it)
 
-## Configuration
+## Installation and Configuration
 
-Go through each script file and apply their specific instructions.
+Go through each script file (from top to bottom) and apply their specific installation instructions.
+
+## Usage
+
+- Connect the audio interface to the iOS device via the Lightning USB adapter (make sure it has enough power by attaching it to a power source, if needed)
+    - Connect the guitar to its left input
+    - Connect the microphone to its right input
+    - Connect the audio breakout cable to its output
+        - Connect the headphones to its left output
+        - Connect the speakers to its right output
+- Turn on the BlueBoard while pressing the B button (the Bluetooth LED should start flashing)
+    - In AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard Bluetooth (the Bluetooth LED will glow continuously now)
 
 ## Future ideas
 
@@ -59,3 +69,5 @@ Go through each script file and apply their specific instructions.
 - Record MIDI patterns and replay them
 - Apply various algorithms on MIDI patterns, e.g. filtering out unwanted notes, detecting chords, quantizing notes, applying a different chord to a recorded pattern, sending bass notes to a different virtual instrument than high notes, etc.
 - Apply FX to main out (e.g. chorus, flanger...)
+
+Some day, it should not be necessary at all anymore to look at the iOS device's screen! Everything will be working through foot input (via BlueBoard, in advance to and while performing) and audio feedback (via headphones).

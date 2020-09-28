@@ -11,6 +11,7 @@
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
 // - Click "Mozaic @M1:3" (StepSequencer)
+// - Close Mozaic's window by pressing the "X" button
 
 @OnLoad
   SetShortName {33-ClockManager}

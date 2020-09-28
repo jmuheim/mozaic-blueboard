@@ -17,13 +17,8 @@
 // - Click "iRig BlueBoard Bluetooth"
 // - Close Mozaic's window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
-// - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth".
-//
-// Usage:
-// ------
-//
-// - Make sure to start the BlueBoard while pressing the B button!
-// - After turning the BlueBoard on, in AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard Bluetooth
+// - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth"
+// - Press "Close"
 
 @OnLoad
   SetShortName {0-BlueBoardHandler}

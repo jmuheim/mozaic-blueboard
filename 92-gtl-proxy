@@ -13,6 +13,7 @@
 // - Click "Mozaic @M1:4" (LoopManager)
 // - Click "Mozaic @M1:5" (GroupManager)
 // - Click "Mozaic @M1:6" (ClockManager)
+// - Close Mozaic's window by pressing the "X" button
 //
 // Usage:
 // ------
