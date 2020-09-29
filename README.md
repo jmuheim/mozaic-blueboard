@@ -121,7 +121,7 @@ Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 - Click "Mozaic @M1:8" (AumProxy)
 - Go back (click "Guitar" button)
 - Select "Tonebridge Parameters" -> "Preset Load"
-- For the first preset, assign MIDI note 0 on channel 1
+- For the first preset, assign MIDI note (not CC!) 0 to channel 4
 - For the second, assign MIDI note 1, etc.
 
 ### Keyboard
