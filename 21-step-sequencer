@@ -206,7 +206,7 @@
 @End
 
 @OnMetroPulse
-  // Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
+  Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
 
   if armConfigsAtEndOfBar = YES
     if CurrentMetroPulse = pulsePerBar - 1

@@ -60,6 +60,8 @@
     elseif sysexAction = SYSEX_ARM_CONFIG_CUED
       inputStackId = data[2]
       Call @ArmConfig
+    elseif sysexAction = SYSEX_ARM_CONFIG_NOW
+      Log {Nothing to arm now}
     elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
       Call @DuplicateLastInput
     else

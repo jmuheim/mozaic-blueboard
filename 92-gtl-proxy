@@ -11,6 +11,7 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "Mozaic @M1:3" (StepSequencer)
 // - Click "Mozaic @M1:4" (LoopManager)
 // - Click "Mozaic @M1:5" (GroupManager)
 // - Click "Mozaic @M1:6" (ClockManager)
