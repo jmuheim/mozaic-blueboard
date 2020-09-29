@@ -1,0 +1,111 @@
+// AumProxy handles interaction with Audio Mixer (AUM).
+// ====================================================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "Mozaic @M1:7" (GuitarManager)
+// - Close the window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route AumProxy's output to "MIDI Control"
+// - Press "Close"
+//
+// Usage:
+// ------
+//
+//
+// AUM needs to be configured properly:
+//
+// - Clock Options (click on BPM number on the top right, then the 3 dots) -> Ableton Link -> Enabled
+// - (TODO: More here!)
+//
+// AUM needs the following MIDI Bindings (all set as "Tap"):
+//
+// - (TODO)
+
+@OnLoad
+  SetShortName {91-AumProxy}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@InitConstants
+  MIDI_DELAY = 0 // AUM doesn't need a delay between on and off
+@End
+
+@InitVariables
+
+@End
+
+@Reset
+  Log {Reset}
+  Call @InitVariables
+  Call @ResetAum
+@End
+
+@ResetAum
+  midiToSend = AUM_RESET_SESSION
+  Call @SendMidiOnAndOffToAum
+@End
+
+@SendMidiOnAndOffToAum
+  SendMidiNoteOn  MIDI_CHANNEL_AUM, midiToSend, 127
+  SendMidiNoteOff MIDI_CHANNEL_AUM, midiToSend,   0, MIDI_DELAY
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexLength = SysexSize
+  sysexTarget = data[0]
+  sysexAction = data[1]
+
+  if sysexTarget = MOZ_INST_AUM_PROXY
+    if sysexAction = SYSEX_AUM_SELECT_GUITAR
+      guitar = data[2]
+      Call @SelectGuitar
+    else
+      Log {ERROR: Unknown sysexAction=}, sysexAction
+    endif
+  elseif sysexTarget = MOZ_INST_ALL
+    if sysexAction = SYSEX_RESET_STEP_SEQUENCER
+      Call @Reset
+    endif
+  endif
+@End
+
+@SelectGuitar
+  Log {Selecting guitar=}, guitar
+
+  midiToSend = AUM_SELECT_GUITAR_BASE + guitar
+  Call @SendMidiOnAndOffToAum
+@End
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  MOZ_INST_AUM_PROXY = 92
+  MOZ_INST_ALL       = 100
+
+  SYSEX_AUM_SELECT_GUITAR = 11
+
+  MIDI_CHANNEL_AUM = 3
+
+  AUM_SELECT_GUITAR_BASE = 0 // Added guitar numbers translate exactly to the required MIDI, e.g. guitar 1 sends 0, guitar 2 sends 1, etc., up to guitar 6 sends 5.
+@End
