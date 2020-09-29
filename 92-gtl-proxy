@@ -139,13 +139,15 @@
 @TryToExecuteGroupAndLoopSelection
   // Both selections ready? Then apply them!
   if nextGroup <> UNDEFINED and nextLoop <> UNDEFINED
-    Log {Executing selection of both group=}, group, { and loop=}, loop
+    Log {Executing selection of both group=}, group, { and loop=}, loop, { (and trigger recording)}
 
     midiToSend = GTL_SELECT_GROUP_BASE + nextGroup
     Call @SendMidiOnAndOffToGtl
 
     midiToSend = GTL_SELECT_LOOP_BASE + nextLoop
     Call @SendMidiOnAndOffToGtl
+
+    Call @SendRecordOverdubToGtl
 
     nextGroup = UNDEFINED
     nextLoop  = UNDEFINED
@@ -173,8 +175,10 @@
   clock = newClock
 @End
 
-
-
+@SendRecordOverdubToGtl
+  midiToSend = GTL_RECORD_OVERDUB
+  Call @SendMidiOnAndOffToGtl
+@End
 
 
 
