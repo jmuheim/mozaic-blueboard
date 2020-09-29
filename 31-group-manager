@@ -57,7 +57,7 @@
       Call @DispatchButtonPress
     elseif sysexAction = SYSEX_PROCEED_WITH_WORKFLOW
       Call @ProceedWithWorkflow
-    elseif sysexAction = SYSEX_ARM_CONFIG
+    elseif sysexAction = SYSEX_ARM_CONFIG_CUED
       inputStackId = data[2]
       Call @ArmConfig
     elseif sysexAction = SYSEX_DUPLICATE_LAST_INPUT
@@ -178,7 +178,7 @@
   SYSEX_ANNOUNCE_FEEDBACK      = 2
   SYSEX_SELECTION_CONFIRMATION = 3
   SYSEX_GTL_SELECT_GROUP       = 5
-  SYSEX_ARM_CONFIG             = 6
+  SYSEX_ARM_CONFIG_CUED        = 6
   SYSEX_RESET_STEP_SEQUENCER   = 7
   SYSEX_DUPLICATE_LAST_INPUT   = 8
 

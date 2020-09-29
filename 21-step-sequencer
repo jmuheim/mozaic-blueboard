@@ -51,6 +51,11 @@
   currentManagerInstance = FIRST_MANAGER_INSTANCE
   stackSize = 0
   lastActivatedStackId = UNDEFINED
+
+  pulsesPerQuarterNote = 4
+  SetMetroPPQN pulsesPerQuarterNote    
+  pulsePerBar = HostBeatsPerMeasure * pulsesPerQuarterNote
+  armConfigsAtEndOfBar = NO
 @End
 
 @Reset
@@ -172,12 +177,12 @@
   Log {Arming lastActivatedStackId=}, lastActivatedStackId
 
   for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
-    // TODO: Find out how much time is left in the current loop, so GuitarManager can delay the activation of the next guitar preset!
-    data = [managerId, SYSEX_ARM_CONFIG, lastActivatedStackId]
+    data = [managerId, SYSEX_ARM_CONFIG_CUED, lastActivatedStackId]
     SendSysex data, 3
   endfor
 
   Call @SayConfigXOfYArmed
+  armConfigsAtEndOfBar = YES
 @End
 
 @SayConfigXOfYArmed
@@ -200,7 +205,20 @@
   SendSysex data, 4
 @End
 
+@OnMetroPulse
+  // Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
 
+  if armConfigsAtEndOfBar = YES
+    if CurrentMetroPulse = pulsePerBar - 1
+      for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
+        data = [managerId, SYSEX_ARM_CONFIG_NOW, lastActivatedStackId]
+        SendSysex data, 3
+      endfor
+    endif
+
+    armConfigsAtEndOfBar = NO
+  endif
+@End 
 
 
 
@@ -220,13 +238,14 @@
   MOZ_INST_FEEDBACKER     = 93
   MOZ_INST_ALL            = 100
 
-  SYSEX_DISPATCH_BUTTON        = 0
-  SYSEX_PROCEED_WITH_WORKFLOW  = 1
-  SYSEX_ANNOUNCE_FEEDBACK      = 2
-  SYSEX_SELECTION_CONFIRMATION = 3
-  SYSEX_ARM_CONFIG             = 6
-  SYSEX_RESET_STEP_SEQUENCER   = 7
-  SYSEX_DUPLICATE_LAST_INPUT   = 8
+  SYSEX_DISPATCH_BUTTON        =  0
+  SYSEX_PROCEED_WITH_WORKFLOW  =  1
+  SYSEX_ANNOUNCE_FEEDBACK      =  2
+  SYSEX_SELECTION_CONFIRMATION =  3
+  SYSEX_ARM_CONFIG_CUED        =  6
+  SYSEX_RESET_STEP_SEQUENCER   =  7
+  SYSEX_DUPLICATE_LAST_INPUT   =  8
+  SYSEX_ARM_CONFIG_NOW         = 12
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62
