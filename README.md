@@ -105,19 +105,45 @@ Repeat this process, but:
 - As another insert/effect (drag the slots up to show a "+1" button, then press it), select "Bus Send" -> "Bus A"
 - As destination, select "Mix Bus" -> "Bus P"
 
+To switch between Tonebridge's FX, it needs some presets that can be toggled using MIDI. First of all, create some presets:
+
+- Click the "Tonebridge" button
+- Click its "Search" button and locate a favourite preset (e.g. "Wish You Were Here")
+- Open the "Presets" menu (top left of the window) and click "+"
+- Enter a name (typically similar to the preset's name) and click "Save in AUM"
+
+Repeat this process until you have 6 presets. Then close the window by pressing the "X" button.
+
+Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
+
+- Click the channel's name ("Guitar")
+- Click the "MIDI settings" button (top left of the menu)
+- Click "Mozaic @M1:8" (AumProxy)
+- Go back (click "Guitar" button)
+- Select "Tonebridge Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note 0 on channel 1
+- For the second, assign MIDI note 1, etc.
+
+### Keyboard
+
+TODO
 
 // - Keyboard (Audio)
 //     - Input: Audio Unit Extension -> Chameleon
 //     - Insert: Bus Send -> Bus A
 //     - Output: Mix Bus -> Bus P
-// - Send to AUM (Audio)
-//     - Input: Mix Bus -> Bus A
-//     - Output: IAA / Audiobus Output -> IAA / AB Output 1 (AUM will listen here)
 
+### Send to GTL
 
+- In AUM, create a new audio channel and call it "Sed to GTL"
+- As source, select "Mix Bus" -> "Bus A"
+- As destination, select "IAA / Audiobus Output" -> "IAA / AB Output 1" (GTL will listen there)
 
-- Save the session as "GTL Wizard"
-- Close AUM, GTL and MG
+### Save and close
+
+That's all! Wasn't that easy?
+
+Just save the session as "GTL Wizard" in AUM so you can recall it easily again!
 
 ## Usage
 
