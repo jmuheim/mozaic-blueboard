@@ -4,21 +4,23 @@
 // Installation:
 // -------------
 //
-// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
 // - Click the newly inserted Mozaic button
 // - Click "Code"
 // - Replace the default code with the one in this file
 // - Click "Upload"
-// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
 // - Click "Mozaic @M1:4" (LoopManager)
 // - Click "Mozaic @M1:5" (GroupManager)
 // - Click "Mozaic @M1:6" (ClockManager)
-// - Close Mozaic's window by pressing the "X" button
+// - Close the window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route GtlProxy's output to "Group the Loop"
+// - Press "Close"
 //
 // Usage:
 // ------
-//
-// GTL needs to receive MIDI from GtlProxy: Click the Routing button (the "backwards S"), then route GtlProxy's output to "Group the Loop".
 //
 // The loaded session in GTL needs 5 groups (just click "Add Group" a few times).
 //

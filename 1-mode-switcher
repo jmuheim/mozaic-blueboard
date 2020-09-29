@@ -4,14 +4,15 @@
 // Installation:
 // -------------
 //
-// - In AUM, in the "Mozaic" MIDI channel, press the "+" button
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
 // - Click the newly inserted Mozaic button
 // - Click "Code"
 // - Replace the default code with the one in this file
 // - Click "Upload"
-// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
 // - Click "Mozaic @M1:1" (BlueBoardHandler)
-// - Close Mozaic's window by pressing the "X" button
+// - Close the window by pressing the "X" button
 //
 // About:
 // ------

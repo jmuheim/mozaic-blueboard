@@ -4,18 +4,15 @@
 // Installation:
 // -------------
 //
-// - Start AUM
-// - Create a new MIDI channel and call it "Mozaic"
-// - Press the "+" button
-// - Select "Audio Unit MIDI Processor"
-// - Select "Mozaic"
+// - In AUM, in the "Mozaic" MIDI channel, click the "+" button
+// - Select "Audio Unit MIDI Processor" -> "Mozaic"
 // - Click the newly inserted Mozaic button
 // - Click "Code"
 // - Replace the default code with the one in this file
 // - Click "Upload"
-// - Click the "MIDI Route" button (the "backwards S" in Mozaic's window)
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
 // - Click "iRig BlueBoard Bluetooth"
-// - Close Mozaic's window by pressing the "X" button
+// - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
 // - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth"
 // - Press "Close"

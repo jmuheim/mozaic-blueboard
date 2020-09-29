@@ -35,33 +35,105 @@ The goal of GTL-Wiz is to enable a single person to become a 1-person-band by le
 
 ## Needed Apps
 
-- [Group the Loop](https://apps.apple.com/us/app/group-the-loop/id1029416579) (14$)
+- [Group the Loop (GTL)](https://apps.apple.com/us/app/group-the-loop/id1029416579) (14$)
     - Provides the foundation for recording and playing loops (and groups of loops, so song structures can be built)
 - [Audio Mixer [AUM]](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) (20$)
     - Hosts the input channels and virtual instruments, routes them as needed to GTL, receives the played back loops, and runs the Mozaic scripts
-- [Mozaic Plugin Workshop](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653) (8$)
+- [Mozaic Plugin Workshop (Mozaic)](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653) (8$)
     - Runs the present collection of scripts that manage the interplay between all involved software (using MIDI signals)
-- [Chameleon AUv3 Sampler Plugin](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) (6$)
+- [Chameleon AUv3 Sampler Plugin (Chameleon)](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) (6$)
     - Or a similar sampler plugin that lets you create your own patches (with a specific audio file per MIDI note)
-- [MIDI Guitar](https://apps.apple.com/us/app/midi-guitar/id523095780) (~30$)
+- [MIDI Guitar (MG)](https://apps.apple.com/us/app/midi-guitar/id523095780) (~30$)
     - Or any other MIDI input device, ie. a different [guitar to MIDI solution](https://forum.audiob.us/discussion/40935/pros-and-cons-of-different-guitar-to-midi-solutions-ios-midi-guitar-2-fishman-triple-play/p1?new=1) or an external MIDI keyboard like the [KORG nanoKEY](https://www.korg.com/us/products/computergear/nanokey2/)
-- [RoughRider3](https://apps.apple.com/us/app/roughrider3/id1496058931?ls=1) (free)
+- [RoughRider3 (RR)](https://apps.apple.com/us/app/roughrider3/id1496058931?ls=1) (free)
     - A simple compressor which enhances the main output (just discard it if you don't want it)
 
 ## Installation and Configuration
 
-Go through each script file (from top to bottom) and apply their specific installation instructions.
+### Mozaic scripts
+
+- Start AUM
+- Create a new MIDI channel and call it "Mozaic"
+- Go through each script file (from top to bottom) and apply their specific installation instructions.
+
+### Feedback samples
+
+- In AUM, create a new audio channel and call it "Feedback samples 0-33"
+- As input ("+" on the very top), select "Audio Unit Extension" -> "Chameleon"
+- Click the newly inserted Chameleon button
+- Drag the whole interface up to access the "Samples" area, best done by sliding up with one finger on the very left ("Chameleon Sampler" lettering)
+- Click "Restore" -> "Restore Single Patch" (TODO: better save both patches as a bank!)
+- Select "GTL Wizard (feedback samples 0-33).spatch"
+- Drag the whole interface down to access the main area
+- In the "Bank" menu, select "User"
+- In the "Presets" menu, select "All" -> "GTL Wizard (feedback samples 0-33)"
+- Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+- Click "Mozaic @M1:10" (Feedbacker)
+- Close the window by pressing the "X" button
+
+Repeat this process, but:
+
+- Call the audio channel "Feedback samples 34-67"
+- Load patch "GTL Wizard (feedback samples 34-67)"
+
+### Audio routing
+
+#### Main out
+
+- In AUM, create a new audio channel and call it "Main out"
+- As source ("+" button on the very top), select "Mix Bus" -> "Bus P"
+- As destination (speaker button on the very bottom), select "Hardware Output" -> "Speaker"
+
+#### Receive from GTL
+
+- In AUM, create a new audio channel and call it "Receive from GTL"
+- As source, select "Inter-App Audio" -> "Group the Loop (Main Output)"
+- As destination, select "Mix Bus" -> "Bus P"
+
+#### Microphone
+
+- In AUM, create a new audio channel and call it "Microphone"
+- As source, select "Hardware Input" -> "Audio interface channel X" (where your microphone is plugged in)
+- As insert/effect ("+" button in the middle between source and destination), select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+
+#### Guitar
+
+- In AUM, create a new audio channel and call it "Guitar"
+- As source, select "Hardware Input" -> "Audio interface channel Y" (where your guitar is plugged in)
+- As insert/effect, select "Audio Unit Extension" -> "Tonebridge"
+- As another insert/effect (drag the slots up to show a "+1" button, then press it), select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+
+
+// - Keyboard (Audio)
+//     - Input: Audio Unit Extension -> Chameleon
+//     - Insert: Bus Send -> Bus A
+//     - Output: Mix Bus -> Bus P
+// - Send to AUM (Audio)
+//     - Input: Mix Bus -> Bus A
+//     - Output: IAA / Audiobus Output -> IAA / AB Output 1 (AUM will listen here)
+
+
+
+- Save the session as "GTL Wizard"
+- Close AUM, GTL and MG
 
 ## Usage
 
+### Connecting the gear
+
+- Active flight mode on your iOS device (possibly even restart it first)
 - Connect the audio interface to the iOS device via the Lightning USB adapter (make sure it has enough power by attaching it to a power source, if needed)
     - Connect the guitar to its left input
     - Connect the microphone to its right input
     - Connect the audio breakout cable to its output
         - Connect the headphones to its left output
         - Connect the speakers to its right output
+- Start AUM app and load the session "GTL Wizard"
 - Turn on the BlueBoard while pressing the B button (the Bluetooth LED should start flashing)
     - In AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard Bluetooth (the Bluetooth LED will glow continuously now)
+- Start MG and load preset "MIDI output"
 
 ## Future ideas
 
