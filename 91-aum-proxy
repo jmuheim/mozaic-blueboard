@@ -20,7 +20,6 @@
 // Usage:
 // ------
 //
-//
 // AUM needs to be configured properly:
 //
 // - Clock Options (click on BPM number on the top right, then the 3 dots) -> Ableton Link -> Enabled
@@ -53,8 +52,7 @@
 @End
 
 @ResetAum
-  midiToSend = AUM_RESET_SESSION
-  Call @SendMidiOnAndOffToAum
+  // TODO: all managers should handle their reset on their own! We probably can't reset AUM (although it would be nice to load the GTL Wizard session through MIDI...)
 @End
 
 @SendMidiOnAndOffToAum
@@ -100,7 +98,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
-  MOZ_INST_AUM_PROXY = 92
+  MOZ_INST_AUM_PROXY = 91
   MOZ_INST_ALL       = 100
 
   SYSEX_AUM_SELECT_GUITAR = 11
