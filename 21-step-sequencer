@@ -206,17 +206,15 @@
 @End
 
 @OnMetroPulse
-  Log HostBar, {:}, HostBeat, { - }, CurrentMetroPulse, { - }, pulsePerBar
-
   if armConfigsAtEndOfBar = YES
-    if CurrentMetroPulse = pulsePerBar - 1
+    if CurrentMetroPulse = pulsePerBar - 1 // Apply non-cueable configs 1/16th note before the next bar
       for managerId = FIRST_MANAGER_INSTANCE to LAST_MANAGER_INSTANCE
         data = [managerId, SYSEX_ARM_CONFIG_NOW, lastActivatedStackId]
         SendSysex data, 3
       endfor
-    endif
 
-    armConfigsAtEndOfBar = NO
+      armConfigsAtEndOfBar = NO
+    endif
   endif
 @End 
 
