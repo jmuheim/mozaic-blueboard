@@ -11,17 +11,17 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:2" (ModeSwitcher)
-// - Click "Mozaic @M1:4" (LoopManager)
-// - Click "Mozaic @M1:5" (GroupManager)
-// - Click "Mozaic @M1:6" (ClockManager)
-// - Click "Mozaic @M1:7" (GuitarManager)
+// - Click "Mozaic @M1:3" (ModeSwitcher)
+// - Click "Mozaic @M1:5" (LoopManager)
+// - Click "Mozaic @M1:6" (GroupManager)
+// - Click "Mozaic @M1:7" (ClockManager)
+// - Click "Mozaic @M1:8" (GuitarManager)
 // - Close the window by pressing the "X" button
 //
 // Usage:
 // ------
 //
-// These apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
+// The needed apps are first and foremost Group the Loop (GTL) and Audio Mixer (AUM), but also some AUv3 plugins like Chameleon (a sampler), Tonebridge (guitar effects amp simulator), and others.
 //
 // StepSequencer allows to define sets of configurations. Each set contains the following chunks:
 //
@@ -35,7 +35,7 @@
 // Each of these chunks are represented by their own Mozaic instance. They handle both the interaction with the user, as well as the appliance of their specific info.
 
 @OnLoad
-  SetShortName {21-StepSequencer}
+  SetShortName {31-StepSequencer}
 
   Call @InitSharedConstants
   Call @InitConstants

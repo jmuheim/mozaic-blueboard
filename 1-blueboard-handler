@@ -12,13 +12,14 @@
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
 // - Click "iRig BlueBoard Bluetooth"
+// - Click "Mozaic @M1:1" (SongLoader)
 // - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
 // - Route BlueBoardHandler's output to "iRig BlueBoard Bluetooth"
 // - Press "Close"
 
 @OnLoad
-  SetShortName {0-BlueBoardHandler}
+  SetShortName {1-BlueBoardHandler}
 
   Call @InitSharedConstants
   Call @InitConstants

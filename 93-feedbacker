@@ -11,14 +11,14 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:2" (ModeSwitcher)
-// - Click "Mozaic @M1:3" (StepSequencer)
-// - Click "Mozaic @M1:4" (LoopManager)
-// - Click "Mozaic @M1:5" (GroupManager)
-// - Click "Mozaic @M1:6" (ClockManager)
-// - Click "Mozaic @M1:7" (GuitarManager)
-// - Click "Mozaic @M1:8" (AumProxy)
-// - Click "Mozaic @M1:9" (GtlProxy)
+// - Click "Mozaic @M1:3" (ModeSwitcher)
+// - Click "Mozaic @M1:4" (StepSequencer)
+// - Click "Mozaic @M1:5" (LoopManager)
+// - Click "Mozaic @M1:6" (GroupManager)
+// - Click "Mozaic @M1:7" (ClockManager)
+// - Click "Mozaic @M1:8" (GuitarManager)
+// - Click "Mozaic @M1:9" (AumProxy)
+// - Click "Mozaic @M1:10" (GtlProxy)
 // - Close the window by pressing the "X" button
 //
 // Usage:
@@ -101,7 +101,7 @@
 
   if sysexTarget = MOZ_INST_FEEDBACKER
     if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
-      Call @IterateOverFeedbacks
+      // Call @IterateOverFeedbacks
     else
       Log {ERROR: Unknown sysexAction=}, sysexAction
     endif

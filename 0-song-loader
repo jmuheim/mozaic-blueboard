@@ -1,0 +1,127 @@
+// SongLoader stores pre-defined songs (or templates) that can be loaded by the press of a button.
+// ===============================================================================================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Close the window by pressing the "X" button
+
+@OnLoad
+  SetShortName {0-SongLoader}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@InitConstants
+  DELAY_BETWEEN_MIDI_EVENTS = 100
+@End
+
+@InitVariables
+  midiDelay = 0
+@End
+
+@Reset
+  Log {Reset}
+  Call @InitVariables
+  Call @LoadSong
+@End
+
+@LoadSong
+  Log {Loading "Rivers of Babylon"}
+
+  // Intro - Mmmmh
+  Call @PressButtonA // Loop 1
+  Call @PressButtonA // Group 1
+  Call @PressButtonB // Clock Length 4
+  Call @PressButtonA // Guitar 1 (clean)
+
+  // Intro - Uuuuh
+  Call @PressButtonB // Loop 2
+  Call @PressButtonA // Group 1
+  Call @PressButtonC // Clock Length 4
+  Call @PressButtonB // Guitar 2 (?)
+
+  // Chorus - 1st voice - By the river...
+  Call @PressButtonA // Loop 1
+  Call @PressButtonB // Group 2
+  Call @PressButtonC // Clock Length 8
+  Call @PressButtonA // Guitar 1 (clean)
+
+  // Chorus - 2nd voice - By the river...
+  Call @PressButtonA // Loop 2
+  Call @PressButtonB // Group 2
+  Call @PressButtonC // Clock Length 8
+  Call @PressButtonA // Guitar 1 (clean)
+
+  // Verse 1 - 1st voice - (When the wicked) Carried us away...
+  Call @PressButtonA // Loop 1
+  Call @PressButtonC // Group 3
+  Call @PressButtonC // Clock Length 8
+  Call @PressButtonA // Guitar 1 (clean)
+
+  // Verse 1 - 2nd voice - (When the wicked) Carried us away...
+  Call @PressButtonA // Loop 1
+  Call @PressButtonC // Group 3
+  Call @PressButtonC // Clock Length 8
+  Call @PressButtonA // Guitar 1 (clean)
+@End
+
+@PressButtonA
+  midiToSend = BB_BUTTON_A
+  Call @SendMidiOnAndOffToBlueBoardHandler
+@End
+
+@PressButtonB
+  midiToSend = BB_BUTTON_B
+  Call @SendMidiOnAndOffToBlueBoardHandler
+@End
+
+@PressButtonC
+  midiToSend = BB_BUTTON_C
+  Call @SendMidiOnAndOffToBlueBoardHandler
+@End
+
+@PressButtonD
+  midiToSend = BB_BUTTON_D
+  Call @SendMidiOnAndOffToBlueBoardHandler
+@End
+
+@SendMidiOnAndOffToBlueBoardHandler
+  midiDelay = midiDelay + DELAY_BETWEEN_MIDI_EVENTS
+
+  SendMidiNoteOn  0, midiToSend, 127, midiDelay
+  SendMidiNoteOff 0, midiToSend,   0, midiDelay
+@End
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  MOZ_INST_STEP_SEQUENCER = 21
+
+  SYSEX_DISPATCH_BUTTON = 0
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_1_BEAT    = 1
+  TAP_TYPE_1_BAR     = 2
+@End

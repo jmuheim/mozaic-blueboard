@@ -11,7 +11,7 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:7" (GuitarManager)
+// - Click "Mozaic @M1:8" (GuitarManager)
 // - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
 // - Route AumProxy's output to "MIDI Control"

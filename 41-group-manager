@@ -1,5 +1,5 @@
-// Manages the state handling of the selected loop.
-// ================================================
+// Manages the state handling of the selected group of loops.
+// ==========================================================
 //
 // Installation:
 // -------------
@@ -11,11 +11,11 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:3" (StepSequencer)
+// - Click "Mozaic @M1:4" (StepSequencer)
 // - Close the window by pressing the "X" button
 
 @OnLoad
-  SetShortName {32-LoopManager}
+  SetShortName {41-GroupManager}
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -23,10 +23,12 @@
 @End
 
 @InitConstants
-  LOOP_1 = 1
-  LOOP_2 = 2
-  LOOP_3 = 3
-  LOOP_4 = 4
+  GROUP_M = 0
+  GROUP_1 = 1
+  GROUP_2 = 2
+  GROUP_3 = 3
+  GROUP_4 = 4
+  GROUP_5 = 5
 @End
 
 @InitVariables
@@ -45,7 +47,7 @@
   sysexTarget = data[0]
   sysexAction = data[1]
 
-  if sysexTarget = MOZ_INST_LOOP_MANAGER
+  if sysexTarget = MOZ_INST_GROUP_MANAGER
     if sysexAction = SYSEX_DISPATCH_BUTTON
       bbButton = data[2]
       tapType  = data[3]
@@ -74,7 +76,7 @@
 
 @ProceedWithWorkflow
   Log {Proceeding with workflow}
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_LOOP]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SELECT, FEEDBACK_GROUP]
   SendSysex data, 4
 @End
 
@@ -83,17 +85,21 @@
 
   if tapType = TAP_TYPE_IMMEDIATE
     if bbButton = BB_BUTTON_A
-      lastInput = LOOP_1
+      lastInput = GROUP_1
     elseif bbButton = BB_BUTTON_B
-      lastInput = LOOP_2
+      lastInput = GROUP_2
     elseif bbButton = BB_BUTTON_C
-      lastInput = LOOP_3
+      lastInput = GROUP_3
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
   elseif tapType = TAP_TYPE_1_BEAT
     if bbButton = BB_BUTTON_A
-      lastInput = LOOP_4
+      lastInput = GROUP_M
+    elseif bbButton = BB_BUTTON_B
+      lastInput = GROUP_4
+    elseif bbButton = BB_BUTTON_C
+      lastInput = GROUP_5
     else
       Log {ERROR! Unknown bbButton=}, bbButton, {, tapType=}, tapType
     endif
@@ -113,7 +119,7 @@
 @End
 
 @SayUnknownInput
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_LOOP]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_UNKNOWN, FEEDBACK_GROUP]
   SendSysex data, 4
 @End
 
@@ -123,12 +129,12 @@
 @End
 
 @SayInputSelected
-  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastInput, FEEDBACK_SELECTED]
+  data = [MOZ_INST_FEEDBACKER, SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastInput, FEEDBACK_SELECTED]
   SendSysex data, 5
 @End
 
 @AddInputToStack
-  Log {Adding loop to inputStack[}, inputStackSize, {] = }, lastInput
+  Log {Adding group to inputStack[}, inputStackSize, {] = }, lastInput
   inputStack[inputStackSize] = lastInput
   Inc inputStackSize
 
@@ -136,22 +142,23 @@
 @End
 
 @DuplicateLastInput
-  Log {Duplicating loop to inputStack[}, inputStackSize, {] = }, lastInput
+  Log {Duplicating group to inputStack[}, inputStackSize, {] = }, lastInput
   inputStack[inputStackSize] = lastInput
   Inc inputStackSize
 @End
 
 @ConfirmInputSelection
-  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_LOOP_MANAGER]
+  data = [MOZ_INST_STEP_SEQUENCER, SYSEX_SELECTION_CONFIRMATION, MOZ_INST_GROUP_MANAGER]
   SendSysex data, 3
 @End
 
 @ArmConfig
   Log {Arming config with inputStack[}, inputStackId, {] = }, inputStack[inputStackId]
 
-  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_LOOP, inputStack[inputStackId]]
+  data = [MOZ_INST_GTL_PROXY, SYSEX_GTL_SELECT_GROUP, inputStack[inputStackId]]
   SendSysex data, 3
 @End
+
 
 
 
@@ -163,7 +170,7 @@
   UNDEFINED = -1
 
   MOZ_INST_STEP_SEQUENCER = 21
-  MOZ_INST_LOOP_MANAGER   = 31
+  MOZ_INST_GROUP_MANAGER  = 32
   MOZ_INST_GTL_PROXY      = 92
   MOZ_INST_FEEDBACKER     = 93
   MOZ_INST_ALL            = 100
@@ -172,17 +179,17 @@
   SYSEX_PROCEED_WITH_WORKFLOW  = 1
   SYSEX_ANNOUNCE_FEEDBACK      = 2
   SYSEX_SELECTION_CONFIRMATION = 3
-  SYSEX_GTL_SELECT_LOOP        = 4
+  SYSEX_GTL_SELECT_GROUP       = 5
   SYSEX_ARM_CONFIG_CUED        = 6
   SYSEX_RESET_STEP_SEQUENCER   = 7
   SYSEX_DUPLICATE_LAST_INPUT   = 8
 
   FEEDBACK_SELECT    = 15
+  FEEDBACK_GROUP     = 16
   FEEDBACK_UNKNOWN   = 17
   FEEDBACK_INPUT     = 18
   FEEDBACK_TRY_AGAIN = 19
   FEEDBACK_SELECTED  = 20
-  FEEDBACK_LOOP      = 21
 
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62

@@ -68,7 +68,7 @@ The goal of GTL-Wiz is to enable a single person to become a 1-person-band by le
 - In the "Bank" menu, select "User"
 - In the "Presets" menu, select "All" -> "GTL Wizard (feedback samples 0-33)"
 - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-- Click "Mozaic @M1:10" (Feedbacker)
+- Click "Mozaic @M1:11" (Feedbacker)
 - Close the window by pressing the "X" button
 
 Repeat this process, but:
@@ -118,7 +118,7 @@ Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 
 - Click the channel's name ("Guitar")
 - Click the "MIDI settings" button (top left of the menu)
-- Click "Mozaic @M1:8" (AumProxy)
+- Click "Mozaic @M1:9" (AumProxy)
 - Go back (click "Guitar" button)
 - Select "Tonebridge Parameters" -> "Preset Load"
 - For the first preset, assign MIDI note (not CC!) 0 to channel 4

@@ -11,7 +11,7 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:1" (BlueBoardHandler)
+// - Click "Mozaic @M1:2" (BlueBoardHandler)
 // - Close the window by pressing the "X" button
 //
 // About:
@@ -25,7 +25,7 @@
 // - Step sequencer: State handling of and interplay between all the apps needed during a live looping performance
 
 @OnLoad
-  SetShortName {1-ModeSwitcher}
+  SetShortName {2-ModeSwitcher}
 
   Call @InitSharedConstants
   Call @InitConstants
