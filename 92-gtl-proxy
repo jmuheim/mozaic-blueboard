@@ -166,7 +166,7 @@
     timesToSend = difference * -1
   endif
 
-  Log {Setting clock length from clock=}, clock, { to newClock=}, newClock, { by sending midiToSend=}, midiToSend, { (}, timesToSend, {x)}
+  Log {Setting clock length from clock=}, clock, { to newClock=}, newClock
 
   for i = 1 to timesToSend
     Call @SendMidiOnAndOffToGtl
