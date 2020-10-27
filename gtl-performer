@@ -1,0 +1,144 @@
+// Make sure to start the BlueBoard while pressing the B button!
+@OnLoad
+  SetShortName {GtlPerformer}
+
+  Call @InitConstants
+  Call @InitVariables
+  Call @InitGtlMidiCodes
+  Call @InitAumMidiCodes
+
+  Call @ResetGtlSession
+  Call @IlluminateAllbuttons
+
+  midiToSend = UNDEFINED
+@End
+
+@InitConstants
+  UNDEFINED = -1
+
+  // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_TYPE_IMMEDIATE = 0
+  TAP_TYPE_LONG      = 1
+
+  NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
+
+  DELAY_BETWEEN_GTL_MIDI = 100
+
+  // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
+  BB_CHANNEL  = 0 // BlueBoard
+  GTL_CHANNEL = 1 // Group The Loop
+  AUM_CHANNEL = 2 // AUM
+  FB_CHANNEL  = 3 // Feedback (Chameleon with preset "Group The Loop Wizard") => Make sure that AUM only sends this channel (3) to the respective Chameleon instance! Note: Chameleon only supports 34 audio files per preset (see https://forum.audiob.us/discussion/comment/835351/#Comment_835351).
+@End
+
+@InitGtlMidiCodes
+  GTL_SELECT_GROUP[BB_BUTTON_A] = 0
+  GTL_SELECT_GROUP[BB_BUTTON_B] = 1
+  GTL_SELECT_GROUP[BB_BUTTON_C] = 2
+  GTL_SELECT_GROUP[BB_BUTTON_D] = 3
+
+  GTL_SELECT_LOOP[1] = 4
+  GTL_SELECT_LOOP[2] = 5
+  GTL_SELECT_LOOP[3] = 6
+  GTL_SELECT_LOOP[4] = 7
+
+  GTL_DECREASE_CLOCK = 10
+  GTL_INCREASE_CLOCK = 11
+
+  GTL_RECORD_OVERDUB     = 12
+  GTL_RECORD_MUTE        = 13
+  GTL_RECORD_SELECT_NEXT = 14
+
+  GTL_RESET_SESSION = 15
+@End
+
+@InitAumMidiCodes
+@End
+
+@InitVariables
+  midiToSend = UNDEFINED
+
+  sendMicrophoneToGtl = NO
+  sendGuitarToGtl     = NO
+
+  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Main group
+  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 3
+@End
+
+@ResetGtlSession
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
+@End
+
+@SendMidiNoteOnOffToGtl
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 127
+  SendMidiNoteOff GTL_CHANNEL, midiToSend,   0
+
+  Log {Sent Midi on/off to GTL: }, midiToSend
+@End
+
+@SendMidiNoteOnOffToAum
+  Call @SendMidiNoteOnToAum
+  Call @SendMidiNoteOffToAum
+@End
+
+@SendMidiNoteOnToAum
+  SendMidiNoteOn AUM_CHANNEL, midiToSend, 100
+@End
+
+@SendMidiNoteOffToAum
+  SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
+@End
+
+@IlluminateAllbuttons
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 100
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_B, 100
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_C, 100
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 100
+@End
+
+@OnMidiNoteOn
+  buttonDownTime = SystemTime // Time at which button was pressed down
+@End
+
+@OnMidiNoteOff
+  buttonUpTime = SystemTime
+  buttonPressedDuration = buttonUpTime - buttonDownTime
+
+  if buttonPressedDuration >= 200
+    tapType = TAP_TYPE_LONG
+  else
+    tapType = TAP_TYPE_IMMEDIATE
+  endif
+
+  Call @DispatchButtonPress
+@End
+
+@DispatchButtonPress
+  if tapType = TAP_TYPE_LONG
+    Call @RecordNextLoopInGroup
+  endif
+@End
+
+@RecordNextLoopInGroup
+  midiToSend = GTL_SELECT_GROUP[MidiNote]
+  Call @SendMidiNoteOnOffToGtl
+
+  if lastActiveLoopOfGroup[MidiNote] = UNDEFINED
+    lastActiveLoopOfGroup[MidiNote] = 1
+  endif
+
+  midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[MidiNote]]
+  Call @SendMidiNoteOnOffToGtl
+
+  if lastActiveLoopOfGroup[MidiNote] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
+    Inc lastActiveLoopOfGroup[MidiNote]
+  endif
+@End
