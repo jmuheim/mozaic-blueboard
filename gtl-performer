@@ -47,14 +47,9 @@
   GTL_SELECT_LOOP[3] = 6
   GTL_SELECT_LOOP[4] = 7
 
-  GTL_DECREASE_CLOCK = 10
-  GTL_INCREASE_CLOCK = 11
+  GTL_RECORD_OVERDUB = 8
 
-  GTL_RECORD_OVERDUB     = 12
-  GTL_RECORD_MUTE        = 13
-  GTL_RECORD_SELECT_NEXT = 14
-
-  GTL_RESET_SESSION = 15
+  GTL_RESET_SESSION = 9
 @End
 
 @InitAumMidiCodes
@@ -136,6 +131,9 @@
   endif
 
   midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[MidiNote]]
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_RECORD_OVERDUB
   Call @SendMidiNoteOnOffToGtl
 
   if lastActiveLoopOfGroup[MidiNote] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
