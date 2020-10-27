@@ -3,14 +3,10 @@
   SetShortName {GtlPerformer}
 
   Call @InitConstants
-  Call @InitVariables
   Call @InitGtlMidiCodes
   Call @InitAumMidiCodes
 
-  Call @ResetGtlSession
-  Call @IlluminateAllbuttons
-
-  midiToSend = UNDEFINED
+  Call @Reset
 @End
 
 @InitConstants
@@ -22,13 +18,11 @@
   BB_BUTTON_C = 64
   BB_BUTTON_D = 65
 
-  TAP_SHORT  = 0
-  TAP_MEDIUM = 200
-  TAP_LONG   = 1000
+  TAP_SHORT  = 0    // Up to 499ms
+  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
 
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
-
-  DELAY_BETWEEN_GTL_MIDI = 100
 
   // MIDI channels => Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
   BB_CHANNEL  = 0 // BlueBoard
@@ -54,6 +48,8 @@
 @End
 
 @InitAumMidiCodes
+  AUM_TOGGLE_MICROPHONE = 0
+  AUM_TOGGLE_GUITAR     = 1
 @End
 
 @InitVariables
@@ -68,9 +64,35 @@
   lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 3
 @End
 
-@ResetGtlSession
+@Reset
+  Call @InitVariables
+  Call @IlluminateAllbuttons
+
   midiToSend = GTL_RESET_SESSION
   Call @SendMidiNoteOnOffToGtl
+
+  Call @ToggleMicrophoneGtlInputOff
+  Call @ToggleGuitarGtlInputOff
+@End
+
+@ToggleMicrophoneGtlInputOff
+  midiToSend = AUM_TOGGLE_MICROPHONE
+  Call @SendMidiNoteOffToAum
+@End
+
+@ToggleMicrophoneGtlInputOn
+  midiToSend = AUM_TOGGLE_MICROPHONE
+  Call @SendMidiNoteOnToAum
+@End
+
+@ToggleGuitarGtlInputOff
+  midiToSend = AUM_TOGGLE_GUITAR
+  Call @SendMidiNoteOffToAum
+@End
+
+@ToggleGuitarGtlInputOn
+  midiToSend = AUM_TOGGLE_GUITAR
+  Call @SendMidiNoteOnToAum
 @End
 
 @SendMidiNoteOnOffToGtl
@@ -120,11 +142,33 @@
 @End
 
 @DispatchButtonPress
-  if tapType = TAP_MEDIUM
+  if tapType = TAP_SHORT
+    Call @ToggleGtlInputs
+  elseif tapType = TAP_MEDIUM
     Call @RecordNextLoopInGroup
   elseif tapType = TAP_LONG
     if MidiNote = BB_BUTTON_A
-      Call @ResetGtlSession
+      Call @Reset
+    endif
+  endif
+@End
+
+@ToggleGtlInputs
+  if MidiNote = BB_BUTTON_A
+    if sendMicrophoneToGtl
+      Call @ToggleMicrophoneGtlInputOff
+      sendMicrophoneToGtl = NO
+    else
+      Call @ToggleMicrophoneGtlInputOn
+      sendMicrophoneToGtl = YES
+    endif
+  elseif MidiNote = BB_BUTTON_B
+    if sendGuitarToGtl
+      Call @ToggleGuitarGtlInputOff
+      sendGuitarToGtl = NO
+    else
+      Call @ToggleGuitarGtlInputOn
+      sendGuitarToGtl = YES
     endif
   endif
 @End
