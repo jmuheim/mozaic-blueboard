@@ -22,8 +22,9 @@
   BB_BUTTON_C = 64
   BB_BUTTON_D = 65
 
-  TAP_TYPE_IMMEDIATE = 0
-  TAP_TYPE_LONG      = 1
+  TAP_SHORT  = 0
+  TAP_MEDIUM = 200
+  TAP_LONG   = 1000
 
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
 
@@ -107,17 +108,19 @@
   buttonUpTime = SystemTime
   buttonPressedDuration = buttonUpTime - buttonDownTime
 
-  if buttonPressedDuration >= 200
-    tapType = TAP_TYPE_LONG
+  if buttonPressedDuration < TAP_MEDIUM
+    tapType = TAP_SHORT
+  elseif buttonPressedDuration < TAP_LONG
+    tapType = TAP_MEDIUM
   else
-    tapType = TAP_TYPE_IMMEDIATE
+    tapType = TAP_LONG
   endif
 
   Call @DispatchButtonPress
 @End
 
 @DispatchButtonPress
-  if tapType = TAP_TYPE_LONG
+  if tapType = TAP_MEDIUM
     Call @RecordNextLoopInGroup
   endif
 @End
