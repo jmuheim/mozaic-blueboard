@@ -122,6 +122,10 @@
 @DispatchButtonPress
   if tapType = TAP_MEDIUM
     Call @RecordNextLoopInGroup
+  elseif tapType = TAP_LONG
+    if MidiNote = BB_BUTTON_A
+      Call @ResetGtlSession
+    endif
   endif
 @End
 
