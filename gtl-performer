@@ -1,3 +1,28 @@
+// Group the Loop Performer
+// ========================
+//
+// GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
+//
+// Usage
+// -----
+//
+// - Short tap:
+//   - A: Send microphone only to GTL
+//   - B: Send instrument only to GTL
+//   - C: Send both (microphone and instrument) to GTL
+// - Medium tap:
+//   - A: Record next loop in group 1
+//   - B: Record next loop in group 2
+//   - C: Record next loop in group 3
+//   - D: Record next loop in group 4
+// - Long tap:
+//   - A: Play group 1
+//   - B: Play group 2
+//   - C: Play group 3
+//   - D: Play group 4
+// - Tap combos:
+//   - A+D: Reset session (TODO)
+
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
   SetShortName {GtlPerformer}
@@ -45,6 +70,11 @@
   GTL_RECORD_OVERDUB = 8
 
   GTL_RESET_SESSION = 9
+
+  GTL_PLAY_GROUP[BB_BUTTON_A] = 10
+  GTL_PLAY_GROUP[BB_BUTTON_B] = 11
+  GTL_PLAY_GROUP[BB_BUTTON_C] = 12
+  GTL_PLAY_GROUP[BB_BUTTON_D] = 13
 @End
 
 @InitAumMidiCodes
@@ -147,10 +177,13 @@
   elseif tapType = TAP_MEDIUM
     Call @RecordNextLoopInGroup
   elseif tapType = TAP_LONG
-    if MidiNote = BB_BUTTON_A
-      Call @Reset
-    endif
+    Call @ToggleAndSelectGroup
   endif
+@End
+
+@ToggleAndSelectGroup
+  midiToSend = GTL_PLAY_GROUP[MidiNote]
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ToggleGtlInputs
