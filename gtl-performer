@@ -57,6 +57,7 @@
 @End
 
 @InitGtlMidiCodes
+  GTL_SELECT_MASTER_GROUP = 14
   GTL_SELECT_GROUP[BB_BUTTON_A] = 0
   GTL_SELECT_GROUP[BB_BUTTON_B] = 1
   GTL_SELECT_GROUP[BB_BUTTON_C] = 2
@@ -84,14 +85,15 @@
 
 @InitVariables
   midiToSend = UNDEFINED
+  midiDelay  = 0
 
   sendMicrophoneToGtl = NO
   sendGuitarToGtl     = NO
 
-  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Main group
-  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 1
-  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 2
-  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 4
 @End
 
 @Reset
@@ -99,6 +101,13 @@
   Call @IlluminateAllbuttons
 
   midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_SELECT_MASTER_GROUP
+  Call @SelectGroup
+
+  midiToSend = GTL_SELECT_LOOP[1]
+  midiDelay  = 1000
   Call @SendMidiNoteOnOffToGtl
 
   Call @ToggleMicrophoneGtlInputOff
@@ -126,8 +135,10 @@
 @End
 
 @SendMidiNoteOnOffToGtl
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 127
-  SendMidiNoteOff GTL_CHANNEL, midiToSend,   0
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 127, midiDelay
+  SendMidiNoteOff GTL_CHANNEL, midiToSend,   0, midiDelay
+
+  midiDelay = 0
 
   Log {Sent Midi on/off to GTL: }, midiToSend
 @End
