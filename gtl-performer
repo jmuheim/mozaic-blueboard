@@ -184,6 +184,8 @@
 @ToggleAndSelectGroup
   midiToSend = GTL_PLAY_GROUP[MidiNote]
   Call @SendMidiNoteOnOffToGtl
+
+  Call @SelectGroup
 @End
 
 @ToggleGtlInputs
@@ -207,8 +209,7 @@
 @End
 
 @RecordNextLoopInGroup
-  midiToSend = GTL_SELECT_GROUP[MidiNote]
-  Call @SendMidiNoteOnOffToGtl
+  Call @SelectGroup
 
   if lastActiveLoopOfGroup[MidiNote] = UNDEFINED
     lastActiveLoopOfGroup[MidiNote] = 1
@@ -223,4 +224,9 @@
   if lastActiveLoopOfGroup[MidiNote] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
     Inc lastActiveLoopOfGroup[MidiNote]
   endif
+@End
+
+@SelectGroup
+  midiToSend = GTL_SELECT_GROUP[MidiNote]
+  Call @SendMidiNoteOnOffToGtl
 @End
