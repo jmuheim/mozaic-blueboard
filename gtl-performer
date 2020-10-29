@@ -41,11 +41,14 @@
 @InitConstants
   UNDEFINED = -1
 
-  // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons (see @IlluminateAllbuttons)!
+  // Do not use the notes 60, 62, 64, and 65 for anything else (like MIDI bindings), as they are used for illuminating the BlueBoard buttons!
   BB_BUTTON_A = 60
   BB_BUTTON_B = 62
   BB_BUTTON_C = 64
   BB_BUTTON_D = 65
+
+  BB_MICROPHONE_BUTTON = BB_BUTTON_A
+  BB_GUITAR_BUTTON     = BB_BUTTON_D
 
   TAP_SHORT  = 0    // Up to 499ms
   TAP_MEDIUM = 500  // Between 500 and 999ms
@@ -102,7 +105,6 @@
 
 @Reset
   Call @InitVariables
-  Call @IlluminateAllbuttons
 
   midiToSend = GTL_RESET_SESSION
   Call @SendMidiNoteOnOffToGtl
@@ -119,21 +121,29 @@
 @End
 
 @ToggleMicrophoneGtlInputOff
+  SendMidiNoteOff BB_CHANNEL, BB_MICROPHONE_BUTTON, 127
+
   midiToSend = AUM_TOGGLE_MICROPHONE
   Call @SendMidiNoteOffToAum
 @End
 
 @ToggleMicrophoneGtlInputOn
+  SendMidiNoteOn BB_CHANNEL, BB_MICROPHONE_BUTTON, 127
+
   midiToSend = AUM_TOGGLE_MICROPHONE
   Call @SendMidiNoteOnToAum
 @End
 
 @ToggleGuitarGtlInputOff
+  SendMidiNoteOff BB_CHANNEL, BB_GUITAR_BUTTON, 127
+
   midiToSend = AUM_TOGGLE_GUITAR
   Call @SendMidiNoteOffToAum
 @End
 
 @ToggleGuitarGtlInputOn
+  SendMidiNoteOn BB_CHANNEL, BB_GUITAR_BUTTON, 127
+
   midiToSend = AUM_TOGGLE_GUITAR
   Call @SendMidiNoteOnToAum
 @End
@@ -153,18 +163,11 @@
 @End
 
 @SendMidiNoteOnToAum
-  SendMidiNoteOn AUM_CHANNEL, midiToSend, 100
+  SendMidiNoteOn AUM_CHANNEL, midiToSend, 127
 @End
 
 @SendMidiNoteOffToAum
   SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
-@End
-
-@IlluminateAllbuttons
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 100
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_B, 100
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_C, 100
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 100
 @End
 
 @OnMidiNoteOn
@@ -204,7 +207,7 @@
 @End
 
 @ToggleGtlInputs
-  if MidiNote = BB_BUTTON_A
+  if MidiNote = BB_MICROPHONE_BUTTON
     if sendMicrophoneToGtl
       Call @ToggleMicrophoneGtlInputOff
       sendMicrophoneToGtl = NO
@@ -212,7 +215,7 @@
       Call @ToggleMicrophoneGtlInputOn
       sendMicrophoneToGtl = YES
     endif
-  elseif MidiNote = BB_BUTTON_B
+  elseif MidiNote = BB_GUITAR_BUTTON
     if sendGuitarToGtl
       Call @ToggleGuitarGtlInputOff
       sendGuitarToGtl = NO
