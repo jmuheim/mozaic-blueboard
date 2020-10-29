@@ -90,6 +90,9 @@
 @End
 
 @InitVariables
+  modifierButton = UNDEFINED
+  modifierButtonWasUsed = NO
+
   midiToSend = UNDEFINED
   midiDelay  = 0
 
@@ -171,24 +174,40 @@
 
 @OnMidiNoteOn
   buttonDownTime = SystemTime // Time at which button was pressed down
+
+  // Allows, while holding a button, to press another button (or a series of buttons), e.g. A+D, B+C, etc.
+  if modifierButton = UNDEFINED
+    modifierButton = MidiNote
+  endif
 @End
 
 @OnMidiNoteOff
   buttonUpTime = SystemTime
-  buttonPressedDuration = buttonUpTime - buttonDownTime
+  modifierButtonDuration = buttonUpTime - buttonDownTime
 
-  if buttonPressedDuration < TAP_MEDIUM
-    tapType = TAP_SHORT
-  elseif buttonPressedDuration < TAP_LONG
-    tapType = TAP_MEDIUM
+  if modifierButton = MidiNote
+    modifierButton = UNDEFINED
+
+    if modifierButtonWasUsed = NO
+      if modifierButtonDuration < TAP_MEDIUM
+        tapType = TAP_SHORT
+      elseif modifierButtonDuration < TAP_LONG
+        tapType = TAP_MEDIUM
+      else
+        tapType = TAP_LONG
+      endif
+
+      Call @DispatchSingleButtonPress
+    else
+      modifierButtonWasUsed = NO
+    endif
   else
-    tapType = TAP_LONG
+    modifierButtonWasUsed = YES
+    Log {Pressing }, modifierButton, {+}, MidiNote
   endif
-
-  Call @DispatchButtonPress
 @End
 
-@DispatchButtonPress
+@DispatchSingleButtonPress
   if tapType = TAP_SHORT
     Call @ToggleGtlInputs
   elseif tapType = TAP_MEDIUM
