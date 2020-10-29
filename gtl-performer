@@ -3,6 +3,10 @@
 //
 // GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
 //
+// During the start of a song, usually you are very busy with singing and playing the guitar. As such, you don't have any hands free to interact with GTL's GUI. But still, you want to arm the next loop (in the current or any other group), probably switch settings of you instrument(s), etc., and do this subsequently to the current recording. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
+//
+// Usually, after a song is successfully started and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time and interact with GTL's GUI directly (which allows you to do more sophisticated stuff manually). So GTL-Performer is not meant to assist you fully throughout a song. It simply provides those features which are usually needed most during the start of a song, i.e. recording the first few loops inside different groups.
+//
 // Usage
 // -----
 //
