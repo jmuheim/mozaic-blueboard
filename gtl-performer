@@ -108,7 +108,8 @@
 @Reset
   Call @InitVariables
 
-  Call @ResetGtl
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
 
   midiToSend = GTL_SELECT_MASTER_GROUP
   Call @SelectGroup
@@ -117,13 +118,8 @@
   midiDelay  = 1000
   Call @SendMidiNoteOnOffToGtl
 
-  Call @ToggleSendMicrophoneToGtlOff
-  Call @ToggleSendInstrumentToGtlOff
-@End
-
-@ResetGtl
-  midiToSend = GTL_RESET_SESSION
-  Call @SendMidiNoteOnOffToGtl
+  Call @ToggleSendMicrophoneToGtlOn
+  Call @ToggleSendInstrumentToGtlOn
 @End
 
 @ToggleSendMicrophoneToGtlOff
@@ -215,7 +211,7 @@
 @DispatchButtonCombo
   if modifierButton = BB_BUTTON_B
     if MidiNote = BB_BUTTON_C
-      Call @ResetGtl
+      Call @Reset
     else
       Call @LogUnknownButtonCombo
     endif
