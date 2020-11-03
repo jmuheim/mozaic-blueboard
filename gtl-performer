@@ -207,8 +207,25 @@
     endif
   else
     modifierButtonWasUsed = YES
-    // TODO: B+C => Reset session
+
+    Call @DispatchButtonCombo
   endif
+@End
+
+@DispatchButtonCombo
+  if modifierButton = BB_BUTTON_B
+    if MidiNote = BB_BUTTON_C
+      Call @ResetGtl
+    else
+      Call @LogUnknownButtonCombo
+    endif
+  else
+    Call @LogUnknownButtonCombo
+  endif
+@End
+
+@LogUnknownButtonCombo
+  Log {Unknown button combo }, modifierButton, {+}, MidiNote
 @End
 
 @DispatchSingleButtonPress
