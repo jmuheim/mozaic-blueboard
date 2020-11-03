@@ -203,7 +203,7 @@
     endif
   else
     modifierButtonWasUsed = YES
-    Log {Pressing }, modifierButton, {+}, MidiNote
+    // TODO: B+C => Reset session
   endif
 @End
 
