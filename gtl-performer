@@ -108,8 +108,7 @@
 @Reset
   Call @InitVariables
 
-  midiToSend = GTL_RESET_SESSION
-  Call @SendMidiNoteOnOffToGtl
+  Call @ResetGtl
 
   midiToSend = GTL_SELECT_MASTER_GROUP
   Call @SelectGroup
@@ -120,6 +119,11 @@
 
   Call @ToggleSendMicrophoneToGtlOff
   Call @ToggleSendInstrumentToGtlOff
+@End
+
+@ResetGtl
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ToggleSendMicrophoneToGtlOff
