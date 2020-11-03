@@ -219,15 +219,11 @@
     if MidiNote = BB_BUTTON_C
       Call @Reset
     else
-      Call @LogUnknownButtonCombo
+      Log {Known modifierButton=}, modifierButton, { with unknown MidiNote=}, MidiNote
     endif
   else
-    Call @LogUnknownButtonCombo
+    Log {Unknown modifierButton=}, modifierButton, { with MidiNote=}, MidiNote
   endif
-@End
-
-@LogUnknownButtonCombo
-  Log {Unknown button combo }, modifierButton, {+}, MidiNote
 @End
 
 @DispatchSingleButtonPress
