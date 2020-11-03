@@ -63,7 +63,7 @@
 @End
 
 @InitGtlMidiCodes
-  GTL_SELECT_MASTER_GROUP = 14
+  GTL_SELECT_MASTER_GROUP       = 14 // Master group
   GTL_SELECT_GROUP[BB_BUTTON_A] = 0
   GTL_SELECT_GROUP[BB_BUTTON_B] = 1
   GTL_SELECT_GROUP[BB_BUTTON_C] = 2
@@ -96,8 +96,8 @@
   midiToSend = UNDEFINED
   midiDelay  = 0
 
-  sendMicrophoneToGtl = NO
-  sendInstrumentToGtl = NO
+  sendMicrophoneToGtl = YES
+  sendInstrumentToGtl = YES
 
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
@@ -111,15 +111,21 @@
   midiToSend = GTL_RESET_SESSION
   Call @SendMidiNoteOnOffToGtl
 
+  midiDelay = 2000
   midiToSend = GTL_SELECT_MASTER_GROUP
-  Call @SelectGroup
-
-  midiToSend = GTL_SELECT_LOOP[1]
-  midiDelay  = 1000
   Call @SendMidiNoteOnOffToGtl
 
-  Call @ToggleSendMicrophoneToGtlOn
-  Call @ToggleSendInstrumentToGtlOn
+  midiToSend = GTL_SELECT_LOOP[1]
+  midiDelay  = 2100
+  Call @SendMidiNoteOnOffToGtl
+
+  if sendMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtlOn
+  endif
+
+  if sendInstrumentToGtl
+    Call @ToggleSendInstrumentToGtlOn
+  endif
 @End
 
 @ToggleSendMicrophoneToGtlOff
