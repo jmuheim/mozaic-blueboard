@@ -20,44 +20,44 @@
 
 @InitVariables
   numberOfPressedButtons = 0
-  keyId = 0
-  keyCombo = 0
+  buttonId = 0
+  buttonCombo = 0
 @End
 
 @OnMidiNoteOn
   Call @ConvertBbMidiNoteToId
 
   Inc numberOfPressedButtons
-  keyCombo = keyCombo * 10 + keyId
+  buttonCombo = buttonCombo * 10 + buttonId
 
-  Log {On: Added }, keyId, {, is now }, keyCombo
+  Log {On: Added }, buttonId, {, is now }, buttonCombo
 @End
 
 @OnMidiNoteOff
   Call @ConvertBbMidiNoteToId
 
   Dec numberOfPressedButtons
-  keyCombo = keyCombo * 10 + keyId + 4
+  buttonCombo = buttonCombo * 10 + buttonId + 4
 
-  Log {Off: Added }, keyId, {, is now }, keyCombo
+  Log {Off: Added }, buttonId, {, is now }, buttonCombo
 
   if numberOfPressedButtons = 0
-    Log {Firing key combo }, keyCombo
-    keyCombo = 0
+    Log {Firing button combo }, buttonCombo
+    buttonCombo = 0
   endif
 @End
 
 @ConvertBbMidiNoteToId
   if MidiNote = BB_BUTTON_A
-    keyId = 1
+    buttonId = 1
   elseif MidiNote = BB_BUTTON_B
-    keyId = 2
+    buttonId = 2
   elseif MidiNote = BB_BUTTON_C
-    keyId = 3
+    buttonId = 3
   elseif MidiNote = BB_BUTTON_D
-    keyId = 4
+    buttonId = 4
   else
     Log {ERROR: Wrong MidiNote=}, MidiNote
   endif
-  Log {Key ID=}, keyId
+  Log {Button ID=}, buttonId
 @End
