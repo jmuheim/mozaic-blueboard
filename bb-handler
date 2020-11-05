@@ -1,0 +1,63 @@
+@OnLoad
+  SetShortName {BbHandler}
+
+  Call @InitConstants
+  Call @Reset
+@End
+
+@Reset
+  Call @InitVariables
+@End
+
+@InitConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+@End
+
+@InitVariables
+  numberOfPressedButtons = 0
+  keyId = 0
+  keyCombo = 0
+@End
+
+@OnMidiNoteOn
+  Call @ConvertBbMidiNoteToId
+
+  Inc numberOfPressedButtons
+  keyCombo = keyCombo * 10 + keyId
+
+  Log {On: Added }, keyId, {, is now }, keyCombo
+@End
+
+@OnMidiNoteOff
+  Call @ConvertBbMidiNoteToId
+
+  Dec numberOfPressedButtons
+  keyCombo = keyCombo * 10 + keyId + 4
+
+  Log {Off: Added }, keyId, {, is now }, keyCombo
+
+  if numberOfPressedButtons = 0
+    Log {Firing key combo }, keyCombo
+    keyCombo = 0
+  endif
+@End
+
+@ConvertBbMidiNoteToId
+  if MidiNote = BB_BUTTON_A
+    keyId = 1
+  elseif MidiNote = BB_BUTTON_B
+    keyId = 2
+  elseif MidiNote = BB_BUTTON_C
+    keyId = 3
+  elseif MidiNote = BB_BUTTON_D
+    keyId = 4
+  else
+    Log {ERROR: Wrong MidiNote=}, MidiNote
+  endif
+  Log {Key ID=}, keyId
+@End
