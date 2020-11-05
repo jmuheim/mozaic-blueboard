@@ -16,35 +16,74 @@
   BB_BUTTON_B = 62
   BB_BUTTON_C = 64
   BB_BUTTON_D = 65
+  NUMBER_OF_BB_BUTTONS = 4
+
+  TAP_SHORT  = 0    // Up to 499ms
+  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
 @End
 
 @InitVariables
   numberOfPressedButtons = 0
   buttonId = 0
   buttonCombo = 0
+  ignoreLastButtonUp = NO
 @End
 
 @OnMidiNoteOn
+  lastButtonDownTime = SystemTime // Time at which button was pressed down
+
   Call @ConvertBbMidiNoteToId
+  lastButtonDown = buttonId
+  Call @AppendLastButtonDownToButtonCombo
 
   Inc numberOfPressedButtons
-  buttonCombo = buttonCombo * 10 + buttonId
-
-  Log {On: Added }, buttonId, {, is now }, buttonCombo
 @End
 
 @OnMidiNoteOff
+  lastButtonUpTime = SystemTime
+
   Call @ConvertBbMidiNoteToId
+  lastButtonUp = buttonId
+  Call @AppendLastButtonUpToButtonCombo
 
   Dec numberOfPressedButtons
-  buttonCombo = buttonCombo * 10 + buttonId + 4
-
-  Log {Off: Added }, buttonId, {, is now }, buttonCombo
 
   if numberOfPressedButtons = 0
-    Log {Firing button combo }, buttonCombo
-    buttonCombo = 0
+    if ignoreLastButtonUp = NO
+      Call @DispatchButtonCombo
+    endif
+
+    Call @ResetButtonCombo
+    ignoreLastButtonUp = NO
+  else
+    if lastButtonDown = lastButtonUp
+      Call @DispatchButtonCombo
+      Call @RemoveLastButtonUpAndDowFromButtonCombo
+      ignoreLastButtonUp = YES
+    endif
   endif
+@End
+
+@ResetButtonCombo
+  buttonCombo = 0
+@End
+
+@DispatchButtonCombo
+  Log {Firing button combo }, buttonCombo
+@End
+
+@AppendLastButtonDownToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonDown
+@End
+
+@AppendLastButtonUpToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonUp + NUMBER_OF_BB_BUTTONS
+@End
+
+@RemoveLastButtonUpAndDowFromButtonCombo
+  buttonCombo = (buttonCombo - lastButtonUp - NUMBER_OF_BB_BUTTONS) / 10
+  buttonCombo = (buttonCombo - lastButtonDown) / 10
 @End
 
 @ConvertBbMidiNoteToId
@@ -59,5 +98,4 @@
   else
     Log {ERROR: Wrong MidiNote=}, MidiNote
   endif
-  Log {Button ID=}, buttonId
 @End
