@@ -24,7 +24,7 @@
 @End
 
 @InitVariables
-  buttonId = UNDEFINED
+  lastButtonId = UNDEFINED
   ignoreLastButtonUp = NO
 
   Call @ResetButtonCombo
@@ -34,7 +34,7 @@
   lastButtonDownTime = SystemTime // Time at which button was pressed down
 
   Call @ConvertBbMidiNoteToId
-  lastButtonDown = buttonId
+  lastButtonDown = lastButtonId
   Call @AppendLastButtonDownToButtonCombo
 
   Inc numberOfPressedButtons
@@ -44,7 +44,7 @@
   lastButtonUpTime = SystemTime
 
   Call @ConvertBbMidiNoteToId
-  lastButtonUp = buttonId
+  lastButtonUp = lastButtonId
   Call @AppendLastButtonUpToButtonCombo
 
   Dec numberOfPressedButtons
@@ -89,14 +89,14 @@
 
 @ConvertBbMidiNoteToId
   if MidiNote = BB_BUTTON_A
-    buttonId = 1
+    lastButtonId = 1
   elseif MidiNote = BB_BUTTON_B
-    buttonId = 2
+    lastButtonId = 2
   elseif MidiNote = BB_BUTTON_C
-    buttonId = 3
+    lastButtonId = 3
   elseif MidiNote = BB_BUTTON_D
-    buttonId = 4
+    lastButtonId = 4
   else
-    Log {ERROR: Wrong MidiNote=}, MidiNote
+    Log {ERROR: Unknown button ID for MidiNote=}, MidiNote
   endif
 @End
