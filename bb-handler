@@ -24,10 +24,10 @@
 @End
 
 @InitVariables
-  numberOfPressedButtons = 0
-  buttonId = 0
-  buttonCombo = 0
+  buttonId = UNDEFINED
   ignoreLastButtonUp = NO
+
+  Call @ResetButtonCombo
 @End
 
 @OnMidiNoteOn
@@ -66,6 +66,7 @@
 @End
 
 @ResetButtonCombo
+  numberOfPressedButtons = 0
   buttonCombo = 0
 @End
 
