@@ -1,0 +1,169 @@
+// BlueBoard-Handler
+// =================
+//
+// Receives the button presses from the BlueBoard and sends them to GtlPerformer.
+//
+// It calculates unique, deterministic numbers upon pressing any combination of buttons. In general, the following numbers are produced:
+//
+// - Pressing A down results in a 1
+// - Pressing B down results in a 2
+// - Pressing C down results in a 3
+// - Pressing D down results in a 4
+// - Releasing A results in a 5
+// - Releasing B results in a 6
+// - Releasing C results in a 7
+// - Releasing D results in a 8
+//
+// As long as a button is held down, any additionally pressed button will be added to the number.
+//
+// - For example, pressing and releasing A results in 15. Doing the same with B, results in 26.
+// - Pressing and holding A, then pressing and holding B, then releasing A, then releasing B, results in 1256.
+//   - We would write this like so: A>B.
+// - Pressing and holding A, then pressing and releasing B, then releasing A, results in 125.
+//   - We would write this like so: A+B.
+//   - By the way: pressing and releasing B several times, results in 125 several times.
+//
+// This way, a theoretically unlimited number of button combinations can be dispatched, e.g.:
+// - B>C+D (23648)
+// - A>C>D>B (13547286)
+// - C>A>B+A (3172515)
+//
+// As this becomes unpractical pretty quickly (and Mozaic has some limitations regarding the size of numbers), it is recommended to keep combinations simple.
+//
+// In addition to this number, the duration of the last pressed button is calculated, which results in the following tap types:
+//
+// - Short (or immediate, below 1/2s)
+// - Medium (between 1/2s and 1s)
+// - Long (more than 1s)
+//
+// This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+" button
+// - Select "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "iRig BlueBoard Bluetooth"
+// - Click "Mozaic @M1:1" (Configurator)
+// - Close the window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route BlueBoard-Handler's output to "iRig BlueBoard Bluetooth"
+// - Press "Close"
+
+@OnLoad
+  SetShortName {1-BbHandler}
+
+  Call @InitConstants
+  Call @Reset
+@End
+
+@Reset
+  Call @InitVariables
+@End
+
+@InitConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+  NUMBER_OF_BB_BUTTONS = 4
+
+  TAP_SHORT  = 0    // Up to 499ms
+  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+@End
+
+@InitVariables
+  lastButtonId = UNDEFINED
+  ignoreLastButtonUp = NO
+
+  Call @ResetButtonCombo
+@End
+
+@OnMidiNoteOn
+  lastButtonDownTime = SystemTime
+
+  Call @ConvertBbMidiNoteToId
+  lastButtonDownId = lastButtonId
+  Call @AppendLastButtonDownToButtonCombo
+
+  Inc numberOfPressedButtons
+@End
+
+@OnMidiNoteOff
+  lastButtonUpTime = SystemTime
+  durationOfLastButtonPress = lastButtonUpTime - lastButtonDownTime
+
+  Call @ConvertBbMidiNoteToId
+  lastButtonUpId = lastButtonId
+  Call @AppendLastButtonUpToButtonCombo
+
+  Dec numberOfPressedButtons
+
+  if numberOfPressedButtons = 0
+    if ignoreLastButtonUp = NO
+      Call @DispatchButtonCombo
+    endif
+
+    Call @ResetButtonCombo
+    ignoreLastButtonUp = NO
+  else
+    if lastButtonDownId = lastButtonUpId
+      Call @DispatchButtonCombo
+      Call @RemoveLastButtonUpAndDowFromButtonCombo
+      ignoreLastButtonUp = YES
+    endif
+  endif
+@End
+
+@ResetButtonCombo
+  numberOfPressedButtons = 0
+  buttonCombo = 0
+  tapType = UNDEFINED
+@End
+
+@DispatchButtonCombo
+  if durationOfLastButtonPress < TAP_MEDIUM
+    tapType = TAP_SHORT
+  elseif durationOfLastButtonPress < TAP_LONG
+    tapType = TAP_MEDIUM
+  else
+    tapType = TAP_LONG
+  endif
+
+  Log {Sending buttonCombo=}, buttonCombo, { with tapType=}, tapType
+@End
+
+@AppendLastButtonDownToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonDownId
+@End
+
+@AppendLastButtonUpToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonUpId + NUMBER_OF_BB_BUTTONS
+@End
+
+@RemoveLastButtonUpAndDowFromButtonCombo
+  buttonCombo = (buttonCombo - lastButtonUpId - NUMBER_OF_BB_BUTTONS) / 10
+  buttonCombo = (buttonCombo - lastButtonDownId) / 10
+@End
+
+@ConvertBbMidiNoteToId
+  if MidiNote = BB_BUTTON_A
+    lastButtonId = 1
+  elseif MidiNote = BB_BUTTON_B
+    lastButtonId = 2
+  elseif MidiNote = BB_BUTTON_C
+    lastButtonId = 3
+  elseif MidiNote = BB_BUTTON_D
+    lastButtonId = 4
+  else
+    Log {ERROR: Unknown button ID for MidiNote=}, MidiNote
+  endif
+@End
