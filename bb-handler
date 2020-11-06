@@ -42,7 +42,7 @@
 
 @OnMidiNoteOff
   lastButtonUpTime = SystemTime
-  durationBetweenDownAndUp = lastButtonUpTime - lastButtonDownTime
+  durationBetweenLastButtonDownAndUpTime = lastButtonUpTime - lastButtonDownTime
 
   Call @ConvertBbMidiNoteToId
   lastButtonUpId = lastButtonId
@@ -72,7 +72,7 @@
 @End
 
 @DispatchButtonCombo
-  Log {Firing button combo }, buttonCombo
+  Log {Firing button combo }, buttonCombo, { with durationBetweenLastButtonDownAndUpTime=}, durationBetweenLastButtonDownAndUpTime
 @End
 
 @AppendLastButtonDownToButtonCombo
