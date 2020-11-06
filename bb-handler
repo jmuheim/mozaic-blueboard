@@ -31,7 +31,7 @@
 @End
 
 @OnMidiNoteOn
-  lastButtonDownTime = SystemTime // Time at which button was pressed down
+  lastButtonDownTime = SystemTime
 
   Call @ConvertBbMidiNoteToId
   lastButtonDown = lastButtonId
@@ -42,6 +42,7 @@
 
 @OnMidiNoteOff
   lastButtonUpTime = SystemTime
+  durationBetweenDownAndUp = lastButtonUpTime - lastButtonDownTime
 
   Call @ConvertBbMidiNoteToId
   lastButtonUp = lastButtonId
