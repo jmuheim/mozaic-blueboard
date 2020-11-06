@@ -34,7 +34,7 @@
   lastButtonDownTime = SystemTime
 
   Call @ConvertBbMidiNoteToId
-  lastButtonDown = lastButtonId
+  lastButtonDownId = lastButtonId
   Call @AppendLastButtonDownToButtonCombo
 
   Inc numberOfPressedButtons
@@ -45,7 +45,7 @@
   durationBetweenDownAndUp = lastButtonUpTime - lastButtonDownTime
 
   Call @ConvertBbMidiNoteToId
-  lastButtonUp = lastButtonId
+  lastButtonUpId = lastButtonId
   Call @AppendLastButtonUpToButtonCombo
 
   Dec numberOfPressedButtons
@@ -58,7 +58,7 @@
     Call @ResetButtonCombo
     ignoreLastButtonUp = NO
   else
-    if lastButtonDown = lastButtonUp
+    if lastButtonDownId = lastButtonUpId
       Call @DispatchButtonCombo
       Call @RemoveLastButtonUpAndDowFromButtonCombo
       ignoreLastButtonUp = YES
@@ -76,16 +76,16 @@
 @End
 
 @AppendLastButtonDownToButtonCombo
-  buttonCombo = buttonCombo * 10 + lastButtonDown
+  buttonCombo = buttonCombo * 10 + lastButtonDownId
 @End
 
 @AppendLastButtonUpToButtonCombo
-  buttonCombo = buttonCombo * 10 + lastButtonUp + NUMBER_OF_BB_BUTTONS
+  buttonCombo = buttonCombo * 10 + lastButtonUpId + NUMBER_OF_BB_BUTTONS
 @End
 
 @RemoveLastButtonUpAndDowFromButtonCombo
-  buttonCombo = (buttonCombo - lastButtonUp - NUMBER_OF_BB_BUTTONS) / 10
-  buttonCombo = (buttonCombo - lastButtonDown) / 10
+  buttonCombo = (buttonCombo - lastButtonUpId - NUMBER_OF_BB_BUTTONS) / 10
+  buttonCombo = (buttonCombo - lastButtonDownId) / 10
 @End
 
 @ConvertBbMidiNoteToId
