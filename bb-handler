@@ -42,7 +42,7 @@
 
 @OnMidiNoteOff
   lastButtonUpTime = SystemTime
-  durationBetweenLastButtonDownAndUpTime = lastButtonUpTime - lastButtonDownTime
+  durationOfLastButtonPress = lastButtonUpTime - lastButtonDownTime
 
   Call @ConvertBbMidiNoteToId
   lastButtonUpId = lastButtonId
@@ -69,10 +69,19 @@
 @ResetButtonCombo
   numberOfPressedButtons = 0
   buttonCombo = 0
+  tapType = UNDEFINED
 @End
 
 @DispatchButtonCombo
-  Log {Firing button combo }, buttonCombo, { with durationBetweenLastButtonDownAndUpTime=}, durationBetweenLastButtonDownAndUpTime
+  if durationOfLastButtonPress < TAP_MEDIUM
+    tapType = TAP_SHORT
+  elseif durationOfLastButtonPress < TAP_LONG
+    tapType = TAP_MEDIUM
+  else
+    tapType = TAP_LONG
+  endif
+
+  Log {Firing button combo }, buttonCombo, { with tapType=}, tapType
 @End
 
 @AppendLastButtonDownToButtonCombo
