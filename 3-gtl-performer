@@ -55,6 +55,10 @@
   Call @InitAumMidiCodes
 
   Call @Reset
+
+  // midiForGtl = 16
+  // SendMidiNoteOn  1, midiForGtl, 127, 3000
+  // SendMidiNoteOff 1, midiForGtl,      3000
 @End
 
 @InitConstants
@@ -88,6 +92,9 @@
   GTL_PLAY_GROUP[2] = 11
   GTL_PLAY_GROUP[3] = 12
   GTL_PLAY_GROUP[4] = 13
+
+  GTL_INCREASE_CLOCK_LENGTH = 15
+  GTL_DECREASE_CLOCK_LENGTH = 16
 @End
 
 @InitAumMidiCodes
@@ -131,6 +138,13 @@
   if sendInstrumentToGtl
     Call @ToggleSendInstrumentToGtlOn
   endif
+
+  midiToSend = GTL_INCREASE_CLOCK_LENGTH
+  for i = 1 to 7
+    midiDelay = 1100 + i * 100
+    Log {midiDelay=}, midiDelay
+    Call @SendMidiNoteOnOffToGtl
+  endfor
 @End
 
 @ToggleSendMicrophoneToGtlOff
@@ -166,6 +180,8 @@
   SendMidiNoteOff GTL_CHANNEL, midiToSend,   0, midiDelay
 
   midiDelay = 0
+
+  Log {Sending MIDI on/off to GTL with midiToSend=}, midiToSend, { and midiDelay=}, midiDelay
 @End
 
 @SendMidiNoteOnOffToAum
