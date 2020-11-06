@@ -1,0 +1,3 @@
+@OnLoad
+  SetShortName {1-Configurator}
+@End

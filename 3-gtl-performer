@@ -1,0 +1,288 @@
+// Group the Loop Performer
+// ========================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button (scroll down if needed)
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "Mozaic @M1:2" (BlueBoard-Handler)
+// - Close the window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route BlueBoard-Handler's (Mozaic @M1:3) output to "iRig BlueBoard Bluetooth"
+// - Press "Close"
+//
+// About:
+// ------
+//
+// GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
+//
+// During the start of a song, usually you are very busy with singing and playing your instrument. As such, you don't have any hands free to interact with GTL's GUI. But still, you want to arm the next loop (in the current or any other group), probably switch settings of you instrument(s), etc., and do this subsequently to the current recording. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
+//
+// Usually, after a song is successfully started and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time and interact with GTL's GUI directly (which allows you to do more sophisticated stuff manually). So GTL-Performer is not meant to assist you fully throughout a song. It simply provides those features which are usually needed most during the start of a song, i.e. recording the first few loops inside different groups.
+//
+// Usage:
+// ------
+//
+// - Short tap:
+//   - A: Toggle sending microphone to GTL
+//   - D: Toggle sending instrument to GTL
+// - Medium tap:
+//   - A: Record next loop in group 1
+//   - B: Record next loop in group 2
+//   - C: Record next loop in group 3
+//   - D: Record next loop in group 4
+// - Long tap:
+//   - A: Play group 1
+//   - B: Play group 2
+//   - C: Play group 3
+//   - D: Play group 4
+// - Tap combos:
+//   - A+D: Reset session (TODO)
+
+// Make sure to start the BlueBoard while pressing the B button!
+@OnLoad
+  SetShortName {3-GtlPerformer}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @InitGtlMidiCodes
+  Call @InitAumMidiCodes
+
+  Call @Reset
+@End
+
+@InitConstants
+  NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
+
+  // MIDI channels
+  // Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
+  BB_CHANNEL  = 0 // BlueBoard
+  GTL_CHANNEL = 1 // Group The Loop
+  AUM_CHANNEL = 2 // AUM
+  FB_CHANNEL  = 3 // Feedback (Chameleon with preset "Group The Loop Wizard")
+@End
+
+@InitGtlMidiCodes
+  GTL_SELECT_MASTER_GROUP       = 14 // Master group
+  GTL_SELECT_GROUP[1] = 0
+  GTL_SELECT_GROUP[2] = 1
+  GTL_SELECT_GROUP[3] = 2
+  GTL_SELECT_GROUP[4] = 3
+
+  GTL_SELECT_LOOP[1] = 4
+  GTL_SELECT_LOOP[2] = 5
+  GTL_SELECT_LOOP[3] = 6
+  GTL_SELECT_LOOP[4] = 7
+
+  GTL_RECORD_OVERDUB = 8
+
+  GTL_RESET_SESSION = 9
+
+  GTL_PLAY_GROUP[1] = 10
+  GTL_PLAY_GROUP[2] = 11
+  GTL_PLAY_GROUP[3] = 12
+  GTL_PLAY_GROUP[4] = 13
+@End
+
+@InitAumMidiCodes
+  AUM_TOGGLE_MICROPHONE = 0
+  AUM_TOGGLE_GUITAR     = 1
+@End
+
+@InitVariables
+  midiToSend = UNDEFINED
+  midiDelay  = 0
+
+  sendMicrophoneToGtl = YES
+  sendInstrumentToGtl = YES
+
+  lastActiveLoopOfGroup[1] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[2] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[3] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[4] = UNDEFINED // Group 4
+@End
+
+@Reset
+  Log {Reset}
+
+  Call @InitVariables
+
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_SELECT_MASTER_GROUP
+  midiDelay  = 1000
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_SELECT_LOOP[1]
+  midiDelay  = 1100
+  Call @SendMidiNoteOnOffToGtl
+
+  if sendMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtlOn
+  endif
+
+  if sendInstrumentToGtl
+    Call @ToggleSendInstrumentToGtlOn
+  endif
+@End
+
+@ToggleSendMicrophoneToGtlOff
+  SendMidiNoteOff BB_CHANNEL, BB_BUTTON_A, 127
+
+  midiToSend = AUM_TOGGLE_MICROPHONE
+  Call @SendMidiNoteOffToAum
+@End
+
+@ToggleSendMicrophoneToGtlOn
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 127
+
+  midiToSend = AUM_TOGGLE_MICROPHONE
+  Call @SendMidiNoteOnToAum
+@End
+
+@ToggleSendInstrumentToGtlOff
+  SendMidiNoteOff BB_CHANNEL, BB_BUTTON_D, 127
+
+  midiToSend = AUM_TOGGLE_GUITAR
+  Call @SendMidiNoteOffToAum
+@End
+
+@ToggleSendInstrumentToGtlOn
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 127
+
+  midiToSend = AUM_TOGGLE_GUITAR
+  Call @SendMidiNoteOnToAum
+@End
+
+@SendMidiNoteOnOffToGtl
+  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 127, midiDelay
+  SendMidiNoteOff GTL_CHANNEL, midiToSend,   0, midiDelay
+
+  midiDelay = 0
+@End
+
+@SendMidiNoteOnOffToAum
+  Call @SendMidiNoteOnToAum
+  Call @SendMidiNoteOffToAum
+@End
+
+@SendMidiNoteOnToAum
+  SendMidiNoteOn AUM_CHANNEL, midiToSend, 127
+@End
+
+@SendMidiNoteOffToAum
+  SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
+@End
+
+@OnSysex
+  ReceiveSysex data
+  sysexAction = data[0]
+  lastButtonId = data[1]
+
+  if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
+    Call @ToggleSendMicrophoneToGtl
+  elseif sysexAction = SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL
+    Call @ToggleSendInstrumentToGtl
+  elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
+    Call @RecordNextLoopInGroup
+  elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
+    Call @ToggleAndSelectGroup
+  elseif sysexAction = SYSEX_RESET
+    Call @Reset
+  endif
+@End
+
+@ToggleSendMicrophoneToGtl
+  if sendMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtlOff
+    sendMicrophoneToGtl = NO
+
+    Log {Not sending microphone to GTL anymore}
+  else
+    Call @ToggleSendMicrophoneToGtlOn
+    sendMicrophoneToGtl = YES
+
+    Log {Sending microphone to GTL again}
+  endif
+@End
+
+@ToggleSendInstrumentToGtl
+  if sendInstrumentToGtl
+    Call @ToggleSendInstrumentToGtlOff
+    sendInstrumentToGtl = NO
+
+    Log {Not sending instrument to GTL anymore}
+  else
+    Call @ToggleSendInstrumentToGtlOn
+    sendInstrumentToGtl = YES
+
+    Log {Sending instrument to GTL again}
+  endif
+@End
+
+@ToggleAndSelectGroup
+  Log {Toggling and selecting group}
+
+  midiToSend = GTL_PLAY_GROUP[lastButtonId]
+  Call @SendMidiNoteOnOffToGtl
+
+  Call @SelectGroup
+@End
+
+@RecordNextLoopInGroup
+  Log {Recording next loop in group}
+
+  Call @SelectGroup
+
+  if lastActiveLoopOfGroup[lastButtonId] = UNDEFINED
+    lastActiveLoopOfGroup[lastButtonId] = 1
+  endif
+
+  midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_RECORD_OVERDUB
+  Call @SendMidiNoteOnOffToGtl
+
+  if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
+    Inc lastActiveLoopOfGroup[lastButtonId]
+  endif
+@End
+
+@SelectGroup
+  midiToSend = GTL_SELECT_GROUP[lastButtonId]
+  Call @SendMidiNoteOnOffToGtl
+@End
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_SHORT  = 0    // Up to 499ms
+  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
+@End

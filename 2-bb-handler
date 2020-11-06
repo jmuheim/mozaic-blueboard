@@ -1,6 +1,23 @@
 // BlueBoard-Handler
 // =================
 //
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+" button
+// - Select "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "iRig BlueBoard Bluetooth"
+// - Click "Mozaic @M1:1" (Configurator)
+// - Close the window by pressing the "X" button
+//
+// About:
+// ------
+//
 // Receives the button presses from the BlueBoard and sends them to GtlPerformer.
 //
 // It calculates unique, deterministic numbers upon pressing any combination of buttons. In general, the following numbers are produced:
@@ -37,47 +54,23 @@
 // - Long (more than 1s)
 //
 // This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
-//
-// Installation:
-// -------------
-//
-// - In AUM, in the "Mozaic" MIDI channel, click the "+" button
-// - Select "Audio Unit MIDI Processor" -> "Mozaic"
-// - Click the newly inserted Mozaic button
-// - Click "Code"
-// - Replace the default code with the one in this file
-// - Click "Upload"
-// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "iRig BlueBoard Bluetooth"
-// - Click "Mozaic @M1:1" (Configurator)
-// - Close the window by pressing the "X" button
-// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
-// - Route BlueBoard-Handler's output to "iRig BlueBoard Bluetooth"
-// - Press "Close"
 
 @OnLoad
-  SetShortName {1-BbHandler}
+  SetShortName {2-BbHandler}
 
+  Call @InitSharedConstants
   Call @InitConstants
   Call @Reset
 @End
 
 @Reset
+  Log {Reset}
+
   Call @InitVariables
 @End
 
 @InitConstants
-  UNDEFINED = -1
-
-  BB_BUTTON_A = 60
-  BB_BUTTON_B = 62
-  BB_BUTTON_C = 64
-  BB_BUTTON_D = 65
   NUMBER_OF_BB_BUTTONS = 4
-
-  TAP_SHORT  = 0    // Up to 499ms
-  TAP_MEDIUM = 500  // Between 500 and 999ms
-  TAP_LONG   = 1000 // 1000ms or more
 @End
 
 @InitVariables
@@ -139,6 +132,8 @@
   endif
 
   Log {Sending buttonCombo=}, buttonCombo, { with tapType=}, tapType
+
+  Call @SendSysexAction
 @End
 
 @AppendLastButtonDownToButtonCombo
@@ -166,4 +161,67 @@
   else
     Log {ERROR: Unknown button ID for MidiNote=}, MidiNote
   endif
+@End
+
+
+
+
+
+@SendSysexAction
+  sysexAction = UNDEFINED
+
+  if tapType = TAP_SHORT and buttonCombo = 15 // Short A
+    sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
+  endif
+
+  if tapType = TAP_SHORT and buttonCombo = 48 // Short D
+    sysexAction = SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL
+  endif
+
+  if tapType = TAP_MEDIUM and buttonCombo <= 99 // Any medium single button
+    sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
+  endif
+
+  if tapType = TAP_LONG and buttonCombo <= 99 // Any long single button
+    sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
+  endif
+
+  if buttonCombo = 2367 // B>C
+    sysexAction = SYSEX_RESET
+    Call @Reset
+  endif
+  
+  if sysexAction = UNDEFINED
+    Log {ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
+  else
+    Log {Sending sysexAction=}, sysexAction, { with lastButtonId=}, lastButtonId
+    data = [sysexAction, lastButtonId]
+    SendSysex data, 2
+  endif
+@End
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 60
+  BB_BUTTON_B = 62
+  BB_BUTTON_C = 64
+  BB_BUTTON_D = 65
+
+  TAP_SHORT  = 0    // Up to 499ms
+  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
 @End
