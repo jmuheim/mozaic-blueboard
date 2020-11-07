@@ -22,16 +22,18 @@
 //
 // GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
 //
-// During the start of a song, usually you are very busy with singing and playing your instrument. As such, you don't have any hands free to interact with GTL's GUI. But still, you want to arm the next loop (in the current or any other group), probably switch settings of you instrument(s), etc., and do this subsequently to the current recording. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
+// During the start of a song, usually you are very busy with singing and playing your instrument (guitar, keyboard, whatever). As such, you don't have any hands free to interact with GTL's GUI. But still, possibly right after the current recording, you want to the next loop to be armed (in the current or any other group), probably switch settings of you instrument (or switch to another instrument), etc. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
 //
-// Usually, after a song is successfully started and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time and interact with GTL's GUI directly (which allows you to do more sophisticated stuff manually). So GTL-Performer is not meant to assist you fully throughout a song. It simply provides those features which are usually needed most during the start of a song, i.e. recording the first few loops inside different groups.
+// Usually, after a song was successfully built up and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time. This will then allow you to interact with GTL's GUI directly and do more sophisticated stuff manually. So GTL-Performer is not meant to assist you fully throughout a whole song. It simply provides those features which are usually needed most during the beginning of a song, i.e. recording the first few loops inside different groups.
+//
+// Have fun! :-)
 //
 // Usage:
 // ------
 //
 // - Short tap:
 //   - A: Toggle sending microphone to GTL
-//   - D: Toggle sending instrument to GTL
+//   - D: Toggle sending guitar to GTL
 // - Medium tap:
 //   - A: Record next loop in group 1
 //   - B: Record next loop in group 2
@@ -101,8 +103,8 @@
 @End
 
 @InitAumMidiCodes
-  AUM_TOGGLE_MICROPHONE = 0
-  AUM_TOGGLE_GUITAR     = 1
+  AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  AUM_TOGGLE_SEND_GUITAR_TO_GTL     = 1
 @End
 
 @InitVariables
@@ -110,7 +112,7 @@
   midiDelay  = 0
 
   sendMicrophoneToGtl = YES
-  sendInstrumentToGtl = YES
+  sendGuitarToGtl = YES
 
   lastActiveLoopOfGroup[1] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[2] = UNDEFINED // Group 2
@@ -142,9 +144,9 @@
     Call @ToggleSendMicrophoneToGtlOn
   endif
 
-  // Send instrument to GTL if appropriate
-  if sendInstrumentToGtl
-    Call @ToggleSendInstrumentToGtlOn
+  // Send guitar to GTL if appropriate
+  if sendGuitarToGtl
+    Call @ToggleSendGuitarToGtlOn
   endif
 
   // Set clock length to initial value
@@ -167,28 +169,28 @@
 @ToggleSendMicrophoneToGtlOff
   SendMidiNoteOff BB_CHANNEL, BB_BUTTON_A, 127
 
-  midiToSend = AUM_TOGGLE_MICROPHONE
+  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
 
 @ToggleSendMicrophoneToGtlOn
   SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 127
 
-  midiToSend = AUM_TOGGLE_MICROPHONE
+  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
-@ToggleSendInstrumentToGtlOff
+@ToggleSendGuitarToGtlOff
   SendMidiNoteOff BB_CHANNEL, BB_BUTTON_D, 127
 
-  midiToSend = AUM_TOGGLE_GUITAR
+  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
 
-@ToggleSendInstrumentToGtlOn
+@ToggleSendGuitarToGtlOn
   SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 127
 
-  midiToSend = AUM_TOGGLE_GUITAR
+  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
@@ -221,8 +223,8 @@
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
     Call @ToggleSendMicrophoneToGtl
-  elseif sysexAction = SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL
-    Call @ToggleSendInstrumentToGtl
+  elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
+    Call @ToggleSendGuitarToGtl
   elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
@@ -250,17 +252,17 @@
   endif
 @End
 
-@ToggleSendInstrumentToGtl
-  if sendInstrumentToGtl
-    Call @ToggleSendInstrumentToGtlOff
-    sendInstrumentToGtl = NO
+@ToggleSendGuitarToGtl
+  if sendGuitarToGtl
+    Call @ToggleSendGuitarToGtlOff
+    sendGuitarToGtl = NO
 
-    Log {Not sending instrument to GTL anymore}
+    Log {Not sending guitar to GTL anymore}
   else
-    Call @ToggleSendInstrumentToGtlOn
-    sendInstrumentToGtl = YES
+    Call @ToggleSendGuitarToGtlOn
+    sendGuitarToGtl = YES
 
-    Log {Sending instrument to GTL again}
+    Log {Sending guitar to GTL again}
   endif
 @End
 
@@ -318,7 +320,7 @@
   TAP_LONG   = 1000 // 1000ms or more
 
   SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
-  SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL = 1
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
   SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
   SYSEX_TOGGLE_AND_SELECT_GROUP = 3
   SYSEX_RESET = 4

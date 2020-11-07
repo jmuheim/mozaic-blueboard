@@ -175,7 +175,7 @@
   endif
 
   if tapType = TAP_SHORT and buttonCombo = 48 // Short D
-    sysexAction = SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL
+    sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
   endif
 
   if tapType = TAP_MEDIUM and buttonCombo <= 99 // Any medium single button
@@ -228,7 +228,7 @@
   TAP_LONG   = 1000 // 1000ms or more
 
   SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
-  SYSEX_TOGGLE_SEND_INSTRUMENT_TO_GTL = 1
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
   SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
   SYSEX_TOGGLE_AND_SELECT_GROUP = 3
   SYSEX_RESET = 4
