@@ -83,24 +83,24 @@
 
 @InitGtlMidiCodes
   GTL_SELECT_MASTER_GROUP = 14 // Master group
-  GTL_SELECT_GROUP[1] = 0
-  GTL_SELECT_GROUP[2] = 1
-  GTL_SELECT_GROUP[3] = 2
-  GTL_SELECT_GROUP[4] = 3
+  GTL_SELECT_GROUP[BB_BUTTON_A] = 0
+  GTL_SELECT_GROUP[BB_BUTTON_B] = 1
+  GTL_SELECT_GROUP[BB_BUTTON_C] = 2
+  GTL_SELECT_GROUP[BB_BUTTON_D] = 3
 
-  GTL_SELECT_LOOP[1] = 4
-  GTL_SELECT_LOOP[2] = 5
-  GTL_SELECT_LOOP[3] = 6
-  GTL_SELECT_LOOP[4] = 7
+  GTL_SELECT_LOOP[BB_BUTTON_A] = 4
+  GTL_SELECT_LOOP[BB_BUTTON_B] = 5
+  GTL_SELECT_LOOP[BB_BUTTON_C] = 6
+  GTL_SELECT_LOOP[BB_BUTTON_D] = 7
 
   GTL_RECORD_OVERDUB = 8
 
   GTL_RESET_SESSION = 9
 
-  GTL_PLAY_GROUP[1] = 10
-  GTL_PLAY_GROUP[2] = 11
-  GTL_PLAY_GROUP[3] = 12
-  GTL_PLAY_GROUP[4] = 13
+  GTL_PLAY_GROUP[BB_BUTTON_A] = 10
+  GTL_PLAY_GROUP[BB_BUTTON_B] = 11
+  GTL_PLAY_GROUP[BB_BUTTON_C] = 12
+  GTL_PLAY_GROUP[BB_BUTTON_D] = 13
 
   GTL_INCREASE_CLOCK_LENGTH = 15
   GTL_DECREASE_CLOCK_LENGTH = 16
@@ -110,9 +110,9 @@
   AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
   AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
 
-  AUM_SELECT_GUITAR_PRESET[1] = 2
-  AUM_SELECT_GUITAR_PRESET[2] = 3
-  AUM_SELECT_GUITAR_PRESET[3] = 4
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A] = 2
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_B] = 3
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_C] = 4
 @End
 
 @InitVariables
@@ -122,10 +122,10 @@
   sendMicrophoneToGtl = YES
   sendGuitarToGtl = YES
 
-  lastActiveLoopOfGroup[1] = UNDEFINED // Group 1
-  lastActiveLoopOfGroup[2] = UNDEFINED // Group 2
-  lastActiveLoopOfGroup[3] = UNDEFINED // Group 3
-  lastActiveLoopOfGroup[4] = UNDEFINED // Group 4
+  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 4
 @End
 
 @Reset
@@ -147,7 +147,7 @@
 
   Call @SetClockLengthToInitialValue
 
-  lastButtonId = 2
+  lastButtonId = BB_BUTTON_A
   Call @SelectGuitarPreset
 @End
 
@@ -167,7 +167,7 @@
   Call @SendMidiNoteOnOffToGtl
 
   Log {Select first loop}
-  midiToSend = GTL_SELECT_LOOP[1]
+  midiToSend = GTL_SELECT_LOOP[BB_BUTTON_A]
   midiDelay  = DURATION_OF_GTL_RESET + 100
   Call @SendMidiNoteOnOffToGtl
 @End
@@ -192,7 +192,7 @@
 @ToggleSendMicrophoneToGtlOff
   Log {Not sending microphone to GTL}
 
-  SendMidiNoteOff BB_CHANNEL, BB_BUTTON_A, 127
+  SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
@@ -201,7 +201,7 @@
 @ToggleSendMicrophoneToGtlOn
   Log {Sending microphone to GTL}
 
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 127
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
@@ -210,7 +210,7 @@
 @ToggleSendGuitarToGtlOff
   Log {Not sending guitar to GTL}
 
-  SendMidiNoteOff BB_CHANNEL, BB_BUTTON_D, 127
+  SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
@@ -219,7 +219,7 @@
 @ToggleSendGuitarToGtlOn
   Log {Sending guitar to GTL}
 
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 127
+  SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
@@ -344,10 +344,15 @@
 @InitSharedConstants
   UNDEFINED = -1
 
-  BB_BUTTON_A = 60
-  BB_BUTTON_B = 62
-  BB_BUTTON_C = 64
-  BB_BUTTON_D = 65
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
 
   TAP_SHORT  = 0    // Up to 499ms
   TAP_MEDIUM = 500  // Between 500 and 999ms

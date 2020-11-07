@@ -131,7 +131,7 @@
     tapType = TAP_LONG
   endif
 
-  Log {Sending buttonCombo=}, buttonCombo, { with tapType=}, tapType
+  Log {Received buttonCombo=}, buttonCombo, { with tapType=}, tapType
 
   Call @SendSysexAction
 @End
@@ -150,13 +150,13 @@
 @End
 
 @ConvertBbMidiNoteToId
-  if MidiNote = BB_BUTTON_A
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     lastButtonId = 1
-  elseif MidiNote = BB_BUTTON_B
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
     lastButtonId = 2
-  elseif MidiNote = BB_BUTTON_C
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_C]
     lastButtonId = 3
-  elseif MidiNote = BB_BUTTON_D
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
     lastButtonId = 4
   else
     Log {ERROR: Unknown button ID for MidiNote=}, MidiNote
@@ -226,10 +226,15 @@
 @InitSharedConstants
   UNDEFINED = -1
 
-  BB_BUTTON_A = 60
-  BB_BUTTON_B = 62
-  BB_BUTTON_C = 64
-  BB_BUTTON_D = 65
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
 
   TAP_SHORT  = 0    // Up to 499ms
   TAP_MEDIUM = 500  // Between 500 and 999ms
