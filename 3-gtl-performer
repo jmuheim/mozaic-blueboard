@@ -119,8 +119,9 @@
   midiToSend = UNDEFINED
   midiDelay  = 0
 
-  sendMicrophoneToGtl = YES
-  sendGuitarToGtl = YES
+  // Will both be toggled when resetting ;-)
+  sendMicrophoneToGtl = NO
+  sendGuitarToGtl = NO
 
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
@@ -136,15 +137,8 @@
   Call @InitVariables
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
-
-  if sendMicrophoneToGtl
-    Call @ToggleSendMicrophoneToGtlOn
-  endif
-
-  if sendGuitarToGtl
-    Call @ToggleSendGuitarToGtlOn
-  endif
-
+  Call @ToggleSendMicrophoneToGtl
+  Call @ToggleSendGuitarToGtl
   Call @SetClockLengthToInitialValue
 
   lastButtonId = BB_BUTTON_A
