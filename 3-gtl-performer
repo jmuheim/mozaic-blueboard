@@ -120,8 +120,8 @@
   midiDelay  = 0
 
   // Will both be toggled when resetting ;-)
-  sendMicrophoneToGtl = NO
-  sendGuitarToGtl = NO
+  sendingMicrophoneToGtl = NO
+  sendingGuitarToGtl = NO
 
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
@@ -137,8 +137,8 @@
   Call @InitVariables
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
-  Call @ToggleSendMicrophoneToGtl
-  Call @ToggleSendGuitarToGtl
+  Call @ToggleSendingMicrophoneToGtl
+  Call @ToggleSendingGuitarToGtl
   Call @SetClockLengthToInitialValue
 
   lastButtonId = BB_BUTTON_A
@@ -183,7 +183,7 @@
   Call @SendMidiNoteOnOffToGtl
 @End
 
-@ToggleSendMicrophoneToGtlOff
+@ToggleSendingMicrophoneToGtlOff
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -192,7 +192,7 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@ToggleSendMicrophoneToGtlOn
+@ToggleSendingMicrophoneToGtlOn
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -201,7 +201,7 @@
   Call @SendMidiNoteOnToAum
 @End
 
-@ToggleSendGuitarToGtlOff
+@ToggleSendingGuitarToGtlOff
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -210,7 +210,7 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@ToggleSendGuitarToGtlOn
+@ToggleSendingGuitarToGtlOn
   Log {Sending guitar to GTL}
 
   SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -249,9 +249,9 @@
   lastButtonId = data[1]
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
-    Call @ToggleSendMicrophoneToGtl
+    Call @ToggleSendingMicrophoneToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
-    Call @ToggleSendGuitarToGtl
+    Call @ToggleSendingGuitarToGtl
   elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
@@ -274,23 +274,23 @@
   Call @SendMidiNoteOnOffToAum
 @End
 
-@ToggleSendMicrophoneToGtl
-  if sendMicrophoneToGtl
-    Call @ToggleSendMicrophoneToGtlOff
-    sendMicrophoneToGtl = NO
+@ToggleSendingMicrophoneToGtl
+  if sendingMicrophoneToGtl
+    Call @ToggleSendingMicrophoneToGtlOff
+    sendingMicrophoneToGtl = NO
   else
-    Call @ToggleSendMicrophoneToGtlOn
-    sendMicrophoneToGtl = YES
+    Call @ToggleSendingMicrophoneToGtlOn
+    sendingMicrophoneToGtl = YES
   endif
 @End
 
-@ToggleSendGuitarToGtl
-  if sendGuitarToGtl
-    Call @ToggleSendGuitarToGtlOff
-    sendGuitarToGtl = NO
+@ToggleSendingGuitarToGtl
+  if sendingGuitarToGtl
+    Call @ToggleSendingGuitarToGtlOff
+    sendingGuitarToGtl = NO
   else
-    Call @ToggleSendGuitarToGtlOn
-    sendGuitarToGtl = YES
+    Call @ToggleSendingGuitarToGtlOn
+    sendingGuitarToGtl = YES
   endif
 @End
 
