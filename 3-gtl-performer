@@ -63,6 +63,9 @@
 
 @InitConstants
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
+  CLOCK_LENGTH_AFTER_RESET = 1
+  DEFAULT_CLOCK_LENGTH = 8
+  DURATION_OF_GTL_RESET = 1000 // GTL needs a bit less than 1sec to reset; additional configs must wait for reset to finish!
 
   // MIDI channels
   // Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
@@ -120,31 +123,45 @@
 
   Call @InitVariables
 
+  // Reset GTL
   midiToSend = GTL_RESET_SESSION
   Call @SendMidiNoteOnOffToGtl
 
+  // Select master group
   midiToSend = GTL_SELECT_MASTER_GROUP
-  midiDelay  = 1000
+  midiDelay  = DURATION_OF_GTL_RESET
   Call @SendMidiNoteOnOffToGtl
 
+  // Select first loop
   midiToSend = GTL_SELECT_LOOP[1]
-  midiDelay  = 1100
+  midiDelay  = DURATION_OF_GTL_RESET + 100
   Call @SendMidiNoteOnOffToGtl
 
+  // Send microphone to GTL (if appropriate)
   if sendMicrophoneToGtl
     Call @ToggleSendMicrophoneToGtlOn
   endif
 
+  // Send instrument to GTL if appropriate
   if sendInstrumentToGtl
     Call @ToggleSendInstrumentToGtlOn
   endif
 
-  midiToSend = GTL_INCREASE_CLOCK_LENGTH
-  for i = 1 to 7
-    midiDelay = 1100 + i * 100
-    Log {midiDelay=}, midiDelay
-    Call @SendMidiNoteOnOffToGtl
+  // Set clock length to initial value
+  for i = CLOCK_LENGTH_AFTER_RESET to (DEFAULT_CLOCK_LENGTH - CLOCK_LENGTH_AFTER_RESET)
+    midiDelay = DURATION_OF_GTL_RESET
+    Call @IncreaseClockLength
   endfor
+@End
+
+@IncreaseClockLength
+  midiToSend = GTL_INCREASE_CLOCK_LENGTH
+  Call @SendMidiNoteOnOffToGtl
+@End
+
+@DecreaseClockLength
+  midiToSend = GTL_DECREASE_CLOCK_LENGTH
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @ToggleSendMicrophoneToGtlOff
@@ -212,6 +229,10 @@
     Call @ToggleAndSelectGroup
   elseif sysexAction = SYSEX_RESET
     Call @Reset
+  elseif sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
+    Call @DecreaseClockLength
+  elseif sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
+    Call @IncreaseClockLength
   endif
 @End
 
@@ -301,4 +322,6 @@
   SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
   SYSEX_TOGGLE_AND_SELECT_GROUP = 3
   SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
 @End

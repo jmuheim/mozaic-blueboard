@@ -190,6 +190,14 @@
     sysexAction = SYSEX_RESET
     Call @Reset
   endif
+
+  if buttonCombo = 237 // B+C
+    sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
+  endif
+
+  if buttonCombo = 248 // B+D
+    sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
+  endif
   
   if sysexAction = UNDEFINED
     Log {ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
@@ -224,4 +232,6 @@
   SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
   SYSEX_TOGGLE_AND_SELECT_GROUP = 3
   SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
 @End
