@@ -34,18 +34,15 @@
 // - Short tap:
 //   - A: Toggle sending microphone to GTL
 //   - D: Toggle sending guitar to GTL
+//     - If a guitar preset was prepared (see below), it will be activated, and guitar will be sent to GTL regardless of whether it was sent already or not
 // - Medium tap:
-//   - A: Record next loop in group 1
-//   - B: Record next loop in group 2
-//   - C: Record next loop in group 3
-//   - D: Record next loop in group 4
+//   - A|B|C|D: Record next loop in group 1|2|3|4
 // - Long tap:
-//   - A: Play group 1
-//   - B: Play group 2
-//   - C: Play group 3
-//   - D: Play group 4
+//   - A|B|C|D: Play group 1|2|3|4
 // - Tap combos:
-//   - A+D: Reset session (TODO)
+//   - B>C: Reset session
+//   - D+(A|B|C): Prepare guitar preset 1|2|3
+//     - It will be activated when pressing D again
 
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
@@ -119,10 +116,6 @@
   midiToSend = UNDEFINED
   midiDelay  = 0
 
-  // Will both be toggled when resetting ;-)
-  sendingMicrophoneToGtl = NO
-  sendingGuitarToGtl = NO
-
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
   lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
@@ -137,12 +130,14 @@
   Call @InitVariables
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
-  Call @ToggleSendingMicrophoneToGtl
-  Call @ToggleSendingGuitarToGtl
   Call @SetClockLengthToInitialValue
 
-  lastButtonId = BB_BUTTON_A
-  Call @SelectGuitarPreset
+  sendingMicrophoneToGtl = NO // Will be toggled next ;-)
+  Call @ToggleSendingMicrophoneToGtl
+
+  sendingGuitarToGtl = YES
+  nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A]
+  Call @ToggleSendingGuitarToGtl // Will activate guitar preset and toggle on sending guitar to GTL
 @End
 
 @SetClockLengthToInitialValue
@@ -268,10 +263,9 @@
 @End
 
 @SelectGuitarPreset
-  Log {Activating guitar preset #}, lastButtonId
+  nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[lastButtonId]
 
-  midiToSend = AUM_SELECT_GUITAR_PRESET[lastButtonId]
-  Call @SendMidiNoteOnOffToAum
+  Log {Preparing guitar preset stored on button }, lastButtonId, { (AUM MIDI=}, nextGuitarPreset, {), press button }, BB_BUTTON_D, { to activate!}
 @End
 
 @ToggleSendingMicrophoneToGtl
@@ -285,7 +279,17 @@
 @End
 
 @ToggleSendingGuitarToGtl
-  if sendingGuitarToGtl
+  if nextGuitarPreset <> UNDEFINED
+    midiToSend = nextGuitarPreset
+    Call @SendMidiNoteOnOffToAum
+    Log {Activated guitar preset with AUM MIDI=}, nextGuitarPreset
+    nextGuitarPreset = UNDEFINED
+
+    if sendingGuitarToGtl = NO
+      Call @ToggleSendingGuitarToGtlOn
+      sendingGuitarToGtl = YES
+    endif
+  elseif sendingGuitarToGtl
     Call @ToggleSendingGuitarToGtlOff
     sendingGuitarToGtl = NO
   else
