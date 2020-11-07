@@ -132,10 +132,10 @@
   Call @SelectFirstLoopInMasterGroup
   Call @SetClockLengthToInitialValue
 
-  sendingMicrophoneToGtl = NO // Will be toggled next ;-)
+  sendingMicrophoneToGtl = NO // Will be toggled next
   Call @ToggleSendingMicrophoneToGtl
 
-  sendingGuitarToGtl = YES
+  sendingGuitarToGtl = NO // Will be toggled next (needed that the BlueBoard button illuminates correctly)
   nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A]
   Call @ToggleSendingGuitarToGtl // Will activate guitar preset and toggle on sending guitar to GTL
 @End
