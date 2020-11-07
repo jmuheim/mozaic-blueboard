@@ -51,6 +51,8 @@
 @OnLoad
   SetShortName {3-GtlPerformer}
 
+  Log {Set DEBUG=YES to see more runtime details}
+
   Call @InitSharedConstants
   Call @InitConstants
   Call @InitGtlMidiCodes
@@ -64,6 +66,8 @@
 @End
 
 @InitConstants
+  DEBUG = NO
+
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
   CLOCK_LENGTH_AFTER_RESET = 1
   DEFAULT_CLOCK_LENGTH = 8
@@ -78,7 +82,7 @@
 @End
 
 @InitGtlMidiCodes
-  GTL_SELECT_MASTER_GROUP       = 14 // Master group
+  GTL_SELECT_MASTER_GROUP = 14 // Master group
   GTL_SELECT_GROUP[1] = 0
   GTL_SELECT_GROUP[2] = 1
   GTL_SELECT_GROUP[3] = 2
@@ -104,7 +108,11 @@
 
 @InitAumMidiCodes
   AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
-  AUM_TOGGLE_SEND_GUITAR_TO_GTL     = 1
+  AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
+
+  AUM_SELECT_GUITAR_PRESET[2] = 2
+  AUM_SELECT_GUITAR_PRESET[3] = 3
+  AUM_SELECT_GUITAR_PRESET[4] = 4
 @End
 
 @InitVariables
@@ -121,39 +129,54 @@
 @End
 
 @Reset
-  Log {Reset}
+  Log {+-------------+}
+  Log {|GTL-Performer|}
+  Log {+-------------+}
 
   Call @InitVariables
+  Call @ResetGtl
+  Call @SelectFirstLoopInMasterGroup
 
-  // Reset GTL
-  midiToSend = GTL_RESET_SESSION
-  Call @SendMidiNoteOnOffToGtl
-
-  // Select master group
-  midiToSend = GTL_SELECT_MASTER_GROUP
-  midiDelay  = DURATION_OF_GTL_RESET
-  Call @SendMidiNoteOnOffToGtl
-
-  // Select first loop
-  midiToSend = GTL_SELECT_LOOP[1]
-  midiDelay  = DURATION_OF_GTL_RESET + 100
-  Call @SendMidiNoteOnOffToGtl
-
-  // Send microphone to GTL (if appropriate)
   if sendMicrophoneToGtl
     Call @ToggleSendMicrophoneToGtlOn
   endif
 
-  // Send guitar to GTL if appropriate
   if sendGuitarToGtl
     Call @ToggleSendGuitarToGtlOn
   endif
 
-  // Set clock length to initial value
+  Call @SetClockLengthToInitialValue
+
+  lastButtonId = 2
+  Call @SelectGuitarPreset
+@End
+
+@SetClockLengthToInitialValue
+  Log {Set clock length }, DEFAULT_CLOCK_LENGTH
+
   for i = CLOCK_LENGTH_AFTER_RESET to (DEFAULT_CLOCK_LENGTH - CLOCK_LENGTH_AFTER_RESET)
     midiDelay = DURATION_OF_GTL_RESET
     Call @IncreaseClockLength
   endfor
+@End
+
+@SelectFirstLoopInMasterGroup
+  Log {Select master group}
+  midiToSend = GTL_SELECT_MASTER_GROUP
+  midiDelay  = DURATION_OF_GTL_RESET
+  Call @SendMidiNoteOnOffToGtl
+
+  Log {Select first loop}
+  midiToSend = GTL_SELECT_LOOP[1]
+  midiDelay  = DURATION_OF_GTL_RESET + 100
+  Call @SendMidiNoteOnOffToGtl
+@End
+
+@ResetGtl
+  Log {Reset GTL}
+
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @IncreaseClockLength
@@ -167,6 +190,8 @@
 @End
 
 @ToggleSendMicrophoneToGtlOff
+  Log {Not sending microphone to GTL}
+
   SendMidiNoteOff BB_CHANNEL, BB_BUTTON_A, 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
@@ -174,6 +199,8 @@
 @End
 
 @ToggleSendMicrophoneToGtlOn
+  Log {Sending microphone to GTL}
+
   SendMidiNoteOn BB_CHANNEL, BB_BUTTON_A, 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
@@ -181,6 +208,8 @@
 @End
 
 @ToggleSendGuitarToGtlOff
+  Log {Not sending guitar to GTL}
+
   SendMidiNoteOff BB_CHANNEL, BB_BUTTON_D, 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
@@ -188,6 +217,8 @@
 @End
 
 @ToggleSendGuitarToGtlOn
+  Log {Sending guitar to GTL}
+
   SendMidiNoteOn BB_CHANNEL, BB_BUTTON_D, 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
@@ -200,7 +231,9 @@
 
   midiDelay = 0
 
-  Log {Sending MIDI on/off to GTL with midiToSend=}, midiToSend, { and midiDelay=}, midiDelay
+  if DEBUG
+    Log {Sending MIDI on/off to GTL with midiToSend=}, midiToSend, { and midiDelay=}, midiDelay
+  endif
 @End
 
 @SendMidiNoteOnOffToAum
@@ -235,20 +268,25 @@
     Call @DecreaseClockLength
   elseif sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
     Call @IncreaseClockLength
+  elseif sysexAction = SYSEX_SELECT_GUITAR_PRESET
+    Call @SelectGuitarPreset
   endif
+@End
+
+@SelectGuitarPreset
+  Log {Activating guitar preset #}, lastButtonId - 1
+
+  midiToSend = AUM_SELECT_GUITAR_PRESET[lastButtonId]
+  Call @SendMidiNoteOnOffToAum
 @End
 
 @ToggleSendMicrophoneToGtl
   if sendMicrophoneToGtl
     Call @ToggleSendMicrophoneToGtlOff
     sendMicrophoneToGtl = NO
-
-    Log {Not sending microphone to GTL anymore}
   else
     Call @ToggleSendMicrophoneToGtlOn
     sendMicrophoneToGtl = YES
-
-    Log {Sending microphone to GTL again}
   endif
 @End
 
@@ -256,13 +294,9 @@
   if sendGuitarToGtl
     Call @ToggleSendGuitarToGtlOff
     sendGuitarToGtl = NO
-
-    Log {Not sending guitar to GTL anymore}
   else
     Call @ToggleSendGuitarToGtlOn
     sendGuitarToGtl = YES
-
-    Log {Sending guitar to GTL again}
   endif
 @End
 
@@ -326,4 +360,5 @@
   SYSEX_RESET = 4
   SYSEX_DECREASE_CLOCK_LENGTH = 5
   SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
 @End

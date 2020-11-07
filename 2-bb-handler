@@ -163,40 +163,48 @@
   endif
 @End
 
-
-
-
-
 @SendSysexAction
   sysexAction = UNDEFINED
 
-  if tapType = TAP_SHORT and buttonCombo = 15 // Short A
+  // Short A
+  if tapType = TAP_SHORT and buttonCombo = 15
     sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
   endif
 
-  if tapType = TAP_SHORT and buttonCombo = 48 // Short D
+  // Short D
+  if tapType = TAP_SHORT and buttonCombo = 48
     sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
   endif
 
-  if tapType = TAP_MEDIUM and buttonCombo <= 99 // Any medium single button
+  // Any medium single button
+  if tapType = TAP_MEDIUM and buttonCombo <= 99
     sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
   endif
 
-  if tapType = TAP_LONG and buttonCombo <= 99 // Any long single button
+  // Any long single button
+  if tapType = TAP_LONG and buttonCombo <= 99
     sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
   endif
 
-  if buttonCombo = 2367 // B>C
+  // B>C
+  if buttonCombo = 2367
     sysexAction = SYSEX_RESET
     Call @Reset
   endif
 
-  if buttonCombo = 237 // B+C
+  // B+C
+  if buttonCombo = 237
     sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
   endif
 
-  if buttonCombo = 248 // B+D
+  // B+D
+  if buttonCombo = 248
     sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
+  endif
+
+  // A+B, A+C, A+D
+  if buttonCombo = 126 or buttonCombo = 137 or buttonCombo = 148
+    sysexAction = SYSEX_SELECT_GUITAR_PRESET
   endif
   
   if sysexAction = UNDEFINED
@@ -234,4 +242,5 @@
   SYSEX_RESET = 4
   SYSEX_DECREASE_CLOCK_LENGTH = 5
   SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
 @End
