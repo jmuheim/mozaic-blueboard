@@ -202,8 +202,8 @@
     sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
   endif
 
-  // A+B, A+C, A+D
-  if buttonCombo = 126 or buttonCombo = 137 or buttonCombo = 148
+  // D+A, D+B, D+C
+  if buttonCombo = 415 or buttonCombo = 426 or buttonCombo = 437
     sysexAction = SYSEX_SELECT_GUITAR_PRESET
   endif
   

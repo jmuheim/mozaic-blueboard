@@ -110,9 +110,9 @@
   AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
   AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
 
-  AUM_SELECT_GUITAR_PRESET[2] = 2
-  AUM_SELECT_GUITAR_PRESET[3] = 3
-  AUM_SELECT_GUITAR_PRESET[4] = 4
+  AUM_SELECT_GUITAR_PRESET[1] = 2
+  AUM_SELECT_GUITAR_PRESET[2] = 3
+  AUM_SELECT_GUITAR_PRESET[3] = 4
 @End
 
 @InitVariables
@@ -274,7 +274,7 @@
 @End
 
 @SelectGuitarPreset
-  Log {Activating guitar preset #}, lastButtonId - 1
+  Log {Activating guitar preset #}, lastButtonId
 
   midiToSend = AUM_SELECT_GUITAR_PRESET[lastButtonId]
   Call @SendMidiNoteOnOffToAum
