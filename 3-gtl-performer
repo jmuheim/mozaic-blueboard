@@ -55,6 +55,7 @@
   Call @InitGtlMidiCodes
   Call @InitAumMidiCodes
 
+  Call @InitVariables
   Call @Reset
 
   // midiForGtl = 16
@@ -116,28 +117,34 @@
   midiToSend = UNDEFINED
   midiDelay  = 0
 
-  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
-  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
-  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
-  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 4
+  // Will be toggled, so they'll result in being YES
+  sendingMicrophoneToGtl = NO
+  sendingGuitarToGtl = NO
 @End
 
 @Reset
   Log {+-------------+}
   Log {|GTL-Performer|}
   Log {+-------------+}
+  Log {Before exiting, please always reset by pressing B>C}
 
-  Call @InitVariables
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
   Call @SetClockLengthToInitialValue
+  Call @ResetLastActiveLoopsOfGroups
 
   sendingMicrophoneToGtl = NO // Will be toggled next
   Call @ToggleSendingMicrophoneToGtl
 
-  sendingGuitarToGtl = NO // Will be toggled next (needed that the BlueBoard button illuminates correctly)
   nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A]
   Call @ToggleSendingGuitarToGtl // Will activate guitar preset and toggle on sending guitar to GTL
+@End
+
+@ResetLastActiveLoopsOfGroups
+  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 4
 @End
 
 @SetClockLengthToInitialValue
