@@ -1,0 +1,130 @@
+// Feedbacker
+// ==========
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "Mozaic @M1:3" (Group the Loop Performer)
+// - Close the window by pressing the "X" button
+// - TODO: Create audio channel with Chameleon and load GTL-Performer preset, then route GTL-Performer's (Mozaic @M1:3) output to it
+//
+// About:
+// ------
+//
+// Feedback is done through an instance of Chameleon which has preset "GTL-Performer" loaded.
+
+@OnLoad
+  SetShortName {9-Feedbacker}
+
+  Log {Set DEBUG=YES to see more runtime details}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@InitConstants
+  DEBUG = NO // Has no effect here yet
+
+  AUDIO_OVERLAP_DURATION = 150 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
+
+  PAUSE_BETWEEN_FEEDBACKS = 300 // After a group of feedbacks was played, add some silence before the next group.
+
+  // The length of the audio samples in ms (needed for playing them after each other)
+  AUDIO_SAMPLES_LENGTHS[0] = 432   // FEEDBACK_ZERO
+  AUDIO_SAMPLES_LENGTHS[1] = 480   // FEEDBACK_ONE
+  AUDIO_SAMPLES_LENGTHS[2] = 312   // FEEDBACK_TWO
+  AUDIO_SAMPLES_LENGTHS[3] = 432   // FEEDBACK_THREE
+  AUDIO_SAMPLES_LENGTHS[4] = 480   // FEEDBACK_FOUR
+  AUDIO_SAMPLES_LENGTHS[5] = 504   // FEEDBACK_FIVE
+  AUDIO_SAMPLES_LENGTHS[6] = 456   // FEEDBACK_SIX
+  AUDIO_SAMPLES_LENGTHS[7] = 504   // FEEDBACK_SEVEN
+  AUDIO_SAMPLES_LENGTHS[8] = 360   // FEEDBACK_EIGHT
+  AUDIO_SAMPLES_LENGTHS[9] = 480   // FEEDBACK_NINE
+  AUDIO_SAMPLES_LENGTHS[13] = 1032 // FEEDBACK_WELCOME
+  AUDIO_SAMPLES_LENGTHS[16] = 350  // FEEDBACK_GROUP
+  AUDIO_SAMPLES_LENGTHS[21] = 360  // FEEDBACK_LOOP
+  AUDIO_SAMPLES_LENGTHS[30] = 552  // FEEDBACK_CLOCK
+@End
+
+@InitVariables
+  audioPlayingUntil = SystemTime
+
+  delayForCurrentMidiOn  = 0
+  delayForCurrentMidiOff = 0
+@End
+
+@Reset
+  Log {+----------+}
+  Log {|Feedbacker|}
+  Log {+----------+}
+
+  Call @InitVariables
+@End
+
+@OnSysex
+  ReceiveSysex sysexData
+  sysexLength = SysexSize
+  sysexAction = sysexData[0]
+
+  if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
+    Call @IterateOverFeedbacks
+  endif
+@End
+
+@IterateOverFeedbacks
+  Log {@IterateOverFeedbacks}
+
+  for i = 1 to sysexLength - 1 // Ignore first sysex argument (sysexAction)
+    feedbackId = sysexData[i]
+    Call @CueFeedback
+  endfor
+
+  audioPlayingUntil = audioPlayingUntil + PAUSE_BETWEEN_FEEDBACKS
+@End
+
+@CueFeedback
+  feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
+
+  now = SystemTime
+  if audioPlayingUntil < now // Not occupied anymore
+    delayForCurrentMidiOn = 0 // Play right away
+    audioPlayingUntil = now + feedbackLength
+  else // Still occupied
+    delayForCurrentMidiOn = audioPlayingUntil - now - AUDIO_OVERLAP_DURATION // Delay next feedback until the audio channel isn't occupied anymore
+    audioPlayingUntil = audioPlayingUntil + feedbackLength - AUDIO_OVERLAP_DURATION
+  endif
+
+  delayForCurrentMidiOff = delayForCurrentMidiOn + feedbackLength
+
+  Log {@CueFeedback feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, now=}, now, {, delayForCurrentMidiOn=}, delayForCurrentMidiOn, {, delayForCurrentMidiOff=}, delayForCurrentMidiOff, {, audioPlayingUntil=}, audioPlayingUntil
+
+  SendMidiNoteOn  MIDI_CHANNEL_FB, feedbackId, 127, delayForCurrentMidiOn
+  SendMidiNoteOff MIDI_CHANNEL_FB, feedbackId,   0, delayForCurrentMidiOff
+@End
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+@InitSharedConstants
+  UNDEFINED = -1
+
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+
+  MIDI_CHANNEL_FB = 3
+@End

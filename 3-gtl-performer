@@ -1,5 +1,5 @@
-// Group the Loop Performer
-// ========================
+// Group the Loop Performer (GTL-Performer)
+// ========================================
 //
 // Installation:
 // -------------
@@ -14,7 +14,7 @@
 // - Click "Mozaic @M1:2" (BlueBoard-Handler)
 // - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
-// - Route BlueBoard-Handler's (Mozaic @M1:3) output to "iRig BlueBoard Bluetooth"
+// - Route BlueBoard-Handler's (Mozaic @M1:2) output to "iRig BlueBoard Bluetooth"
 // - Press "Close"
 //
 // About:
@@ -55,12 +55,18 @@
   Call @InitGtlMidiCodes
   Call @InitAumMidiCodes
 
-  Call @InitVariables
+  Call @SayWelcome
+
   Call @Reset
 
   // midiForGtl = 16
   // SendMidiNoteOn  1, midiForGtl, 127, 3000
   // SendMidiNoteOff 1, midiForGtl,      3000
+@End
+
+@SayWelcome
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
+  SendSysex sysexData, 2
 @End
 
 @InitConstants
@@ -70,13 +76,6 @@
   CLOCK_LENGTH_AFTER_RESET = 1
   DEFAULT_CLOCK_LENGTH = 8
   DURATION_OF_GTL_RESET = 1000 // GTL needs a bit less than 1sec to reset; additional configs must wait for reset to finish!
-
-  // MIDI channels
-  // Be aware that in the apps all channels are displayed as +1! So GTL channel will display 2 (instead of 1).
-  BB_CHANNEL  = 0 // BlueBoard
-  GTL_CHANNEL = 1 // Group The Loop
-  AUM_CHANNEL = 2 // AUM
-  FB_CHANNEL  = 3 // Feedback (Chameleon with preset "Group The Loop Wizard")
 @End
 
 @InitGtlMidiCodes
@@ -128,9 +127,11 @@
 @End
 
 @Reset
-  Log {+-----------------------+}
-  Log {|GTL-Performer (by Josh)|}
-  Log {+-----------------------+}
+  Log {+-------------+}
+  Log {|GTL-Performer|}
+  Log {+-------------+}
+
+  Call @InitVariables
 
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
@@ -192,7 +193,7 @@
 @ToggleSendingMicrophoneToGtlOff
   Log {Not sending microphone to GTL}
 
-  SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
@@ -201,7 +202,7 @@
 @ToggleSendingMicrophoneToGtlOn
   Log {Sending microphone to GTL}
 
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
@@ -210,7 +211,7 @@
 @ToggleSendingGuitarToGtlOff
   Log {Not sending guitar to GTL}
 
-  SendMidiNoteOff BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
@@ -219,15 +220,15 @@
 @ToggleSendingGuitarToGtlOn
   Log {Sending guitar to GTL}
 
-  SendMidiNoteOn BB_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
 @SendMidiNoteOnOffToGtl
-  SendMidiNoteOn  GTL_CHANNEL, midiToSend, 127, midiDelay
-  SendMidiNoteOff GTL_CHANNEL, midiToSend,   0, midiDelay
+  SendMidiNoteOn  GTL_MIDI_CHANNEL, midiToSend, 127, midiDelay
+  SendMidiNoteOff GTL_MIDI_CHANNEL, midiToSend,   0, midiDelay
 
   midiDelay = 0
 
@@ -242,17 +243,17 @@
 @End
 
 @SendMidiNoteOnToAum
-  SendMidiNoteOn AUM_CHANNEL, midiToSend, 127
+  SendMidiNoteOn AUM_MIDI_CHANNEL, midiToSend, 127
 @End
 
 @SendMidiNoteOffToAum
-  SendMidiNoteOff AUM_CHANNEL, midiToSend, 0, 0
+  SendMidiNoteOff AUM_MIDI_CHANNEL, midiToSend, 0, 0
 @End
 
 @OnSysex
-  ReceiveSysex data
-  sysexAction = data[0]
-  lastButtonId = data[1]
+  ReceiveSysex sysexData
+  sysexAction = sysexData[0]
+  lastButtonId = sysexData[1]
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
     Call @ToggleSendingMicrophoneToGtl
@@ -394,4 +395,12 @@
   SYSEX_INCREASE_CLOCK_LENGTH = 6
   SYSEX_SELECT_GUITAR_PRESET = 7
   SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+
+  // Be aware that in the apps all channels are displayed as +1! So AUM and GTL channel will display 2 (instead of 1).
+  BB_MIDI_CHANNEL  = 0 // BlueBoard
+  GTL_MIDI_CHANNEL = 1 // Group The Loop
+  AUM_MIDI_CHANNEL = 2 // AUM
+
+  FEEDBACK_WELCOME = 13
 @End

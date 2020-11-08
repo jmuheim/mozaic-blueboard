@@ -58,18 +58,24 @@
 @OnLoad
   SetShortName {2-BbHandler}
 
+  Log {Set DEBUG=YES to see more runtime details}
+
   Call @InitSharedConstants
   Call @InitConstants
   Call @Reset
 @End
 
 @Reset
-  Log {Reset}
+  Log {+-----------------+}
+  Log {|BlueBoard-Handler|}
+  Log {+-----------------+}
 
   Call @InitVariables
 @End
 
 @InitConstants
+  DEBUG = NO // Has no effect here yet
+
   NUMBER_OF_BB_BUTTONS = 4
 @End
 
@@ -216,8 +222,8 @@
     Log {ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
   else
     Log {Sending sysexAction=}, sysexAction, { with lastButtonId=}, lastButtonId
-    data = [sysexAction, lastButtonId]
-    SendSysex data, 2
+    sysexData = [sysexAction, lastButtonId]
+    SendSysex sysexData, 2
   endif
 @End
 
