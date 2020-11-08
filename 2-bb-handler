@@ -202,6 +202,11 @@
     sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
   endif
 
+  // A+B, A+C, A+D
+  if buttonCombo = 126 or buttonCombo = 137 or buttonCombo = 148
+    sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
+  endif
+
   // D+A, D+B, D+C
   if buttonCombo = 415 or buttonCombo = 426 or buttonCombo = 437
     sysexAction = SYSEX_SELECT_GUITAR_PRESET
@@ -248,4 +253,5 @@
   SYSEX_DECREASE_CLOCK_LENGTH = 5
   SYSEX_INCREASE_CLOCK_LENGTH = 6
   SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
 @End

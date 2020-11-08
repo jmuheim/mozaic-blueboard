@@ -111,6 +111,11 @@
   AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A] = 2
   AUM_SELECT_GUITAR_PRESET[BB_BUTTON_B] = 3
   AUM_SELECT_GUITAR_PRESET[BB_BUTTON_C] = 4
+
+  // Don't do anything yet in AUM... could activate/deactivate echo, delay, vocoder...
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_B] = 5
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_C] = 6
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_D] = 7
 @End
 
 @InitVariables
@@ -133,11 +138,11 @@
   Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
 
-  sendingMicrophoneToGtl = NO // Will be toggled next
+  nextMicrophonePreset = AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_D]
   Call @ToggleSendingMicrophoneToGtl
 
   nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A]
-  Call @ToggleSendingGuitarToGtl // Will activate guitar preset and toggle on sending guitar to GTL
+  Call @ToggleSendingGuitarToGtl
 @End
 
 @ResetLastActiveLoopsOfGroups
@@ -264,6 +269,8 @@
     Call @DecreaseClockLength
   elseif sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
     Call @IncreaseClockLength
+  elseif sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
+    Call @SelectMicrophonePreset
   elseif sysexAction = SYSEX_SELECT_GUITAR_PRESET
     Call @SelectGuitarPreset
   endif
@@ -275,8 +282,24 @@
   Log {Preparing guitar preset stored on button }, lastButtonId, { (AUM MIDI=}, nextGuitarPreset, {), press button }, BB_BUTTON_D, { to activate!}
 @End
 
+@SelectMicrophonePreset
+  nextMicrophonePreset = AUM_SELECT_MICROPHONE_PRESET[lastButtonId]
+
+  Log {Preparing microphone preset stored on button }, lastButtonId, { (AUM MIDI=}, nextMicrophonePreset, {), press button }, BB_BUTTON_A, { to activate!}
+@End
+
 @ToggleSendingMicrophoneToGtl
-  if sendingMicrophoneToGtl
+  if nextMicrophonePreset <> UNDEFINED
+    midiToSend = nextMicrophonePreset
+    Call @SendMidiNoteOnOffToAum
+    Log {Activated microphone preset with AUM MIDI=}, nextMicrophonePreset
+    nextMicrophonePreset = UNDEFINED
+
+    if sendingMicrophoneToGtl = NO
+      Call @ToggleSendingMicrophoneToGtlOn
+      sendingMicrophoneToGtl = YES
+    endif
+  elseif sendingMicrophoneToGtl
     Call @ToggleSendingMicrophoneToGtlOff
     sendingMicrophoneToGtl = NO
   else
@@ -371,4 +394,5 @@
   SYSEX_DECREASE_CLOCK_LENGTH = 5
   SYSEX_INCREASE_CLOCK_LENGTH = 6
   SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
 @End
