@@ -128,10 +128,9 @@
 @End
 
 @Reset
-  Log {+-------------+}
-  Log {|GTL-Performer|}
-  Log {+-------------+}
-  Log {Before exiting, please always reset by pressing B>C}
+  Log {+-----------------------+}
+  Log {|GTL-Performer (by Josh)|}
+  Log {+-----------------------+}
 
   Call @ResetGtl
   Call @SelectFirstLoopInMasterGroup
