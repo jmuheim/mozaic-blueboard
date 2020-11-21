@@ -48,14 +48,12 @@
 @OnLoad
   SetShortName {3-GtlPerformer}
 
-  Log {Set DEBUG=YES to see more runtime details}
+  Log {Set DEBUG=YES to see runtime details}
 
   Call @InitSharedConstants
   Call @InitConstants
   Call @InitGtlMidiCodes
   Call @InitAumMidiCodes
-
-  Call @SayWelcome
 
   Call @Reset
 
@@ -70,7 +68,7 @@
 @End
 
 @InitConstants
-  DEBUG = NO
+  DEBUG = YES
 
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
   CLOCK_LENGTH_AFTER_RESET = 1
@@ -130,6 +128,8 @@
   Log {+-------------+}
   Log {|GTL-Performer|}
   Log {+-------------+}
+
+  Call @SayWelcome
 
   Call @InitVariables
 

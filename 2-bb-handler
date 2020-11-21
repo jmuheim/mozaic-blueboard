@@ -58,7 +58,7 @@
 @OnLoad
   SetShortName {2-BbHandler}
 
-  Log {Set DEBUG=YES to see more runtime details}
+  Log {Set DEBUG=YES to see runtime details}
 
   Call @InitSharedConstants
   Call @InitConstants
