@@ -127,6 +127,8 @@
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
   SendSysex sysexData, 2
 
+  Call @MuteFeedback
+
   Call @InitVariables
 
   Call @ResetGtl
@@ -139,6 +141,18 @@
 
   nextGuitarPreset = BB_BUTTON_A
   Call @ToggleSendingGuitarToGtl
+
+  Call @UnmuteFeedback
+@End
+
+@MuteFeedback
+  sysexData = [SYSEX_MUTE_FEEDBACK]
+  SendSysex sysexData, 1
+@End
+
+@UnmuteFeedback
+  sysexData = [SYSEX_UNMUTE_FEEDBACK]
+  SendSysex sysexData, 1
 @End
 
 @ResetLastActiveLoopsOfGroups
@@ -450,6 +464,8 @@
   SYSEX_SELECT_GUITAR_PRESET = 7
   SYSEX_SELECT_MICROPHONE_PRESET = 8
   SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_MUTE_FEEDBACK = 10
+  SYSEX_UNMUTE_FEEDBACK = 11
 
   // Be aware that in the apps all channels are displayed as +1! So AUM and GTL channel will display 2 (instead of 1).
   BB_MIDI_CHANNEL  = 0 // BlueBoard

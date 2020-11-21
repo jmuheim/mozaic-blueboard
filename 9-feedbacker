@@ -65,6 +65,8 @@
 
   delayForCurrentMidiOn  = 0
   delayForCurrentMidiOff = 0
+
+  muted = NO
 @End
 
 @Reset
@@ -81,7 +83,15 @@
   sysexAction = sysexData[0]
 
   if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
-    Call @IterateOverFeedbacks
+    if muted
+      Log {Muted (not giving any feedback)}
+    else
+      Call @IterateOverFeedbacks
+    endif
+  elseif sysexAction = SYSEX_MUTE_FEEDBACK
+    muted = YES
+  elseif sysexAction = SYSEX_UNMUTE_FEEDBACK
+    muted = NO
   endif
 @End
 
@@ -131,6 +141,8 @@
   UNDEFINED = -1
 
   SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_MUTE_FEEDBACK = 10
+  SYSEX_UNMUTE_FEEDBACK = 11
 
   MIDI_CHANNEL_FB = 3
 @End
