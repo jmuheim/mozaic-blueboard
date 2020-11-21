@@ -392,12 +392,12 @@
   midiToSend = GTL_RECORD_OVERDUB
   Call @SendMidiNoteOnOffToGtl
 
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastActiveLoopOfGroup[lastButtonId], FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
   if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
     Inc lastActiveLoopOfGroup[lastButtonId]
   endif
-
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_RECORDING, lastButtonId]
-  SendSysex sysexData, 3
 @End
 
 @SelectGroup
