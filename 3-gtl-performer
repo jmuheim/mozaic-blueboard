@@ -11,7 +11,7 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M1:2" (BlueBoard-Handler)
+// - Click "Mozaic @M2:1" (BlueBoard-Handler)
 // - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
 // - Route BlueBoard-Handler's (Mozaic @M1:2) output to "iRig BlueBoard Bluetooth"
@@ -450,8 +450,8 @@
   BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
   BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
 
-  TAP_SHORT  = 0    // Up to 499ms
-  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
   TAP_LONG   = 1000 // 1000ms or more
 
   SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0

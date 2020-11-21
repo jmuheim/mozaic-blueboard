@@ -12,7 +12,6 @@
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
 // - Click "iRig BlueBoard Bluetooth"
-// - Click "Mozaic @M1:1" (Configurator)
 // - Close the window by pressing the "X" button
 //
 // About:
@@ -63,6 +62,34 @@
   Call @InitSharedConstants
   Call @InitConstants
   Call @Reset
+
+  SetTimerInterval 10
+@End
+
+@OnTimer
+  durationOfLastButtonPress = SystemTime - lastButtonDownTime
+
+  if durationOfLastButtonPress < TAP_MEDIUM
+    if tapType < TAP_SHORT
+      tapType = TAP_SHORT
+    endif
+  elseif durationOfLastButtonPress < TAP_LONG
+    if tapType < TAP_MEDIUM
+      tapType = TAP_MEDIUM
+
+      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+      SendSysex sysexData, 2
+    endif
+  else
+    if tapType < TAP_LONG
+      tapType = TAP_LONG
+
+      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+      SendSysex sysexData, 2
+    endif
+  endif
+
+  Log {tapType=}, tapType
 @End
 
 @Reset
@@ -87,7 +114,10 @@
 @End
 
 @OnMidiNoteOn
+  StartTimer
+
   lastButtonDownTime = SystemTime
+  tapType = UNDEFINED
 
   Call @ConvertBbMidiNoteToId
   lastButtonDownId = lastButtonId
@@ -101,8 +131,7 @@
 @End
 
 @OnMidiNoteOff
-  lastButtonUpTime = SystemTime
-  durationOfLastButtonPress = lastButtonUpTime - lastButtonDownTime
+  StopTimer
 
   Call @ConvertBbMidiNoteToId
   lastButtonUpId = lastButtonId
@@ -112,21 +141,21 @@
 
   if numberOfPressedButtons = 0
     if ignoreLastButtonUp = NO
-      Call @DispatchButtonCombo
+      Call @SendSysexAction
     endif
 
     Call @ResetButtonCombo
     ignoreLastButtonUp = NO
   else
     if lastButtonDownId = lastButtonUpId
-      Call @DispatchButtonCombo
+      Call @SendSysexAction
       Call @RemoveLastButtonUpAndDowFromButtonCombo
       ignoreLastButtonUp = YES
     endif
   endif
 
   if DEBUG
-    Log {@OnMidiNoteOff: lastButtonUpTime=}, lastButtonUpTime, {, durationOfLastButtonPress=}, durationOfLastButtonPress, {, lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
+    Log {@OnMidiNoteOff: lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
   endif
 @End
 
@@ -134,20 +163,6 @@
   numberOfPressedButtons = 0
   buttonCombo = 0
   tapType = UNDEFINED
-@End
-
-@DispatchButtonCombo
-  if durationOfLastButtonPress < TAP_MEDIUM
-    tapType = TAP_SHORT
-  elseif durationOfLastButtonPress < TAP_LONG
-    tapType = TAP_MEDIUM
-  else
-    tapType = TAP_LONG
-  endif
-
-  Log {Received buttonCombo=}, buttonCombo, {, tapType=}, tapType, {, durationOfLastButtonPress=}, durationOfLastButtonPress
-
-  Call @SendSysexAction
 @End
 
 @AppendLastButtonDownToButtonCombo
@@ -275,8 +290,8 @@
   BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
   BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
 
-  TAP_SHORT  = 0    // Up to 499ms
-  TAP_MEDIUM = 500  // Between 500 and 999ms
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
   TAP_LONG   = 1000 // 1000ms or more
 
   SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
@@ -288,4 +303,7 @@
   SYSEX_INCREASE_CLOCK_LENGTH = 6
   SYSEX_SELECT_GUITAR_PRESET = 7
   SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+
+  FEEDBACK_BEEP = 20
 @End
