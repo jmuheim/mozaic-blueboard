@@ -74,7 +74,7 @@
 @End
 
 @InitConstants
-  DEBUG = NO // Has no effect here yet
+  DEBUG = YES
 
   NUMBER_OF_BB_BUTTONS = 4
 @End
@@ -94,6 +94,10 @@
   Call @AppendLastButtonDownToButtonCombo
 
   Inc numberOfPressedButtons
+
+  if DEBUG
+    Log {@OnMidiNoteOn: lastButtonDownTime=}, lastButtonDownTime, {, lastButtonDownId=}, lastButtonDownId, {, numberOfPressedButtons=}, numberOfPressedButtons
+  endif
 @End
 
 @OnMidiNoteOff
@@ -120,6 +124,10 @@
       ignoreLastButtonUp = YES
     endif
   endif
+
+  if DEBUG
+    Log {@OnMidiNoteOff: lastButtonUpTime=}, lastButtonUpTime, {, durationOfLastButtonPress=}, durationOfLastButtonPress, {, lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
+  endif
 @End
 
 @ResetButtonCombo
@@ -137,25 +145,39 @@
     tapType = TAP_LONG
   endif
 
-  Log {Received buttonCombo=}, buttonCombo, { with tapType=}, tapType
+  Log {Received buttonCombo=}, buttonCombo, {, tapType=}, tapType, {, durationOfLastButtonPress=}, durationOfLastButtonPress
 
   Call @SendSysexAction
 @End
 
 @AppendLastButtonDownToButtonCombo
   buttonCombo = buttonCombo * 10 + lastButtonDownId
+
+  if DEBUG
+    Log {@AppendLastButtonDownToButtonCombo: buttonCombo=}, buttonCombo
+  endif
 @End
 
 @AppendLastButtonUpToButtonCombo
   buttonCombo = buttonCombo * 10 + lastButtonUpId + NUMBER_OF_BB_BUTTONS
+
+  if DEBUG
+    Log {@AppendLastButtonUpToButtonCombo: buttonCombo=}, buttonCombo
+  endif
 @End
 
 @RemoveLastButtonUpAndDowFromButtonCombo
   buttonCombo = (buttonCombo - lastButtonUpId - NUMBER_OF_BB_BUTTONS) / 10
   buttonCombo = (buttonCombo - lastButtonDownId) / 10
+
+  if DEBUG
+    Log {@RemoveLastButtonUpAndDowFromButtonCombo: buttonCombo=}, buttonCombo
+  endif
 @End
 
 @ConvertBbMidiNoteToId
+  lastButtonId = UNDEFINED
+
   if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     lastButtonId = 1
   elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
@@ -164,8 +186,14 @@
     lastButtonId = 3
   elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
     lastButtonId = 4
+  endif
+
+  if lastButtonId
+    if DEBUG
+      Log {@ConvertBbMidiNoteToId: MidiNote=}, MidiNote, {, lastButtonId=}, lastButtonId
+    endif
   else
-    Log {ERROR: Unknown button ID for MidiNote=}, MidiNote
+    Log {!ERROR! @ConvertBbMidiNoteToId: Unknown button ID for MidiNote=}, MidiNote
   endif
 @End
 
@@ -219,9 +247,9 @@
   endif
   
   if sysexAction = UNDEFINED
-    Log {ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
+    Log {!ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
   else
-    Log {Sending sysexAction=}, sysexAction, { with lastButtonId=}, lastButtonId
+    Log {Sending sysexAction=}, sysexAction, {, buttonCombo=}, buttonCombo, {, lastButtonId=}, lastButtonId
     sysexData = [sysexAction, lastButtonId]
     SendSysex sysexData, 2
   endif
