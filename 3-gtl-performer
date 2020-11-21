@@ -62,11 +62,6 @@
   // SendMidiNoteOff 1, midiForGtl,      3000
 @End
 
-@SayWelcome
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
-  SendSysex sysexData, 2
-@End
-
 @InitConstants
   DEBUG = YES
 
@@ -129,7 +124,8 @@
   Log {|GTL-Performer|}
   Log {+-------------+}
 
-  Call @SayWelcome
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
+  SendSysex sysexData, 2
 
   Call @InitVariables
 
@@ -138,10 +134,10 @@
   Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
 
-  nextMicrophonePreset = AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_D]
+  nextMicrophonePreset = BB_BUTTON_D
   Call @ToggleSendingMicrophoneToGtl
 
-  nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A]
+  nextGuitarPreset = BB_BUTTON_A
   Call @ToggleSendingGuitarToGtl
 @End
 
@@ -159,6 +155,9 @@
     midiDelay = DURATION_OF_GTL_RESET
     Call @IncreaseClockLength
   endfor
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_CLOCK_LENGTH, DEFAULT_CLOCK_LENGTH]
+  SendSysex sysexData, 3
 @End
 
 @SelectFirstLoopInMasterGroup
@@ -167,10 +166,16 @@
   midiDelay  = DURATION_OF_GTL_RESET
   Call @SendMidiNoteOnOffToGtl
 
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, 0]
+  SendSysex sysexData, 3
+
   Log {Select first loop}
   midiToSend = GTL_SELECT_LOOP[BB_BUTTON_A]
   midiDelay  = DURATION_OF_GTL_RESET + 100
   Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, 1]
+  SendSysex sysexData, 3
 @End
 
 @ResetGtl
@@ -197,6 +202,9 @@
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
 @End
 
 @ToggleSendingMicrophoneToGtlOn
@@ -206,6 +214,9 @@
 
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
 @End
 
 @ToggleSendingGuitarToGtlOff
@@ -215,6 +226,9 @@
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
 @End
 
 @ToggleSendingGuitarToGtlOn
@@ -224,6 +238,9 @@
 
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
 @End
 
 @SendMidiNoteOnOffToGtl
@@ -277,23 +294,26 @@
 @End
 
 @SelectGuitarPreset
-  nextGuitarPreset = AUM_SELECT_GUITAR_PRESET[lastButtonId]
+  nextGuitarPreset = lastButtonId
 
-  Log {Preparing guitar preset stored on button }, lastButtonId, { (AUM MIDI=}, nextGuitarPreset, {), press button }, BB_BUTTON_D, { to activate!}
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
 @End
 
 @SelectMicrophonePreset
-  nextMicrophonePreset = AUM_SELECT_MICROPHONE_PRESET[lastButtonId]
+  nextMicrophonePreset = lastButtonId
 
-  Log {Preparing microphone preset stored on button }, lastButtonId, { (AUM MIDI=}, nextMicrophonePreset, {), press button }, BB_BUTTON_A, { to activate!}
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_MICROPHONE, nextMicrophonePreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing microphone preset stored on button }, nextMicrophonePreset, {, press button }, BB_BUTTON_A, { to activate!}
 @End
 
 @ToggleSendingMicrophoneToGtl
   if nextMicrophonePreset <> UNDEFINED
-    midiToSend = nextMicrophonePreset
-    Call @SendMidiNoteOnOffToAum
-    Log {Activated microphone preset with AUM MIDI=}, nextMicrophonePreset
-    nextMicrophonePreset = UNDEFINED
+    Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
       Call @ToggleSendingMicrophoneToGtlOn
@@ -308,12 +328,20 @@
   endif
 @End
 
+@ActivateMicrophonePreset
+  midiToSend = AUM_SELECT_MICROPHONE_PRESET[nextMicrophonePreset]
+  Call @SendMidiNoteOnOffToAum
+  Log {Activated microphone preset stored on button }, nextMicrophonePreset, { (AUM MIDI=}, midiToSend, {)}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_MICROPHONE, nextMicrophonePreset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+
+  nextMicrophonePreset = UNDEFINED
+@End
+
 @ToggleSendingGuitarToGtl
   if nextGuitarPreset <> UNDEFINED
-    midiToSend = nextGuitarPreset
-    Call @SendMidiNoteOnOffToAum
-    Log {Activated guitar preset with AUM MIDI=}, nextGuitarPreset
-    nextGuitarPreset = UNDEFINED
+    Call @ActivateGuitarPreset
 
     if sendingGuitarToGtl = NO
       Call @ToggleSendingGuitarToGtlOn
@@ -326,6 +354,18 @@
     Call @ToggleSendingGuitarToGtlOn
     sendingGuitarToGtl = YES
   endif
+@End
+
+@ActivateGuitarPreset
+  midiToSend = AUM_SELECT_GUITAR_PRESET[nextGuitarPreset]
+  
+  Call @SendMidiNoteOnOffToAum
+  Log {Activated guitar preset stored on button }, nextGuitarPreset, { (AUM MIDI=}, midiToSend, {)}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+
+  nextGuitarPreset = UNDEFINED
 @End
 
 @ToggleAndSelectGroup
@@ -355,12 +395,19 @@
   if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
     Inc lastActiveLoopOfGroup[lastButtonId]
   endif
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_RECORDING, lastButtonId]
+  SendSysex sysexData, 3
 @End
 
 @SelectGroup
   midiToSend = GTL_SELECT_GROUP[lastButtonId]
   Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastButtonId]
+  SendSysex sysexData, 3
 @End
+
 
 
 
@@ -402,5 +449,14 @@
   GTL_MIDI_CHANNEL = 1 // Group The Loop
   AUM_MIDI_CHANNEL = 2 // AUM
 
-  FEEDBACK_WELCOME = 13
+  FEEDBACK_WELCOME = 10
+  FEEDBACK_GROUP = 11
+  FEEDBACK_LOOP = 12
+  FEEDBACK_CLOCK_LENGTH = 13
+  FEEDBACK_GUITAR = 14
+  FEEDBACK_MICROPHONE = 15
+  FEEDBACK_SENDING = 16
+  FEEDBACK_ACTIVATED = 17
+  FEEDBACK_DEACTIVATED = 18
+  FEEDBACK_ARMED = 19
 @End
