@@ -187,12 +187,19 @@
 
 @IncreaseClockLength
   midiToSend = GTL_INCREASE_CLOCK_LENGTH
-  Call @SendMidiNoteOnOffToGtl
+  Call @ManipulateClockLength
 @End
 
 @DecreaseClockLength
   midiToSend = GTL_DECREASE_CLOCK_LENGTH
+  Call @ManipulateClockLength
+@End
+
+@ManipulateClockLength
   Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_CLOCK_LENGTH]
+  SendSysex sysexData, 2
 @End
 
 @ToggleSendingMicrophoneToGtlOff
