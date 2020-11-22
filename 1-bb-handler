@@ -76,20 +76,21 @@
   elseif durationOfLastButtonPress < TAP_LONG
     if tapType < TAP_MEDIUM
       tapType = TAP_MEDIUM
-
-      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
-      SendSysex sysexData, 2
+      Call @Beep
     endif
   else
     if tapType < TAP_LONG
       tapType = TAP_LONG
-
-      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
-      SendSysex sysexData, 2
+      Call @Beep
     endif
   endif
 
   Log {tapType=}, tapType
+@End
+
+@Beep
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+  SendSysex sysexData, 2
 @End
 
 @Reset
@@ -126,7 +127,7 @@
   Inc numberOfPressedButtons
 
   if DEBUG
-    Log {@OnMidiNoteOn: lastButtonDownTime=}, lastButtonDownTime, {, lastButtonDownId=}, lastButtonDownId, {, numberOfPressedButtons=}, numberOfPressedButtons
+    Log {@OnMidiNoteOn: MidiNote=}, MidiNote, {, lastButtonDownTime=}, lastButtonDownTime, {, lastButtonDownId=}, lastButtonDownId, {, numberOfPressedButtons=}, numberOfPressedButtons
   endif
 @End
 
@@ -155,7 +156,7 @@
   endif
 
   if DEBUG
-    Log {@OnMidiNoteOff: lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
+    Log {@OnMidiNoteOff: MidiNote=}, MidiNote, {, lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
   endif
 @End
 
