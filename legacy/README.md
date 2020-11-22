@@ -2,7 +2,7 @@
 
 **This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).**
 
-By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The [enhancer](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/enhancer) script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly `3/4` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
+By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The `spacer` script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly `3/4` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
 
 - Space `A` (activation sends `0`)
     - **Short**-tapping `A` sends `1`
@@ -42,20 +42,6 @@ All signals are sent through channel `15`.
 - In its settings, select `MIDI`, make sure that `Virtual MIDI` is set as `MIDI Input Port`
     - Now tap on some buttons on the BlueBoard to make sure that the MIDI signals arrive as expected (they should be displayed in the `LOG`)
 - You can now start to add MIDI bindings, yay!
-
-## Giving audio feedback
-
-Triggering some feature using the BlueBoard often will result in an immediately perceivable feedback inside the running app. For example when toggling Play/Pause in AUM, the respective icon will visually change. In some other cases (especially when running multiple apps side by side while only seeing the front most) there will be no such feedback, for example when triggering some feature in a loaded AUv3 or an app in the background; or simply when switching between BlueBoard spaces (by tapping-and-holding its button for a second).
-
-As interacting with a foot controller can be a bit tricky at times, you may want to receive feedback in such a situation, so you can be sure that everything worked out as intented. Imagine you wanted to switch from space `A` to `B`, but you didn't hold the `B` button long enough. So you'd still be in space `A`, but because you don't get any feedback you'd think you're in space `B`!
-
-While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're not using this feature at all (it's also quite limited and probably hard to read while performing). Instead, you can let some AUv3 sampler listen to the different MIDI notes sent from this script, and play a specific audio file upon it.
-
-For example, I have added [Chameleon](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) as another audio channel in AUM, and configured to send the script's MIDI also to it (snake-like arrow button). Now I have loaded a custom preset in Chameleon which plays an audio file "Space 1 selected" when MIDI note `0` arrives, or "Space 2 selected" when MIDI note `32` arrives, etc.
-
-You can add such an audio file for each available note (`0` to `127`). For example, if you want to toggle the effect of your guitar using the `B` button in space `C`, you can assign an audio file "Toggled guitar effect" to MIDI note `66`. Such audio files can easily be generated using a Text-To-Speech engine like <https://voicemaker.in/>.
-
-For live situations, you probably don't want the audience to hear these audio feedbacks. Try to pan them completely to one side (left) of the stereo output, and listen to them by headphones (or monitors). Then forward only the other side (right) to the PA system (you may need an audio splitter cable for this).
 
 ## Additional info
 
