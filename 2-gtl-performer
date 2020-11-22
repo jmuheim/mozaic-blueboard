@@ -1,0 +1,485 @@
+// Group the Loop Performer (GTL-Performer)
+// ========================================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+1" button (scroll down if needed)
+// - Click the newly inserted "+" button, then "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "Mozaic @M2:1" (BlueBoard-Handler)
+// - Close the window by pressing the "X" button
+// - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
+// - Route BlueBoard-Handler's (Mozaic @M1:2) output to "iRig BlueBoard Bluetooth"
+// - Press "Close"
+//
+// About:
+// ------
+//
+// GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
+//
+// During the start of a song, usually you are very busy with singing and playing your instrument (guitar, keyboard, whatever). As such, you don't have any hands free to interact with GTL's GUI. But still, possibly right after the current recording, you want to the next loop to be armed (in the current or any other group), probably switch settings of you instrument (or switch to another instrument), etc. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
+//
+// Usually, after a song was successfully built up and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time. This will then allow you to interact with GTL's GUI directly and do more sophisticated stuff manually. So GTL-Performer is not meant to assist you fully throughout a whole song. It simply provides those features which are usually needed most during the beginning of a song, i.e. recording the first few loops inside different groups.
+//
+// Have fun! :-)
+//
+// Usage:
+// ------
+//
+// - Short tap:
+//   - A: Toggle sending microphone to GTL
+//   - D: Toggle sending guitar to GTL
+//     - If a guitar preset was prepared (see below), it will be activated, and guitar will be sent to GTL regardless of whether it was sent already or not
+// - Medium tap:
+//   - A|B|C|D: Record next loop in group 1|2|3|4
+// - Long tap:
+//   - A|B|C|D: Play group 1|2|3|4
+// - Tap combos:
+//   - B>C: Reset session
+//   - D+(A|B|C): Prepare guitar preset 1|2|3
+//     - It will be activated when pressing D again
+
+// Make sure to start the BlueBoard while pressing the B button!
+@OnLoad
+  SetShortName {2-GtlPerformer}
+
+  Log {Set DEBUG=YES to see runtime details}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @InitGtlMidiCodes
+  Call @InitAumMidiCodes
+
+  Call @Reset
+
+  // midiForGtl = 16
+  // SendMidiNoteOn  1, midiForGtl, 127, 3000
+  // SendMidiNoteOff 1, midiForGtl,      3000
+@End
+
+@InitConstants
+  DEBUG = YES
+
+  NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
+  CLOCK_LENGTH_AFTER_RESET = 1
+  DEFAULT_CLOCK_LENGTH = 8
+  DURATION_OF_GTL_RESET = 1000 // GTL needs a bit less than 1sec to reset; additional configs must wait for reset to finish!
+@End
+
+@InitGtlMidiCodes
+  GTL_SELECT_MASTER_GROUP = 14 // Master group
+  GTL_SELECT_GROUP[BB_BUTTON_A] = 0
+  GTL_SELECT_GROUP[BB_BUTTON_B] = 1
+  GTL_SELECT_GROUP[BB_BUTTON_C] = 2
+  GTL_SELECT_GROUP[BB_BUTTON_D] = 3
+
+  GTL_SELECT_LOOP[BB_BUTTON_A] = 4
+  GTL_SELECT_LOOP[BB_BUTTON_B] = 5
+  GTL_SELECT_LOOP[BB_BUTTON_C] = 6
+  GTL_SELECT_LOOP[BB_BUTTON_D] = 7
+
+  GTL_RECORD_OVERDUB = 8
+
+  GTL_RESET_SESSION = 9
+
+  GTL_PLAY_GROUP[BB_BUTTON_A] = 10
+  GTL_PLAY_GROUP[BB_BUTTON_B] = 11
+  GTL_PLAY_GROUP[BB_BUTTON_C] = 12
+  GTL_PLAY_GROUP[BB_BUTTON_D] = 13
+
+  GTL_INCREASE_CLOCK_LENGTH = 15
+  GTL_DECREASE_CLOCK_LENGTH = 16
+@End
+
+@InitAumMidiCodes
+  AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
+
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A] = 2
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_B] = 3
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_C] = 4
+
+  // Don't do anything yet in AUM... could activate/deactivate echo, delay, vocoder...
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_B] = 5
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_C] = 6
+  AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_D] = 7
+@End
+
+@InitVariables
+  midiToSend = UNDEFINED
+  midiDelay  = 0
+
+  // Will be toggled, so they'll result in being YES
+  sendingMicrophoneToGtl = NO
+  sendingGuitarToGtl = NO
+@End
+
+@Reset
+  Log {+-------------+}
+  Log {|GTL-Performer|}
+  Log {+-------------+}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
+  SendSysex sysexData, 2
+
+  Call @MuteFeedback
+
+  Call @InitVariables
+
+  Call @ResetGtl
+  Call @SelectFirstLoopInMasterGroup
+  Call @SetClockLengthToInitialValue
+  Call @ResetLastActiveLoopsOfGroups
+
+  nextMicrophonePreset = BB_BUTTON_D
+  Call @ToggleSendingMicrophoneToGtl
+
+  nextGuitarPreset = BB_BUTTON_A
+  Call @ToggleSendingGuitarToGtl
+
+  Call @UnmuteFeedback
+@End
+
+@MuteFeedback
+  sysexData = [SYSEX_MUTE_FEEDBACK]
+  SendSysex sysexData, 1
+@End
+
+@UnmuteFeedback
+  sysexData = [SYSEX_UNMUTE_FEEDBACK]
+  SendSysex sysexData, 1
+@End
+
+@ResetLastActiveLoopsOfGroups
+  lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
+  lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
+  lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
+  lastActiveLoopOfGroup[BB_BUTTON_D] = UNDEFINED // Group 4
+@End
+
+@SetClockLengthToInitialValue
+  Log {Set clock length }, DEFAULT_CLOCK_LENGTH
+
+  for i = CLOCK_LENGTH_AFTER_RESET to (DEFAULT_CLOCK_LENGTH - CLOCK_LENGTH_AFTER_RESET)
+    midiDelay = DURATION_OF_GTL_RESET
+    Call @IncreaseClockLength
+  endfor
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_CLOCK_LENGTH, DEFAULT_CLOCK_LENGTH]
+  SendSysex sysexData, 3
+@End
+
+@SelectFirstLoopInMasterGroup
+  Log {Select master group}
+  midiToSend = GTL_SELECT_MASTER_GROUP
+  midiDelay  = DURATION_OF_GTL_RESET
+  Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, 0]
+  SendSysex sysexData, 3
+
+  Log {Select first loop}
+  midiToSend = GTL_SELECT_LOOP[BB_BUTTON_A]
+  midiDelay  = DURATION_OF_GTL_RESET + 100
+  Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, 1]
+  SendSysex sysexData, 3
+@End
+
+@ResetGtl
+  Log {Reset GTL}
+
+  midiToSend = GTL_RESET_SESSION
+  Call @SendMidiNoteOnOffToGtl
+@End
+
+@IncreaseClockLength
+  midiToSend = GTL_INCREASE_CLOCK_LENGTH
+  Call @ManipulateClockLength
+@End
+
+@DecreaseClockLength
+  midiToSend = GTL_DECREASE_CLOCK_LENGTH
+  Call @ManipulateClockLength
+@End
+
+@ManipulateClockLength
+  Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_CLOCK_LENGTH]
+  SendSysex sysexData, 2
+@End
+
+@ToggleSendingMicrophoneToGtlOff
+  Log {Not sending microphone to GTL}
+
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
+
+  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  Call @SendMidiNoteOffToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@ToggleSendingMicrophoneToGtlOn
+  Log {Sending microphone to GTL}
+
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
+
+  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  Call @SendMidiNoteOnToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@ToggleSendingGuitarToGtlOff
+  Log {Not sending guitar to GTL}
+
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+
+  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOffToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@ToggleSendingGuitarToGtlOn
+  Log {Sending guitar to GTL}
+
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+
+  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOnToAum
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@SendMidiNoteOnOffToGtl
+  SendMidiNoteOn  GTL_MIDI_CHANNEL, midiToSend, 127, midiDelay
+  SendMidiNoteOff GTL_MIDI_CHANNEL, midiToSend,   0, midiDelay
+
+  midiDelay = 0
+
+  if DEBUG
+    Log {Sending MIDI on/off to GTL with midiToSend=}, midiToSend, { and midiDelay=}, midiDelay
+  endif
+@End
+
+@SendMidiNoteOnOffToAum
+  Call @SendMidiNoteOnToAum
+  Call @SendMidiNoteOffToAum
+@End
+
+@SendMidiNoteOnToAum
+  SendMidiNoteOn AUM_MIDI_CHANNEL, midiToSend, 127
+@End
+
+@SendMidiNoteOffToAum
+  SendMidiNoteOff AUM_MIDI_CHANNEL, midiToSend, 0, 0
+@End
+
+@OnSysex
+  ReceiveSysex sysexData
+  sysexAction = sysexData[0]
+  lastButtonId = sysexData[1]
+
+  if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
+    Call @ToggleSendingMicrophoneToGtl
+  elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
+    Call @ToggleSendingGuitarToGtl
+  elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
+    Call @RecordNextLoopInGroup
+  elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
+    Call @ToggleAndSelectGroup
+  elseif sysexAction = SYSEX_RESET
+    Call @Reset
+  elseif sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
+    Call @DecreaseClockLength
+  elseif sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
+    Call @IncreaseClockLength
+  elseif sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
+    Call @SelectMicrophonePreset
+  elseif sysexAction = SYSEX_SELECT_GUITAR_PRESET
+    Call @SelectGuitarPreset
+  endif
+@End
+
+@SelectGuitarPreset
+  nextGuitarPreset = lastButtonId
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
+@End
+
+@SelectMicrophonePreset
+  nextMicrophonePreset = lastButtonId
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_MICROPHONE, nextMicrophonePreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing microphone preset stored on button }, nextMicrophonePreset, {, press button }, BB_BUTTON_A, { to activate!}
+@End
+
+@ToggleSendingMicrophoneToGtl
+  if nextMicrophonePreset <> UNDEFINED
+    Call @ActivateMicrophonePreset
+
+    if sendingMicrophoneToGtl = NO
+      Call @ToggleSendingMicrophoneToGtlOn
+      sendingMicrophoneToGtl = YES
+    endif
+  elseif sendingMicrophoneToGtl
+    Call @ToggleSendingMicrophoneToGtlOff
+    sendingMicrophoneToGtl = NO
+  else
+    Call @ToggleSendingMicrophoneToGtlOn
+    sendingMicrophoneToGtl = YES
+  endif
+@End
+
+@ActivateMicrophonePreset
+  midiToSend = AUM_SELECT_MICROPHONE_PRESET[nextMicrophonePreset]
+  Call @SendMidiNoteOnOffToAum
+  Log {Activated microphone preset stored on button }, nextMicrophonePreset, { (AUM MIDI=}, midiToSend, {)}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_MICROPHONE, nextMicrophonePreset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+
+  nextMicrophonePreset = UNDEFINED
+@End
+
+@ToggleSendingGuitarToGtl
+  if nextGuitarPreset <> UNDEFINED
+    Call @ActivateGuitarPreset
+
+    if sendingGuitarToGtl = NO
+      Call @ToggleSendingGuitarToGtlOn
+      sendingGuitarToGtl = YES
+    endif
+  elseif sendingGuitarToGtl
+    Call @ToggleSendingGuitarToGtlOff
+    sendingGuitarToGtl = NO
+  else
+    Call @ToggleSendingGuitarToGtlOn
+    sendingGuitarToGtl = YES
+  endif
+@End
+
+@ActivateGuitarPreset
+  midiToSend = AUM_SELECT_GUITAR_PRESET[nextGuitarPreset]
+  
+  Call @SendMidiNoteOnOffToAum
+  Log {Activated guitar preset stored on button }, nextGuitarPreset, { (AUM MIDI=}, midiToSend, {)}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+
+  nextGuitarPreset = UNDEFINED
+@End
+
+@ToggleAndSelectGroup
+  Log {Toggling and selecting group}
+
+  midiToSend = GTL_PLAY_GROUP[lastButtonId]
+  Call @SendMidiNoteOnOffToGtl
+
+  Call @SelectGroup
+@End
+
+@RecordNextLoopInGroup
+  Log {Recording next loop in group}
+
+  Call @SelectGroup
+
+  if lastActiveLoopOfGroup[lastButtonId] = UNDEFINED
+    lastActiveLoopOfGroup[lastButtonId] = 1
+  endif
+
+  midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
+  Call @SendMidiNoteOnOffToGtl
+
+  midiToSend = GTL_RECORD_OVERDUB
+  Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastActiveLoopOfGroup[lastButtonId], FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
+    Inc lastActiveLoopOfGroup[lastButtonId]
+  endif
+@End
+
+@SelectGroup
+  midiToSend = GTL_SELECT_GROUP[lastButtonId]
+  Call @SendMidiNoteOnOffToGtl
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastButtonId]
+  SendSysex sysexData, 3
+@End
+
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
+
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_MUTE_FEEDBACK = 10
+  SYSEX_UNMUTE_FEEDBACK = 11
+
+  // Be aware that in the apps all channels are displayed as +1! So AUM and GTL channel will display 2 (instead of 1).
+  BB_MIDI_CHANNEL  = 0 // BlueBoard
+  GTL_MIDI_CHANNEL = 1 // Group The Loop
+  AUM_MIDI_CHANNEL = 2 // AUM
+
+  FEEDBACK_WELCOME = 10
+  FEEDBACK_GROUP = 11
+  FEEDBACK_LOOP = 12
+  FEEDBACK_CLOCK_LENGTH = 13
+  FEEDBACK_GUITAR = 14
+  FEEDBACK_MICROPHONE = 15
+  FEEDBACK_SENDING = 16
+  FEEDBACK_ACTIVATED = 17
+  FEEDBACK_DEACTIVATED = 18
+  FEEDBACK_ARMED = 19
+@End

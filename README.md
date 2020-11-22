@@ -1,72 +1,150 @@
-# Mozaic BlueBoard
+# Group the Loop Performer
 
-**This little script enhances the capabilities of an [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/).**
+Group the Loop Performer (GTL-Performer) is a collection of scripts written in [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653). It controls a bunch of iOS apps that enable a singing guitarist to do advanced looping performances, including:
 
-By default, the BlueBoard only allows to send 4 MIDI signals, by tapping one of its 4 buttons `A` (`60`), `B` (`62`), `C` (`64`), and `D` (`65`). The [enhancer](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/enhancer) script adds the following: it allows to activate unique "spaces" by pressing-and-holding (for roughly `3/4` sec) any of the 4 buttons. Per space, each button sends a unique MIDI signal for both **short**-tapping and **long**-tapping (`1/4` sec), which makes `4 spaces * 4 buttons * 2 tapping-styles = 32 signals`:
+- Building song structures (verse, chorus, bridge, etc.) using groups of loops
+- Deciding what should be recorded to a loop (either guitar, or microphone, or both)
+- Applying different FX to guitar (virtual amps) and microphone (chorus, vocoder, etc.)
+- Creating sets of configurations in advance, so they can be activated by a single button press, one after the other, while performing (like a Step Sequencer)
 
-- Space `A` (activation sends `0`)
-    - **Short**-tapping `A` sends `1`
-    - Short-tapping `B` sends `2`
-    - Short-tapping `C` sends `3`
-    - Short-tapping `D` sends `4`
-    - **Long**-tapping `A` sends `5`
-    - Long-tapping `B` sends `6`
-    - Long-tapping `C` sends `7`
-    - Long-tapping `D` sends `8`
-- Space `B` (activation sends `32`)
-    - **Short**-tapping `A` sends `33`
-    - **Long**-tapping `A` sends `37`
-- Space `C` (activation sends `64`)
-- Space `D` (activation sends `96`)
+The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band by letting them perform basic pop/rock/whatever songs in a live situation.
 
-All signals are sent through channel `15`.
+## Needed Hardware
 
-## Installation & configuration
+- An iOS device
+    - I'm using a [2016 iPhone SE](https://en.wikipedia.org/wiki/IPhone_SE_%281st_generation%29)
+    - If you're using a more recent device that has USB-C (not Lightning), you need to adapt the following gear list accordingly
+- A guitar that can be plugged into an audio interface
+    - I have an acoustic one (steel strings), but an electric one might be suited even better
+- A microphone
+    - I have a generic dynamic one that is similar to the [Shure SM57](https://www.shure.com/en-US/products/microphones/sm58)
+- An external audio interface which allows to connect both a guitar and a microphone
+    - I'm using an ESI UGM96 as it is ultra portable, but there are [many options available](https://forum.audiob.us/discussion/39270/what-is-the-smallest-2-channel-guitar-mic-usb-audio-interface/p1)
+- Cables to connect the guitar and microphone to the audio interface (probably 1/4 TRS and XLR ones)
+- An [Apple lightning to USB camera adapter](https://www.amazon.com/Apple-Lightning-USB3-Camera-Adapter/dp/B01F7KJDIM/) to connect the audio interface to the iOS device
+    - The audio interface will probably need an additional power source, so:
+         - Either make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
+        - Or get an audio interface with its own battery power, like the [Zoom U-44](https://zoomcorp.com/en/jp/audio-interface/audio-interfaces/u-24/)
+- A [stereo breakout cable](https://www.amazon.com/Hosa-YMM-261-Stereo-Breakout-Cable/dp/B000068O5H/)
+    - Possibly a [1/4 to 1/8 adapter](https://www.amazon.com/6-35mm-Female-Adapter-Converter-Headphones/dp/B07SM4ZM33/) to connect the breakout cable to the external sound interface's output
+- Headphones, connected to the left mono output channel of the breakout cable (for receiving audio feedback from GTL-Performer, which is only meant for the artist, like clicks of the metronome, or instruction and confirmation messages, see below)
+- External speakers, connected to the right mono output channel of the breakout cable (for the performance's audio, which is meant for the audience)
+- An [iRig BlueBoard](https://www.ikmultimedia.com/products/irigblueboard/)
+    - Be sure to have its [firmware updated](https://cgi.ikmultimedia.com/ikforum/viewtopic.php?f=9&t=24780)
 
-- You need [AUM](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) and [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653)
-    - Instead of AUM, there might be other similar apps available that can act as the AUv3 host, too
-- Turn on your BlueBoard while holding the `B` button (only needed once)
-    - You need the most current firmware installed, see [SOLVED: BlueBoard firmware update using Firmware Updater!](https://cgi.ikmultimedia.com/ikforum/viewtopic.php?f=9&t=24780)
-- Connect the BlueBoard to AUM in `Menu` > `Settings` > `Central`
-- Create a MIDI channel in AUM by pressing the big `+` and selecting `MIDI`
-- Hit the `+` on the newly created channel and select `Audio Unit MIDI Processor` > `Mozaic`
-- Open the MIDI routing by pressing the snake-like arrow button, then make sure that the BlueBoard sends to Mozaic, and Mozaic sends to the BlueBoard
-- Click on the Mozaic icon to show its GUI
-- Click `Code`, then replace the default code by copying and pasting the content of [script](https://raw.githubusercontent.com/jmuheim/mozaic-blueboard/master/script)
-- Press `Upload`: if everything went right, all buttons of the BlueBoard should be illuminated now!
-    - In Mozaic's `Log` you can see messages when interacting with the BlueBoard (play around by tapping and pressing-and-holding its buttons)
-- Now create an audio channel in AUM by pressing the big `+` and selecting `AUDIO`
-- Then hit the `+` on the top of the newly created channel and select `Inter-App Audio` > `Group the Loop (Main Output)` (or any other app that you want to control using MIDI)
-- Open the MIDI routing again (snake-like arrow), then make sure that Mozaic also sends to `Group the Loop` (you may need to scroll to see all options)
-- Open `Group the Loop` by pressing its icon
-- In its settings, select `MIDI`, make sure that `Virtual MIDI` is set as `MIDI Input Port`
-    - Now tap on some buttons on the BlueBoard to make sure that the MIDI signals arrive as expected (they should be displayed in the `LOG`)
-- You can now start to add MIDI bindings, yay!
+**Note:** To be fully mobile (i.e. when performing on the streets), I'm using an [ExplorAudio H-Clamp](https://exploraudio.com/categories/giltrap-signature-h-clamp/24/) to attach the microphone to my guitar. I also attach my iPhone to it using some additional elements that I was generously sponsored by ExplorAudio (thank you so much, Robert). However, any [microphone stand](https://www.amazon.co.uk/Tiger-Music-MCA7-BK-Professional-Microphone/dp/B002GODR1W) and [iPhone/iPad holder](https://www.aliexpress.com/item/32717839677.html) will do.
 
-## Giving audio feedback
+## Needed Apps
 
-Triggering some feature using the BlueBoard often will result in an immediately perceivable feedback inside the running app. For example when toggling Play/Pause in AUM, the respective icon will visually change. In some other cases (especially when running multiple apps side by side while only seeing the front most) there will be no such feedback, for example when triggering some feature in a loaded AUv3 or an app in the background; or simply when switching between BlueBoard spaces (by tapping-and-holding its button for a second).
+- [Group the Loop (GTL)](https://apps.apple.com/us/app/group-the-loop/id1029416579) (14$)
+    - Provides the foundation for recording and playing loops (and groups of loops, so song structures can be built)
+- [Audio Mixer (AUM)](https://apps.apple.com/us/app/aum-audio-mixer/id1055636344) (20$)
+    - Hosts the input channels and virtual instruments, routes them as needed to GTL, runs the Mozaic scripts, etc.
+- [Mozaic Plugin Workshop (Mozaic)](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653) (8$)
+    - Runs the present collection of scripts that manage the interplay between all involved software (using MIDI signals)
+- [Chameleon AUv3 Sampler Plugin (Chameleon)](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) (6$)
+    - Or a similar sampler plugin that lets you create your own patches (with a specific audio file per MIDI note)
+- [RoughRider3 (RR)](https://apps.apple.com/us/app/roughrider3/id1496058931?ls=1) (free)
+    - A simple compressor which enhances the main output (just discard it if you don't want it)
 
-As interacting with a foot controller can be a bit tricky at times, you may want to receive feedback in such a situation, so you can be sure that everything worked out as intented. Imagine you wanted to switch from space `A` to `B`, but you didn't hold the `B` button long enough. So you'd still be in space `A`, but because you don't get any feedback you'd think you're in space `B`!
+## Installation and Configuration
 
-While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're not using this feature at all (it's also quite limited and probably hard to read while performing). Instead, you can let some AUv3 sampler listen to the different MIDI notes sent from this script, and play a specific audio file upon it.
+### Mozaic scripts
 
-For example, I have added [Chameleon](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) as another audio channel in AUM, and configured to send the script's MIDI also to it (snake-like arrow button). Now I have loaded a custom preset in Chameleon which plays an audio file "Space 1 selected" when MIDI note `0` arrives, or "Space 2 selected" when MIDI note `32` arrives, etc.
+- Start AUM
+- Create a new MIDI channel and call it "Mozaic"
+- Go through each script file (from top to bottom) and apply their specific installation instructions.
 
-You can add such an audio file for each available note (`0` to `127`). For example, if you want to toggle the effect of your guitar using the `B` button in space `C`, you can assign an audio file "Toggled guitar effect" to MIDI note `66`. Such audio files can easily be generated using a Text-To-Speech engine like <https://voicemaker.in/>.
+### Audio routing
 
-For live situations, you probably don't want the audience to hear these audio feedbacks. Try to pan them completely to one side (left) of the stereo output, and listen to them by headphones (or monitors). Then forward only the other side (right) to the PA system (you may need an audio splitter cable for this).
+#### Main out
 
-## Additional info
+- In AUM, create a new audio channel and call it "Main out"
+- As source ("+" button on the very top), select "Mix Bus" -> "Bus P"
+- As destination (speaker button on the very bottom), select "Hardware Output" -> "Speaker"
 
-For more info see related posts on the [Audiobus forums](https://forum.audiob.us/):
+#### Receive from GTL
 
-- [Mozaic: How to detect a "long tap" (0.5secs) on my BlueBoard](https://forum.audiob.us/discussion/39866/mozaic-how-to-detect-a-long-tap-0-5secs-on-my-blueboard)
-- [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc)
-- [Is there a MIDI app that allows to send several controls by the press of only one switch?](https://forum.audiob.us/discussion/39721/is-there-a-midi-app-that-allows-to-send-several-controls-by-the-press-of-only-one-switch#latest)
-- [AUM: Play short audio files upon receiving specific MIDI signals?](https://forum.audiob.us/discussion/40256/aum-play-short-audio-files-upon-receiving-specific-midi-signals#latest)
-- [How can I tweak my MIDI foot controller so it responds to combined, double clicks, sequences, etc.?](https://forum.audiob.us/discussion/39720/how-can-i-tweak-my-midi-foot-controller-so-it-responds-to-combined-double-clicks-sequences-etc/p1)
+- In AUM, create a new audio channel and call it "Receive from GTL"
+- As source, select "Inter-App Audio" -> "Group the Loop (Main Output)"
+- As destination, select "Mix Bus" -> "Bus P"
 
-## Alternatives
+#### Microphone
 
-- The [Midifire](https://apps.apple.com/us/app/midifire/id906600872) **Blue Velvet** script adds advanced input gestures like double/triple taps and combinations of taps to the BlueBoard, see [Midifire Blue velvet adds up to 24 midi notes controls to Blueboard](https://forum.audiob.us/discussion/29902/midifire-blue-velvet-adds-up-to-24-midi-notes-controls-to-blueboard/p1). While this seems intriguing, it is too difficult for me and my tap dancing skills.
+- In AUM, create a new audio channel and call it "Microphone"
+- As source, select "Hardware Input" -> "Audio interface channel X" (where your microphone is plugged in)
+- As insert/effect ("+" button in the middle between source and destination), select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+
+#### Guitar
+
+- In AUM, create a new audio channel and call it "Guitar"
+- As source, select "Hardware Input" -> "Audio interface channel Y" (where your guitar is plugged in)
+- As insert/effect, select "Audio Unit Extension" -> "Tonebridge"
+- As another insert/effect (drag the slots up to show a "+1" button, then press it), select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+
+To switch between Tonebridge's FX, it needs some presets that can be toggled using MIDI. First of all, create some presets:
+
+- Click the "Tonebridge" button
+- Click its "Search" button and locate a favourite preset (e.g. "Wish You Were Here")
+- Open the "Presets" menu (top left of the window) and click "+"
+- Enter a name (typically similar to the preset's name) and click "Save in AUM"
+
+Repeat this process until you have 6 presets. Then close the window by pressing the "X" button.
+
+Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
+
+- Click the channel's name ("Guitar")
+- Click the "MIDI settings" button (top left of the menu)
+- Click "Mozaic @M1:9" (AumProxy)
+- Go back (click "Guitar" button)
+- Select "Tonebridge Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note (not CC!) 0 to channel 4
+- For the second, assign MIDI note 1, etc.
+
+### Keyboard
+
+TODO
+
+// - Keyboard (Audio)
+//     - Input: Audio Unit Extension -> Chameleon
+//     - Insert: Bus Send -> Bus A
+//     - Output: Mix Bus -> Bus P
+
+### Send to GTL
+
+- In AUM, create a new audio channel and call it "Sed to GTL"
+- As source, select "Mix Bus" -> "Bus A"
+- As destination, select "IAA / Audiobus Output" -> "IAA / AB Output 1" (GTL will listen there)
+
+### Save and close
+
+That's all! Wasn't that easy?
+
+Just save the session as "GTL Wizard" in AUM so you can recall it easily again!
+
+## Usage
+
+### Connecting the gear
+
+- Active flight mode on your iOS device (possibly even restart it first)
+- Connect the audio interface to the iOS device via the Lightning USB adapter (make sure it has enough power by attaching it to a power source, if needed)
+    - Connect the guitar to its left input
+    - Connect the microphone to its right input
+    - Connect the audio breakout cable to its output
+        - Connect the headphones to its left output
+        - Connect the speakers to its right output
+- Start AUM app and load the session "GTL Wizard"
+- Turn on the BlueBoard while pressing the B button (the Bluetooth LED should start flashing)
+    - In AUM, click Menu -> Settings -> Bluetooth MIDI Central -> Connect to iRig BlueBoard Bluetooth (the Bluetooth LED will glow continuously now)
+- Start MG and load preset "MIDI output"
+
+## Future ideas
+
+- Use MIDI Guitar on voice (e.g. to simulate a violin with vibrato)
+- Record MIDI patterns and replay them
+- Apply various algorithms on MIDI patterns, e.g. filtering out unwanted notes, detecting chords, quantizing notes, applying a different chord to a recorded pattern, sending bass notes to a different virtual instrument than high notes, etc.
+- Apply FX to main out (e.g. chorus, flanger...)
+
+Some day, it should not be necessary at all anymore to look at the iOS device's screen! Everything will be working through foot input (via BlueBoard, in advance to and while performing) and audio feedback (via headphones).

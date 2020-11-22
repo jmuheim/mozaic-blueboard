@@ -1,0 +1,309 @@
+// BlueBoard-Handler
+// =================
+//
+// Installation:
+// -------------
+//
+// - In AUM, in the "Mozaic" MIDI channel, click the "+" button
+// - Select "Audio Unit MIDI Processor" -> "Mozaic"
+// - Click the newly inserted Mozaic button
+// - Click "Code"
+// - Replace the default code with the one in this file
+// - Click "Upload"
+// - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+// - Click "iRig BlueBoard Bluetooth"
+// - Close the window by pressing the "X" button
+//
+// About:
+// ------
+//
+// Receives the button presses from the BlueBoard and sends them to GtlPerformer.
+//
+// It calculates unique, deterministic numbers upon pressing any combination of buttons. In general, the following numbers are produced:
+//
+// - Pressing A down results in a 1
+// - Pressing B down results in a 2
+// - Pressing C down results in a 3
+// - Pressing D down results in a 4
+// - Releasing A results in a 5
+// - Releasing B results in a 6
+// - Releasing C results in a 7
+// - Releasing D results in a 8
+//
+// As long as a button is held down, any additionally pressed button will be added to the number.
+//
+// - For example, pressing and releasing A results in 15. Doing the same with B, results in 26.
+// - Pressing and holding A, then pressing and holding B, then releasing A, then releasing B, results in 1256.
+//   - We would write this like so: A>B.
+// - Pressing and holding A, then pressing and releasing B, then releasing A, results in 125.
+//   - We would write this like so: A+B.
+//   - By the way: pressing and releasing B several times, results in 125 several times.
+//
+// This way, a theoretically unlimited number of button combinations can be dispatched, e.g.:
+// - B>C+D (23648)
+// - A>C>D>B (13547286)
+// - C>A>B+A (3172515)
+//
+// As this becomes unpractical pretty quickly (and Mozaic has some limitations regarding the size of numbers), it is recommended to keep combinations simple.
+//
+// In addition to this number, the duration of the last pressed button is calculated, which results in the following tap types:
+//
+// - Short (or immediate, below 1/2s)
+// - Medium (between 1/2s and 1s)
+// - Long (more than 1s)
+//
+// This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
+
+@OnLoad
+  SetShortName {1-BbHandler}
+
+  Log {Set DEBUG=YES to see runtime details}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+
+  SetTimerInterval 10
+@End
+
+@OnTimer
+  durationOfLastButtonPress = SystemTime - lastButtonDownTime
+
+  if durationOfLastButtonPress < TAP_MEDIUM
+    if tapType < TAP_SHORT
+      tapType = TAP_SHORT
+    endif
+  elseif durationOfLastButtonPress < TAP_LONG
+    if tapType < TAP_MEDIUM
+      tapType = TAP_MEDIUM
+
+      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+      SendSysex sysexData, 2
+    endif
+  else
+    if tapType < TAP_LONG
+      tapType = TAP_LONG
+
+      sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+      SendSysex sysexData, 2
+    endif
+  endif
+
+  Log {tapType=}, tapType
+@End
+
+@Reset
+  Log {+-----------------+}
+  Log {|BlueBoard-Handler|}
+  Log {+-----------------+}
+
+  Call @InitVariables
+@End
+
+@InitConstants
+  DEBUG = YES
+
+  NUMBER_OF_BB_BUTTONS = 4
+@End
+
+@InitVariables
+  lastButtonId = UNDEFINED
+  ignoreLastButtonUp = NO
+
+  Call @ResetButtonCombo
+@End
+
+@OnMidiNoteOn
+  StartTimer
+
+  lastButtonDownTime = SystemTime
+  tapType = UNDEFINED
+
+  Call @ConvertBbMidiNoteToId
+  lastButtonDownId = lastButtonId
+  Call @AppendLastButtonDownToButtonCombo
+
+  Inc numberOfPressedButtons
+
+  if DEBUG
+    Log {@OnMidiNoteOn: lastButtonDownTime=}, lastButtonDownTime, {, lastButtonDownId=}, lastButtonDownId, {, numberOfPressedButtons=}, numberOfPressedButtons
+  endif
+@End
+
+@OnMidiNoteOff
+  StopTimer
+
+  Call @ConvertBbMidiNoteToId
+  lastButtonUpId = lastButtonId
+  Call @AppendLastButtonUpToButtonCombo
+
+  Dec numberOfPressedButtons
+
+  if numberOfPressedButtons = 0
+    if ignoreLastButtonUp = NO
+      Call @SendSysexAction
+    endif
+
+    Call @ResetButtonCombo
+    ignoreLastButtonUp = NO
+  else
+    if lastButtonDownId = lastButtonUpId
+      Call @SendSysexAction
+      Call @RemoveLastButtonUpAndDowFromButtonCombo
+      ignoreLastButtonUp = YES
+    endif
+  endif
+
+  if DEBUG
+    Log {@OnMidiNoteOff: lastButtonUpId=}, lastButtonUpId, {, numberOfPressedButtons=}, numberOfPressedButtons, {, ignoreLastButtonUp=}, ignoreLastButtonUp
+  endif
+@End
+
+@ResetButtonCombo
+  numberOfPressedButtons = 0
+  buttonCombo = 0
+  tapType = UNDEFINED
+@End
+
+@AppendLastButtonDownToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonDownId
+
+  if DEBUG
+    Log {@AppendLastButtonDownToButtonCombo: buttonCombo=}, buttonCombo
+  endif
+@End
+
+@AppendLastButtonUpToButtonCombo
+  buttonCombo = buttonCombo * 10 + lastButtonUpId + NUMBER_OF_BB_BUTTONS
+
+  if DEBUG
+    Log {@AppendLastButtonUpToButtonCombo: buttonCombo=}, buttonCombo
+  endif
+@End
+
+@RemoveLastButtonUpAndDowFromButtonCombo
+  buttonCombo = (buttonCombo - lastButtonUpId - NUMBER_OF_BB_BUTTONS) / 10
+  buttonCombo = (buttonCombo - lastButtonDownId) / 10
+
+  if DEBUG
+    Log {@RemoveLastButtonUpAndDowFromButtonCombo: buttonCombo=}, buttonCombo
+  endif
+@End
+
+@ConvertBbMidiNoteToId
+  lastButtonId = UNDEFINED
+
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
+    lastButtonId = 1
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
+    lastButtonId = 2
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_C]
+    lastButtonId = 3
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+    lastButtonId = 4
+  endif
+
+  if lastButtonId
+    if DEBUG
+      Log {@ConvertBbMidiNoteToId: MidiNote=}, MidiNote, {, lastButtonId=}, lastButtonId
+    endif
+  else
+    Log {!ERROR! @ConvertBbMidiNoteToId: Unknown button ID for MidiNote=}, MidiNote
+  endif
+@End
+
+@SendSysexAction
+  sysexAction = UNDEFINED
+
+  // Short A
+  if tapType = TAP_SHORT and buttonCombo = 15
+    sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
+  endif
+
+  // Short D
+  if tapType = TAP_SHORT and buttonCombo = 48
+    sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
+  endif
+
+  // Any medium single button
+  if tapType = TAP_MEDIUM and buttonCombo <= 99
+    sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
+  endif
+
+  // Any long single button
+  if tapType = TAP_LONG and buttonCombo <= 99
+    sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
+  endif
+
+  // B>C
+  if buttonCombo = 2367
+    sysexAction = SYSEX_RESET
+    Call @Reset
+  endif
+
+  // B+C
+  if buttonCombo = 237
+    sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
+  endif
+
+  // B+D
+  if buttonCombo = 248
+    sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
+  endif
+
+  // A+B, A+C, A+D
+  if buttonCombo = 126 or buttonCombo = 137 or buttonCombo = 148
+    sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
+  endif
+
+  // D+A, D+B, D+C
+  if buttonCombo = 415 or buttonCombo = 426 or buttonCombo = 437
+    sysexAction = SYSEX_SELECT_GUITAR_PRESET
+  endif
+  
+  if sysexAction = UNDEFINED
+    Log {!ERROR! Unknown buttonCombo=}, buttonCombo, { with tapType=}, tapType
+  else
+    Log {Sending sysexAction=}, sysexAction, {, buttonCombo=}, buttonCombo, {, lastButtonId=}, lastButtonId
+    sysexData = [sysexAction, lastButtonId]
+    SendSysex sysexData, 2
+  endif
+@End
+
+
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
+
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+
+  FEEDBACK_BEEP = 20
+@End
