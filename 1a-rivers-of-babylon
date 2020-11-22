@@ -1,0 +1,214 @@
+// Rivers of Babylon
+// =================
+//
+// A nice song. Monika's mom's favorite! :-)
+
+@OnLoad
+  SetShortName {1a-Rivers}
+
+  Log {Set DEBUG=YES to see runtime details}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@Reset
+  Log {+-----------------+}
+  Log {|Rivers of Babylon|}
+  Log {+-----------------+}
+
+  Call @InitVariables
+@End
+
+@InitConstants
+  DEBUG = YES
+@End
+
+@InitVariables
+  step = UNDEFINED
+@End
+
+@OnMidiNoteOn
+  if DEBUG
+    Log {@OnMidiNoteOn: MidiNote=}, MidiNote
+  endif
+@End
+
+@OnMidiNoteOff
+  Call @Beep
+  Inc step
+
+  // Intro: Mmmh/Uuuh...
+  if step = 0 // 1/2, m+c
+    Call @PrepareGuitarPreset2
+    Call @ToggleSendGuitar
+    Call @RecordNextLoopInGroup1
+  elseif step = 1 // 2/2, m+c
+    Call @RecordNextLoopInGroup1
+    Call @PrepareGuitarPreset3
+  elseif step = 2
+    Call @ToggleSendGuitar
+
+  // Chorus: By the rivers...
+  elseif step = 3 // 1/2, m+c
+    Call @PrepareGuitarPreset2
+    Call @RecordNextLoopInGroup2
+  elseif step = 4
+    Call @ToggleSendGuitar
+  elseif step = 5 // 2/2, m+c
+    Call @PrepareGuitarPreset3
+    Call @RecordNextLoopInGroup2
+  elseif step = 6
+    Call @ToggleSendGuitar
+
+  // Verse: When the wicked...
+  elseif step = 7 // 1/2, m+c
+    Call @IncreaseClockLength
+    Call @PrepareGuitarPreset2
+    Call @RecordNextLoopInGroup3
+  elseif step = 8
+    Call @ToggleSendGuitar
+  elseif step = 9 // 2/2, m+c
+    Call @PrepareGuitarPreset3
+    Call @RecordNextLoopInGroup3
+  elseif step = 10
+    Call @ToggleSendGuitar
+
+  // Intro: Mmmh/Uuuh...
+  elseif step = 11 // 1/2, m+c
+    Call @DecreaseClockLength
+    Call @PrepareGuitarPreset1
+    Call @RecordNextLoopInGroup1
+  elseif step = 12
+    Call @ToggleSendGuitar
+  elseif step = 13 // 2/2, m+c
+    Call @PrepareGuitarPreset3
+    Call @RecordNextLoopInGroup1
+  elseif step = 14
+    Call @ToggleSendGuitar
+
+  // Intro: Let the words...
+  elseif step = 15 // 1/2, m+c
+    Call @PrepareGuitarPreset2
+    Call @RecordNextLoopInGroup4
+  elseif step = 16
+    Call @ToggleSendGuitar
+  elseif step = 17 // 2/2, m+c
+    Call @PrepareGuitarPreset1
+    Call @RecordNextLoopInGroup4
+  elseif step = 18
+    Call @ToggleSendGuitar
+
+  // Chorus: By the rivers...
+  elseif step = 19 // 1/2, m+c
+    Call @PrepareGuitarPreset3
+    Call @RecordNextLoopInGroup2
+  elseif step = 19
+    Call @ToggleSendGuitar
+  elseif step = 20 // 2/2, m+c
+    Call @PrepareGuitarPreset1
+    Call @RecordNextLoopInGroup2
+  elseif step = 21
+    Call @ToggleSendGuitar
+
+  // No step left
+  else
+    Log {No step left!}
+  endif
+
+  if DEBUG
+    Log {@OnMidiNoteOff: MidiNote=}, MidiNote
+  endif
+@End
+
+@Beep
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+  SendSysex sysexData, 2
+@End
+
+@ToggleSendGuitar
+  sysexData = [SYSEX_TOGGLE_SEND_GUITAR_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
+@PrepareGuitarPreset1
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 1]
+  SendSysex sysexData, 2
+@End
+
+@PrepareGuitarPreset2
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 2]
+  SendSysex sysexData, 2
+@End
+
+@PrepareGuitarPreset3
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 3]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup1
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 1]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup2
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 2]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup3
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 3]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup4
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 4]
+  SendSysex sysexData, 2
+@End
+
+@IncreaseClockLength
+  sysexData = [SYSEX_INCREASE_CLOCK_LENGTH]
+  SendSysex sysexData, 1
+@End
+
+@DecreaseClockLength
+  sysexData = [SYSEX_DECREASE_CLOCK_LENGTH]
+  SendSysex sysexData, 1
+@End
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
+
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+
+  FEEDBACK_BEEP = 20
+@End
