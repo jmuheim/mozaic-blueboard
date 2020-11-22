@@ -19,7 +19,11 @@
 // About:
 // ------
 //
-// Feedback is done through an instance of Chameleon which has preset "GTL-Performer" loaded.
+// Triggering some feature using the BlueBoard often will result in a visually perceivable feedback inside the front-most app (which usually will be GTL). For example, when arming the next loop in GTL, it will become orange. In some other cases (especially when running multiple apps side by side) there will be no such feedback. For example, when loading another guitar FX preset within Tonebridge (which runs as AUv3 within AUM, which itself is in the background).
+// 
+// As interacting with a foot controller can be a bit tricky at times, you may want to receive feedback in such a situation, so you can be sure that everything worked out as intented. While the BlueBoard's buttons can be illuminated to give feedback upon interaction, this seems to be [buggy](https://forum.audiob.us/discussion/comment/831829/#Comment_831829). So we're only using this feature for showing whether the microphone (button A) or the guitar (button D) is sent to GTL (a glowing button means it is sent to GTL).
+// 
+// Instead, we use a specific Chameleon preset (GTL Performer.spatch) which has a bunch of spoken words (or sentences) loaded in it. Those will be used to play audio feedback upon interacting with the script. For example, when short-tapping button A (to toggle whether the microphone is sent to GTL), you will hear "Sending microphone activated".
 
 @OnLoad
   SetShortName {9-Feedbacker}
