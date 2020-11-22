@@ -46,7 +46,7 @@
 
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
-  SetShortName {3-GtlPerformer}
+  SetShortName {2-GtlPerformer}
 
   Log {Set DEBUG=YES to see runtime details}
 

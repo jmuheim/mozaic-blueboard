@@ -55,7 +55,7 @@
 // This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
 
 @OnLoad
-  SetShortName {2-BbHandler}
+  SetShortName {1-BbHandler}
 
   Log {Set DEBUG=YES to see runtime details}
 
