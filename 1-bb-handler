@@ -48,9 +48,9 @@
 //
 // In addition to this number, the duration of the last pressed button is calculated, which results in the following tap types:
 //
-// - Short (or immediate, below 1/2s)
-// - Medium (between 1/2s and 1s)
-// - Long (more than 1s)
+// - Short (or immediate, below 1/3s)
+// - Medium (between 1/3s and 1s, announced by a beep)
+// - Long (more than 1s, announced by another beep)
 //
 // This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
 
