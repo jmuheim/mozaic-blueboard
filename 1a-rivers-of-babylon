@@ -19,6 +19,7 @@
   Log {+-----------------+}
 
   Call @InitVariables
+  Call @ResetGtl
 @End
 
 @InitConstants
@@ -125,6 +126,11 @@
 @Beep
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
   SendSysex sysexData, 2
+@End
+
+@ResetGtl
+  sysexData = [SYSEX_RESET]
+  SendSysex sysexData, 1
 @End
 
 @ToggleSendGuitar
