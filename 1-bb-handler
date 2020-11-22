@@ -99,6 +99,12 @@
   Log {+-----------------+}
 
   Call @InitVariables
+  Call @ResetGtl
+@End
+
+@ResetGtl
+  sysexData = [SYSEX_RESET]
+  SendSysex sysexData, 1
 @End
 
 @InitConstants
