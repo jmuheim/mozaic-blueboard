@@ -33,15 +33,20 @@
 //
 // - Short tap:
 //   - A: Toggle sending microphone to GTL
+//     - If a microphone preset was prepared (see below), the preset will be activated, and guitar will be sent to GTL anyway
 //   - D: Toggle sending guitar to GTL
-//     - If a guitar preset was prepared (see below), it will be activated, and guitar will be sent to GTL regardless of whether it was sent already or not
+//     - Same like above, but with guitar presets
 // - Medium tap:
 //   - A|B|C|D: Record next loop in group 1|2|3|4
 // - Long tap:
 //   - A|B|C|D: Play group 1|2|3|4
 // - Tap combos:
 //   - B>C: Reset session
-//   - D+(A|B|C): Prepare guitar preset 1|2|3
+//   - B+C: Decrease clock length
+//   - B+D: Decrease clock length
+//   - A+(B|C|D): Prepare next microphone preset
+//     - It will be activated when pressing A again
+//   - D+(A|B|C): Prepare next guitar preset
 //     - It will be activated when pressing D again
 
 // Make sure to start the BlueBoard while pressing the B button!
