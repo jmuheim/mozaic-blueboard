@@ -4,7 +4,7 @@ Group the Loop Performer (GTL-Performer) is a collection of scripts written in [
 
 - Building song structures (verse, chorus, bridge, etc.) using groups of loops
 - Deciding what should be recorded to a loop (either guitar, or microphone, or both)
-- Applying different FX to guitar (virtual amps) and microphone (chorus, vocoder, etc.)
+- Applying different FX to guitar (virtual amps), keyboard (instruments presets) and microphone (chorus, vocoder, etc.)
 - Creating sets of configurations in advance, so they can be activated by a single button press, one after the other, while performing (like a Step Sequencer)
 
 The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band by letting them perform basic pop/rock/whatever songs in a live situation.
@@ -75,33 +75,78 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - As source, select "Hardware Input" -> "Audio interface channel X" (where your microphone is plugged in)
 - As insert/effect ("+" button in the middle between source and destination), select "Bus Send" -> "Bus A"
 - As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Microphone")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 0 to channel 3
+
+#### Keyboard
+
+- In AUM, create a new audio channel and call it "Keyboard"
+- As source, select "Audio Unit Extension" -> "Chameleon"
+- Click the "Chameleon" button
+- Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+- Click "nanoKEY2 KEYBOARD"
+- Close the window by pressing the "X" button
+- As insert/effect, select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Keyboard")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 11 to channel 3
+
+To switch between Chameleon's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets (you can also use the factory presets, but they usually have a lot of reverb by default):
+
+- Click the "Chameleon" button
+- Locate a favourite preset (e.g. "Full Concert Grand"), then (if needed) remove "Delay" and "Reverb" (disable "Enable" button) and reduce "Release" to a small value (like 0.10)
+- Open the "Presets" menu (the list icon at the top left of the window) and click "+"
+- Enter a name (typically similar to the preset's name) and click "Save in AUM"
+
+Repeat this process until you have 3 presets. Then close the window by pressing the "X" button.
+
+Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
+
+- Click the channel's name ("Keyboard")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "MIDI Sources"
+- Click "Mozaic @M2:2" (Gtl-Performer)
+- Go back (click "Keyboard" button)
+- Select "Chameleon: Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note (not CC!) 8 to channel 3
+- For the second, assign MIDI note 9
+- For the third, assign MIDI note 10
 
 #### Guitar
 
 - In AUM, create a new audio channel and call it "Guitar"
 - As source, select "Hardware Input" -> "Audio interface channel Y" (where your guitar is plugged in)
 - As insert/effect, select "Audio Unit Extension" -> "Tonebridge"
-- As another insert/effect (drag the slots up to show a "+1" button, then press it), select "Bus Send" -> "Bus A"
+- For another insert/effect, drag the slots up to show a "+1" button, press it, then select "Bus Send" -> "Bus A"
 - As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Guitar")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 1 to channel 1
 
-To switch between Tonebridge's FX, it needs some presets that can be toggled using MIDI. First of all, create some presets:
+To switch between Tonebridge's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets:
 
 - Click the "Tonebridge" button
 - Click its "Search" button and locate a favourite preset (e.g. "Wish You Were Here")
-- Open the "Presets" menu (top left of the window) and click "+"
+- Open the "Presets" menu (the list icon at the top left of the window) and click "+"
 - Enter a name (typically similar to the preset's name) and click "Save in AUM"
 
-Repeat this process until you have 6 presets. Then close the window by pressing the "X" button.
+Repeat this process until you have 3 presets. Then close the window by pressing the "X" button.
 
 Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 
 - Click the channel's name ("Guitar")
-- Click the "MIDI settings" button (top left of the menu)
-- Click "Mozaic @M1:9" (AumProxy)
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Mozaic @M2:2" (Gtl-Performer)
 - Go back (click "Guitar" button)
-- Select "Tonebridge Parameters" -> "Preset Load"
-- For the first preset, assign MIDI note (not CC!) 0 to channel 4
-- For the second, assign MIDI note 1, etc.
+- Select "Tonebridge: Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note (not CC!) 2 to channel 3
+- For the second, assign MIDI note 3
+- For the third, assign MIDI note 4
 
 ### Keyboard
 

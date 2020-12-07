@@ -226,6 +226,11 @@
     sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
   endif
 
+  // Short C
+  if tapType = TAP_SHORT and buttonCombo = 37
+    sysexAction = SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL
+  endif
+
   // Any medium single button
   if tapType = TAP_MEDIUM and buttonCombo <= 99
     sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
@@ -260,6 +265,11 @@
   // D+A, D+B, D+C
   if buttonCombo = 415 or buttonCombo = 426 or buttonCombo = 437
     sysexAction = SYSEX_SELECT_GUITAR_PRESET
+  endif
+
+  // C+A, C+B, C+D
+  if buttonCombo = 315 or buttonCombo = 326 or buttonCombo = 348
+    sysexAction = SYSEX_SELECT_KEYBOARD_PRESET
   endif
   
   if sysexAction = UNDEFINED
@@ -305,6 +315,8 @@
   SYSEX_SELECT_GUITAR_PRESET = 7
   SYSEX_SELECT_MICROPHONE_PRESET = 8
   SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
+  SYSEX_SELECT_KEYBOARD_PRESET = 13
 
   FEEDBACK_BEEP = 20
 @End
