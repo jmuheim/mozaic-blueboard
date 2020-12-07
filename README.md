@@ -14,17 +14,21 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - An iOS device
     - I'm using a [2016 iPhone SE](https://en.wikipedia.org/wiki/IPhone_SE_%281st_generation%29)
     - If you're using a more recent device that has USB-C (not Lightning), you need to adapt the following gear list accordingly
-- A guitar that can be plugged into an audio interface
-    - I have an acoustic one (steel strings), but an electric one might be suited even better
 - A microphone
     - I have a generic dynamic one that is similar to the [Shure SM57](https://www.shure.com/en-US/products/microphones/sm58)
+- A MIDI keyboard
+    - I have a [Korg nanoKEY2](https://www.korg.com/us/products/computergear/nanokey2/)
+    - But I'm also playing around with a [Fishman Triple Play Connect](https://www.fishman.com/tripleplay/) which transforms my guitar into a MIDI controller
+- A guitar that can be plugged into an audio interface
+    - I have an acoustic one (steel strings), but an electric one might be suited even better
 - An external audio interface which allows to connect both a guitar and a microphone
     - I'm using an ESI UGM96 as it is ultra portable, but there are [many options available](https://forum.audiob.us/discussion/39270/what-is-the-smallest-2-channel-guitar-mic-usb-audio-interface/p1)
 - Cables to connect the guitar and microphone to the audio interface (probably 1/4 TRS and XLR ones)
 - An [Apple lightning to USB camera adapter](https://www.amazon.com/Apple-Lightning-USB3-Camera-Adapter/dp/B01F7KJDIM/) to connect the audio interface to the iOS device
     - The audio interface will probably need an additional power source, so:
-         - Either make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
+        - Either make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
         - Or get an audio interface with its own battery power, like the [Zoom U-44](https://zoomcorp.com/en/jp/audio-interface/audio-interfaces/u-24/)
+- A small [USB hub](https://www.aliexpress.com/item/4001003589071.html?spm=a2g0s.9042311.0.0.5e074c4do1A9iC) to allow both the audio interface and the MIDI keyboard to be connected
 - A [stereo breakout cable](https://www.amazon.com/Hosa-YMM-261-Stereo-Breakout-Cable/dp/B000068O5H/)
     - Possibly a [1/4 to 1/8 adapter](https://www.amazon.com/6-35mm-Female-Adapter-Converter-Headphones/dp/B07SM4ZM33/) to connect the breakout cable to the external sound interface's output
 - Headphones, connected to the left mono output channel of the breakout cable (for receiving audio feedback from GTL-Performer, which is only meant for the artist, like clicks of the metronome, or instruction and confirmation messages, see below)
