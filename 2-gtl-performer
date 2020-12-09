@@ -243,15 +243,13 @@
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
-  Call @BypassSendMicrophoneToGtl
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
+  Call @SendMidiNoteOffToAum
+
+  sendingMicrophoneToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
-@End
-
-@BypassSendMicrophoneToGtl
-  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
-  Call @SendMidiNoteOffToAum
 @End
 
 @SendMicrophoneToGtl
@@ -259,15 +257,13 @@
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
-  Call @EnableSendMicrophoneToGtl
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
+  Call @SendMidiNoteOnToAum
+
+  sendingMicrophoneToGtl = YES
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
-@End
-
-@EnableSendMicrophoneToGtl
-  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
-  Call @SendMidiNoteOnToAum
 @End
 
 @BypassSendKeyboardToGtl
@@ -277,6 +273,8 @@
 
   midiToSend = AUM_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOffToAum
+
+  sendingKeyboardToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
@@ -292,6 +290,8 @@
 
   Call @EnableKeyboard
   Call @DisableGuitar
+
+  sendingKeyboardToGtl = YES
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
@@ -315,6 +315,8 @@
   midiToSend = AUM_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
 
+  sendingGuitarToGtl = NO
+
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
@@ -329,6 +331,8 @@
 
   Call @EnableGuitar
   Call @DisableKeyboard
+
+  sendingGuitarToGtl = YES
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
@@ -431,14 +435,11 @@
 
     if sendingMicrophoneToGtl = NO
       Call @SendMicrophoneToGtl
-      sendingMicrophoneToGtl = YES
     endif
   elseif sendingMicrophoneToGtl
     Call @BypassSendMicrophoneToGtl
-    sendingMicrophoneToGtl = NO
   else
     Call @SendMicrophoneToGtl
-    sendingMicrophoneToGtl = YES
   endif
 @End
 
@@ -448,14 +449,11 @@
 
     if sendingKeyboardToGtl = NO
       Call @SendKeyboardToGtl
-      sendingKeyboardToGtl = YES
     endif
   elseif sendingKeyboardToGtl
     Call @BypassSendKeyboardToGtl
-    sendingKeyboardToGtl = NO
   else
     Call @SendKeyboardToGtl
-    sendingKeyboardToGtl = YES
   endif
 @End
 
@@ -465,14 +463,11 @@
 
     if sendingGuitarToGtl = NO
       Call @SendGuitarToGtl
-      sendingGuitarToGtl = YES
     endif
   elseif sendingGuitarToGtl
     Call @BypassSendGuitarToGtl
-    sendingGuitarToGtl = NO
   else
     Call @SendGuitarToGtl
-    sendingGuitarToGtl = YES
   endif
 @End
 
