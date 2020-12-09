@@ -126,6 +126,12 @@
 @End
 
 @InitVariables
+  if Undefined midiToSend
+    sendingMicrophoneToGtl = NO
+    sendingKeyboardToGtl = NO
+    sendingGuitarToGtl = NO
+  endif
+
   midiToSend = UNDEFINED
   midiDelay  = 0
 
@@ -151,9 +157,9 @@
   Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
 
-  Call @ToggleSendingMicrophoneToGtl
-  Call @ToggleSendingKeyboardToGtl
-  Call @ToggleSendingGuitarToGtl
+  Call @ToggleSendMicrophoneToGtl
+  Call @ToggleSendKeyboardToGtl
+  Call @ToggleSendGuitarToGtl
 
   Call @UnmuteFeedback
 @End
@@ -229,7 +235,7 @@
   SendSysex sysexData, 2
 @End
 
-@ToggleSendingMicrophoneToGtlOff
+@BypassSendMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -241,7 +247,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingMicrophoneToGtlOn
+@SendMicrophoneToGtl
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -253,7 +259,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingKeyboardToGtlOff
+@BypassSendKeyboardToGtl
   Log {Not sending keyboard to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -265,7 +271,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingKeyboardToGtlOn
+@SendKeyboardToGtl
   Log {Sending keyboard to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -277,7 +283,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOff
+@BypassSendGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -289,7 +295,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOn
+@SendGuitarToGtl
   Log {Sending guitar to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -331,11 +337,11 @@
   lastButtonId = sysexData[1]
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
-    Call @ToggleSendingMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL
-    Call @ToggleSendingKeyboardToGtl
+    Call @ToggleSendKeyboardToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
-    Call @ToggleSendingGuitarToGtl
+    Call @ToggleSendGuitarToGtl
   elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
@@ -382,53 +388,53 @@
   Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
 @End
 
-@ToggleSendingMicrophoneToGtl
+@ToggleSendMicrophoneToGtl
   if nextMicrophonePreset <> UNDEFINED
     Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
-      Call @ToggleSendingMicrophoneToGtlOn
+      Call @SendMicrophoneToGtl
       sendingMicrophoneToGtl = YES
     endif
   elseif sendingMicrophoneToGtl
-    Call @ToggleSendingMicrophoneToGtlOff
+    Call @BypassSendMicrophoneToGtl
     sendingMicrophoneToGtl = NO
   else
-    Call @ToggleSendingMicrophoneToGtlOn
+    Call @SendMicrophoneToGtl
     sendingMicrophoneToGtl = YES
   endif
 @End
 
-@ToggleSendingKeyboardToGtl
+@ToggleSendKeyboardToGtl
   if nextKeyboardPreset <> UNDEFINED
     Call @ActivateKeyboardPreset
 
     if sendingKeyboardToGtl = NO
-      Call @ToggleSendingKeyboardToGtlOn
+      Call @SendKeyboardToGtl
       sendingKeyboardToGtl = YES
     endif
   elseif sendingKeyboardToGtl
-    Call @ToggleSendingKeyboardToGtlOff
+    Call @BypassSendKeyboardToGtl
     sendingKeyboardToGtl = NO
   else
-    Call @ToggleSendingKeyboardToGtlOn
+    Call @SendKeyboardToGtl
     sendingKeyboardToGtl = YES
   endif
 @End
 
-@ToggleSendingGuitarToGtl
+@ToggleSendGuitarToGtl
   if nextGuitarPreset <> UNDEFINED
     Call @ActivateGuitarPreset
 
     if sendingGuitarToGtl = NO
-      Call @ToggleSendingGuitarToGtlOn
+      Call @SendGuitarToGtl
       sendingGuitarToGtl = YES
     endif
   elseif sendingGuitarToGtl
-    Call @ToggleSendingGuitarToGtlOff
+    Call @BypassSendGuitarToGtl
     sendingGuitarToGtl = NO
   else
-    Call @ToggleSendingGuitarToGtlOn
+    Call @SendGuitarToGtl
     sendingGuitarToGtl = YES
   endif
 @End
