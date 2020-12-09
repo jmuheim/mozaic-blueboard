@@ -234,6 +234,7 @@
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
+  // Call @DisableSendMicrophoneToGtl
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
 
@@ -246,6 +247,7 @@
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
+  // Call @EnableSendMicrophoneToGtl
   midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
 
@@ -258,6 +260,7 @@
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
 
+  // Call @DisableSendKeyboardToGtl
   midiToSend = AUM_TOGGLE_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOffToAum
 
@@ -270,8 +273,17 @@
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
 
+  // Call @EnableSendKeyboardToGtl
   midiToSend = AUM_TOGGLE_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOnToAum
+
+  // Call @EnableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
+  Call @SendMidiNoteOnToAum
+
+  // Call @DisableGuitar
+  midiToSend = AUM_ENABLE_GUITAR
+  Call @SendMidiNoteOffToAum
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
@@ -282,6 +294,7 @@
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
+  // Call @DisableSendGuitarToGtl
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
 
@@ -294,8 +307,17 @@
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
+  // Call @EnableSendGuitarToGtl
   midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
+
+  // Call @EnableGuitar
+  midiToSend = AUM_ENABLE_GUITAR
+  Call @SendMidiNoteOnToAum
+
+  // Call @DisableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
+  Call @SendMidiNoteOffToAum
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
