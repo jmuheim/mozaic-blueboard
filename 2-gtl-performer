@@ -128,6 +128,10 @@
 @InitVariables
   midiToSend = UNDEFINED
   midiDelay  = 0
+
+  nextMicrophonePreset = BB_BUTTON_D
+  nextKeyboardPreset = BB_BUTTON_A
+  nextGuitarPreset = BB_BUTTON_A
 @End
 
 @Reset
@@ -147,13 +151,8 @@
   Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
 
-  nextMicrophonePreset = BB_BUTTON_D
   Call @ToggleSendingMicrophoneToGtl
-
-  nextKeyboardPreset = BB_BUTTON_A
   Call @ToggleSendingKeyboardToGtl
-
-  nextGuitarPreset = BB_BUTTON_A
   Call @ToggleSendingGuitarToGtl
 
   Call @UnmuteFeedback
