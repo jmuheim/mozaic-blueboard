@@ -104,9 +104,9 @@
 @End
 
 @InitAumMidiCodes
-  AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
-  AUM_TOGGLE_SEND_KEYBOARD_TO_GTL = 11
-  AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  AUM_SEND_MICROPHONE_TO_GTL = 0
+  AUM_SEND_KEYBOARD_TO_GTL = 11
+  AUM_SEND_GUITAR_TO_GTL = 1
 
   // Microphone button: A
   // Don't do anything yet in AUM... could activate/deactivate echo, delay, vocoder...
@@ -241,7 +241,7 @@
 @End
 
 @DisableSendMicrophoneToGtl
-  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
 
@@ -257,7 +257,7 @@
 @End
 
 @EnableSendMicrophoneToGtl
-  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
@@ -273,7 +273,7 @@
 @End
 
 @DisableSendKeyboardToGtl
-  midiToSend = AUM_TOGGLE_SEND_KEYBOARD_TO_GTL
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
 
@@ -291,7 +291,7 @@
 @End
 
 @EnableSendKeyboardToGtl
-  midiToSend = AUM_TOGGLE_SEND_KEYBOARD_TO_GTL
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
@@ -317,7 +317,7 @@
 @End
 
 @DisableSendGuitarToGtl
-  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
 
@@ -335,7 +335,7 @@
 @End
 
 @EnableSendGuitarToGtl
-  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOnToAum
 @End
 
