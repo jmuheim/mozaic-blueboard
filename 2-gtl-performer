@@ -238,7 +238,7 @@
   SendSysex sysexData, 2
 @End
 
-@BypassSendMicrophoneToGtl
+@DisableSendMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -252,7 +252,7 @@
   SendSysex sysexData, 4
 @End
 
-@SendMicrophoneToGtl
+@EnableSendMicrophoneToGtl
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -266,7 +266,7 @@
   SendSysex sysexData, 4
 @End
 
-@BypassSendKeyboardToGtl
+@DisableSendKeyboardToGtl
   Log {Not sending keyboard to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -280,7 +280,7 @@
   SendSysex sysexData, 4
 @End
 
-@SendKeyboardToGtl
+@EnableSendKeyboardToGtl
   Log {Sending keyboard to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -307,7 +307,7 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@BypassSendGuitarToGtl
+@DisableSendGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -321,7 +321,7 @@
   SendSysex sysexData, 4
 @End
 
-@SendGuitarToGtl
+@EnableSendGuitarToGtl
   Log {Sending guitar to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -434,12 +434,12 @@
     Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
-      Call @SendMicrophoneToGtl
+      Call @EnableSendMicrophoneToGtl
     endif
   elseif sendingMicrophoneToGtl
-    Call @BypassSendMicrophoneToGtl
+    Call @DisableSendMicrophoneToGtl
   else
-    Call @SendMicrophoneToGtl
+    Call @EnableSendMicrophoneToGtl
   endif
 @End
 
@@ -448,12 +448,12 @@
     Call @ActivateKeyboardPreset
 
     if sendingKeyboardToGtl = NO
-      Call @SendKeyboardToGtl
+      Call @EnableSendKeyboardToGtl
     endif
   elseif sendingKeyboardToGtl
-    Call @BypassSendKeyboardToGtl
+    Call @DisableSendKeyboardToGtl
   else
-    Call @SendKeyboardToGtl
+    Call @EnableSendKeyboardToGtl
   endif
 @End
 
@@ -462,12 +462,12 @@
     Call @ActivateGuitarPreset
 
     if sendingGuitarToGtl = NO
-      Call @SendGuitarToGtl
+      Call @EnableSendGuitarToGtl
     endif
   elseif sendingGuitarToGtl
-    Call @BypassSendGuitarToGtl
+    Call @DisableSendGuitarToGtl
   else
-    Call @SendGuitarToGtl
+    Call @EnableSendGuitarToGtl
   endif
 @End
 
