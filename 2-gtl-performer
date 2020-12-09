@@ -128,11 +128,6 @@
 @InitVariables
   midiToSend = UNDEFINED
   midiDelay  = 0
-
-  // Will be toggled on reset, so they'll actually result in the contrary
-  sendingMicrophoneToGtl = NO
-  sendingKeyboardToGtl = NO
-  sendingGuitarToGtl = NO
 @End
 
 @Reset
