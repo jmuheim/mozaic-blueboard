@@ -130,9 +130,9 @@
 
 @InitVariables
   if Undefined midiToSend
-    sendingMicrophoneToGtl = UNDEFINED
-    sendingKeyboardToGtl = UNDEFINED
-    sendingGuitarToGtl = UNDEFINED
+    sendingMicrophoneToGtl = NO
+    sendingKeyboardToGtl = NO
+    sendingGuitarToGtl = NO
   endif
 
   midiToSend = UNDEFINED
@@ -160,9 +160,9 @@
   Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
 
-  Call @ToggleSendingMicrophoneToGtl
-  Call @ToggleSendingKeyboardToGtl
-  Call @ToggleSendingGuitarToGtl
+  Call @ToggleSendMicrophoneToGtl
+  Call @ToggleSendKeyboardToGtl
+  Call @ToggleSendGuitarToGtl
 
   Call @UnmuteFeedback
 @End
@@ -238,18 +238,18 @@
   SendSysex sysexData, 2
 @End
 
-@UnsendMicrophoneToGtl
+@BypassSendMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
-  Call @DisableSendMicrophoneToGtl
+  Call @BypassSendMicrophoneToGtl
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@DisableSendMicrophoneToGtl
+@BypassSendMicrophoneToGtl
   midiToSend = AUM_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
 @End
@@ -270,7 +270,7 @@
   Call @SendMidiNoteOnToAum
 @End
 
-@UnsendKeyboardToGtl
+@BypassSendKeyboardToGtl
   Log {Not sending keyboard to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -307,7 +307,7 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@UnsendGuitarToGtl
+@BypassSendGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -374,11 +374,11 @@
   lastButtonId = sysexData[1]
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
-    Call @ToggleSendingMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL
-    Call @ToggleSendingKeyboardToGtl
+    Call @ToggleSendKeyboardToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
-    Call @ToggleSendingGuitarToGtl
+    Call @ToggleSendGuitarToGtl
   elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
@@ -425,7 +425,7 @@
   Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
 @End
 
-@ToggleSendingMicrophoneToGtl
+@ToggleSendMicrophoneToGtl
   if nextMicrophonePreset <> UNDEFINED
     Call @ActivateMicrophonePreset
 
@@ -434,7 +434,7 @@
       sendingMicrophoneToGtl = YES
     endif
   elseif sendingMicrophoneToGtl
-    Call @UnsendMicrophoneToGtl
+    Call @BypassSendMicrophoneToGtl
     sendingMicrophoneToGtl = NO
   else
     Call @SendMicrophoneToGtl
@@ -442,7 +442,7 @@
   endif
 @End
 
-@ToggleSendingKeyboardToGtl
+@ToggleSendKeyboardToGtl
   if nextKeyboardPreset <> UNDEFINED
     Call @ActivateKeyboardPreset
 
@@ -451,7 +451,7 @@
       sendingKeyboardToGtl = YES
     endif
   elseif sendingKeyboardToGtl
-    Call @UnsendKeyboardToGtl
+    Call @BypassSendKeyboardToGtl
     sendingKeyboardToGtl = NO
   else
     Call @SendKeyboardToGtl
@@ -459,7 +459,7 @@
   endif
 @End
 
-@ToggleSendingGuitarToGtl
+@ToggleSendGuitarToGtl
   if nextGuitarPreset <> UNDEFINED
     Call @ActivateGuitarPreset
 
@@ -468,7 +468,7 @@
       sendingGuitarToGtl = YES
     endif
   elseif sendingGuitarToGtl
-    Call @UnsendGuitarToGtl
+    Call @BypassSendGuitarToGtl
     sendingGuitarToGtl = NO
   else
     Call @SendGuitarToGtl
