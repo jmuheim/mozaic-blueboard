@@ -71,9 +71,9 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - Click the channel's name ("MIDI Guitar")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
 - Click "Send to Bus B: Bypass"
-- Assign MIDI note (not CC!) 12 to channel 3 (with "Invert" enabled and "Toggle" disabled)
+- Assign MIDI note (not CC!) 12 to channel 3
 - Click "MIDI Guitar: Bypass"
-- Assign MIDI note (not CC!) 13 to channel 3 (with "Invert" enabled and "Toggle" disabled)
+- Assign MIDI note (not CC!) 13 to channel 3
 
 #### Microphone
 
@@ -84,7 +84,7 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - Click the channel's name ("Microphone")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
 - Click "Send to Bus A: Bypass"
-- Assign MIDI note (not CC!) 0 to channel 3 (with "Invert" enabled and "Toggle" disabled)
+- Assign MIDI note (not CC!) 0 to channel 3 (with "Invert" enabled)
 
 #### Keyboard
 
@@ -100,7 +100,7 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - Click the channel's name ("Keyboard")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
 - Click "Send to Bus A: Bypass"
-- Assign MIDI note (not CC!) 11 to channel 3 (with "Invert" enabled and "Toggle" disabled)
+- Assign MIDI note (not CC!) 11 to channel 3 (with "Invert" enabled)
 
 To switch between Chameleon's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets (you can also use the factory presets, but they usually have a lot of reverb by default):
 
@@ -133,7 +133,7 @@ Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 - Click the channel's name ("Guitar")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
 - Click "Send to Bus A: Bypass"
-- Assign MIDI note (not CC!) 1 to channel 3 (with "Invert" enabled and "Toggle" disabled)
+- Assign MIDI note (not CC!) 1 to channel 3 (with "Invert" enabled)
 
 To switch between Tonebridge's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets:
 
