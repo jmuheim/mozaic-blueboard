@@ -229,7 +229,7 @@
   SendSysex sysexData, 2
 @End
 
-@ToggleSendingMicrophoneToGtlOff
+@DisableSendingMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -241,7 +241,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingMicrophoneToGtlOn
+@EnableSendingMicrophoneToGtl
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -253,7 +253,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingKeyboardToGtlOff
+@DisableSendingKeyboardToGtl
   Log {Not sending keyboard to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -265,7 +265,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingKeyboardToGtlOn
+@EnableSendingKeyboardToGtl
   Log {Sending keyboard to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
@@ -277,7 +277,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOff
+@DisableSendingGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -289,7 +289,7 @@
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOn
+@EnableSendingGuitarToGtl
   Log {Sending guitar to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
@@ -387,14 +387,14 @@
     Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
-      Call @ToggleSendingMicrophoneToGtlOn
+      Call @EnableSendingMicrophoneToGtl
       sendingMicrophoneToGtl = YES
     endif
   elseif sendingMicrophoneToGtl
-    Call @ToggleSendingMicrophoneToGtlOff
+    Call @DisableSendingMicrophoneToGtl
     sendingMicrophoneToGtl = NO
   else
-    Call @ToggleSendingMicrophoneToGtlOn
+    Call @EnableSendingMicrophoneToGtl
     sendingMicrophoneToGtl = YES
   endif
 @End
@@ -404,14 +404,14 @@
     Call @ActivateKeyboardPreset
 
     if sendingKeyboardToGtl = NO
-      Call @ToggleSendingKeyboardToGtlOn
+      Call @EnableSendingKeyboardToGtl
       sendingKeyboardToGtl = YES
     endif
   elseif sendingKeyboardToGtl
-    Call @ToggleSendingKeyboardToGtlOff
+    Call @DisableSendingKeyboardToGtl
     sendingKeyboardToGtl = NO
   else
-    Call @ToggleSendingKeyboardToGtlOn
+    Call @EnableSendingKeyboardToGtl
     sendingKeyboardToGtl = YES
   endif
 @End
@@ -421,14 +421,14 @@
     Call @ActivateGuitarPreset
 
     if sendingGuitarToGtl = NO
-      Call @ToggleSendingGuitarToGtlOn
+      Call @EnableSendingGuitarToGtl
       sendingGuitarToGtl = YES
     endif
   elseif sendingGuitarToGtl
-    Call @ToggleSendingGuitarToGtlOff
+    Call @DisableSendingGuitarToGtl
     sendingGuitarToGtl = NO
   else
-    Call @ToggleSendingGuitarToGtlOn
+    Call @EnableSendingGuitarToGtl
     sendingGuitarToGtl = YES
   endif
 @End
