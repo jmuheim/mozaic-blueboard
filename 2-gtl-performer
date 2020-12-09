@@ -108,6 +108,9 @@
   AUM_SEND_KEYBOARD_TO_GTL = 11
   AUM_SEND_GUITAR_TO_GTL = 1
 
+  AUM_ENABLE_KEYBOARD = 12
+  AUM_ENABLE_GUITAR = 13
+
   // Microphone button: A
   // Don't do anything yet in AUM... could activate/deactivate echo, delay, vocoder...
   AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_B] = 5
@@ -126,6 +129,12 @@
 @End
 
 @InitVariables
+  if Undefined midiToSend
+    sendingMicrophoneToGtl = UNDEFINED
+    sendingKeyboardToGtl = UNDEFINED
+    sendingGuitarToGtl = UNDEFINED
+  endif
+
   midiToSend = UNDEFINED
   midiDelay  = 0
 
@@ -229,7 +238,7 @@
   SendSysex sysexData, 2
 @End
 
-@DisableSendingMicrophoneToGtl
+@UnsendMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -245,7 +254,7 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@EnableSendingMicrophoneToGtl
+@SendMicrophoneToGtl
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
@@ -261,38 +270,31 @@
   Call @SendMidiNoteOnToAum
 @End
 
-@DisableSendingKeyboardToGtl
+@UnsendKeyboardToGtl
   Log {Not sending keyboard to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
 
-  Call @DisableSendKeyboardToGtl
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
+  Call @SendMidiNoteOffToAum
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@DisableSendKeyboardToGtl
-  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
-  Call @SendMidiNoteOffToAum
-@End
-
-@EnableSendingKeyboardToGtl
+@SendKeyboardToGtl
   Log {Sending keyboard to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
 
-  Call @EnableSendKeyboardToGtl
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
+  Call @SendMidiNoteOnToAum
+
   Call @EnableKeyboard
   Call @DisableGuitar
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
-@End
-
-@EnableSendKeyboardToGtl
-  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
-  Call @SendMidiNoteOnToAum
 @End
 
 @EnableKeyboard
@@ -305,38 +307,31 @@
   Call @SendMidiNoteOffToAum
 @End
 
-@DisableSendingGuitarToGtl
+@UnsendGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
-  Call @DisableSendGuitarToGtl
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOffToAum
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@DisableSendGuitarToGtl
-  midiToSend = AUM_SEND_GUITAR_TO_GTL
-  Call @SendMidiNoteOffToAum
-@End
-
-@EnableSendingGuitarToGtl
+@SendGuitarToGtl
   Log {Sending guitar to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
-  Call @EnableSendGuitarToGtl
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOnToAum
+
   Call @EnableGuitar
   Call @DisableKeyboard
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
-@End
-
-@EnableSendGuitarToGtl
-  midiToSend = AUM_SEND_GUITAR_TO_GTL
-  Call @SendMidiNoteOnToAum
 @End
 
 @EnableGuitar
@@ -435,14 +430,14 @@
     Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
-      Call @EnableSendingMicrophoneToGtl
+      Call @SendMicrophoneToGtl
       sendingMicrophoneToGtl = YES
     endif
   elseif sendingMicrophoneToGtl
-    Call @DisableSendingMicrophoneToGtl
+    Call @UnsendMicrophoneToGtl
     sendingMicrophoneToGtl = NO
   else
-    Call @EnableSendingMicrophoneToGtl
+    Call @SendMicrophoneToGtl
     sendingMicrophoneToGtl = YES
   endif
 @End
@@ -452,14 +447,14 @@
     Call @ActivateKeyboardPreset
 
     if sendingKeyboardToGtl = NO
-      Call @EnableSendingKeyboardToGtl
+      Call @SendKeyboardToGtl
       sendingKeyboardToGtl = YES
     endif
   elseif sendingKeyboardToGtl
-    Call @DisableSendingKeyboardToGtl
+    Call @UnsendKeyboardToGtl
     sendingKeyboardToGtl = NO
   else
-    Call @EnableSendingKeyboardToGtl
+    Call @SendKeyboardToGtl
     sendingKeyboardToGtl = YES
   endif
 @End
@@ -469,14 +464,14 @@
     Call @ActivateGuitarPreset
 
     if sendingGuitarToGtl = NO
-      Call @EnableSendingGuitarToGtl
+      Call @SendGuitarToGtl
       sendingGuitarToGtl = YES
     endif
   elseif sendingGuitarToGtl
-    Call @DisableSendingGuitarToGtl
+    Call @UnsendGuitarToGtl
     sendingGuitarToGtl = NO
   else
-    Call @EnableSendingGuitarToGtl
+    Call @SendGuitarToGtl
     sendingGuitarToGtl = YES
   endif
 @End
