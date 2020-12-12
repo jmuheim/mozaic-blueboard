@@ -272,6 +272,7 @@
   midiToSend = AUM_SEND_KEYBOARD_TO_GTL
   Call @SendMidiNoteOffToAum
 
+  Call @DisableKeyboard
   sendingKeyboardToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
@@ -287,22 +288,15 @@
   Call @SendMidiNoteOnToAum
 
   Call @EnableKeyboard
-  Call @DisableGuitar
 
   sendingKeyboardToGtl = YES
 
+  if sendingGuitarToGtl
+    Call @DisableSendGuitarToGtl
+  endif
+
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
-@End
-
-@EnableKeyboard
-  midiToSend = AUM_ENABLE_KEYBOARD
-  Call @SendMidiNoteOnToAum
-@End
-
-@DisableGuitar
-  midiToSend = AUM_ENABLE_GUITAR
-  Call @SendMidiNoteOffToAum
 @End
 
 @DisableSendGuitarToGtl
@@ -313,6 +307,7 @@
   midiToSend = AUM_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
 
+  Call @DisableGuitar
   sendingGuitarToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
@@ -328,12 +323,25 @@
   Call @SendMidiNoteOnToAum
 
   Call @EnableGuitar
-  Call @DisableKeyboard
 
   sendingGuitarToGtl = YES
 
+  if sendingKeyboardToGtl
+    @DisableSendKeyboardToGtl
+  endif
+
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
+@End
+
+@EnableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
+  Call @SendMidiNoteOnToAum
+@End
+
+@DisableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
+  Call @SendMidiNoteOffToAum
 @End
 
 @EnableGuitar
@@ -341,8 +349,8 @@
   Call @SendMidiNoteOnToAum
 @End
 
-@DisableKeyboard
-  midiToSend = AUM_ENABLE_KEYBOARD
+@DisableGuitar
+  midiToSend = AUM_ENABLE_GUITAR
   Call @SendMidiNoteOffToAum
 @End
 
