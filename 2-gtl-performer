@@ -264,21 +264,6 @@
   SendSysex sysexData, 4
 @End
 
-@DisableSendKeyboardToGtl
-  Log {Not sending keyboard to GTL}
-
-  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
-
-  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
-  Call @SendMidiNoteOffToAum
-
-  Call @DisableKeyboard
-  sendingKeyboardToGtl = NO
-
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
-  SendSysex sysexData, 4
-@End
-
 @EnableSendKeyboardToGtl
   Log {Sending keyboard to GTL}
 
@@ -288,29 +273,15 @@
   Call @SendMidiNoteOnToAum
 
   Call @EnableKeyboard
-
   sendingKeyboardToGtl = YES
 
   if sendingGuitarToGtl
     Call @DisableSendGuitarToGtl
   endif
 
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
-  SendSysex sysexData, 4
-@End
-
-@DisableSendGuitarToGtl
-  Log {Not sending guitar to GTL}
-
-  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
-
-  midiToSend = AUM_SEND_GUITAR_TO_GTL
-  Call @SendMidiNoteOffToAum
-
   Call @DisableGuitar
-  sendingGuitarToGtl = NO
 
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
 @End
 
@@ -323,14 +294,41 @@
   Call @SendMidiNoteOnToAum
 
   Call @EnableGuitar
-
   sendingGuitarToGtl = YES
 
   if sendingKeyboardToGtl
     @DisableSendKeyboardToGtl
   endif
 
+  Call @DisableKeyboard
+
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@DisableSendKeyboardToGtl
+  Log {Not sending keyboard to GTL}
+
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
+
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
+  Call @SendMidiNoteOffToAum
+  sendingKeyboardToGtl = NO
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@DisableSendGuitarToGtl
+  Log {Not sending guitar to GTL}
+
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOffToAum
+  sendingGuitarToGtl = NO
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
