@@ -297,7 +297,7 @@
   sendingGuitarToGtl = YES
 
   if sendingKeyboardToGtl
-    @DisableSendKeyboardToGtl
+    Call @DisableSendKeyboardToGtl
   endif
 
   Call @DisableKeyboard
