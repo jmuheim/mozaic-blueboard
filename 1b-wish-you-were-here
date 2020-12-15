@@ -90,13 +90,13 @@
 
   // Verse 2 / Chorus: How I wish... (x3)
   elseif step = 11 // 1/3, m+g
-    Call @DecreaseClockLength // 2
-    Call @DecreaseClockLength // 3
-    Call @DecreaseClockLength // 4
-    Call @DecreaseClockLength // 5
-    Call @DecreaseClockLength // 6
-    Call @DecreaseClockLength // 7
-    Call @DecreaseClockLength // 8
+    Call @IncreaseClockLength // 2
+    Call @IncreaseClockLength // 3
+    Call @IncreaseClockLength // 4
+    Call @IncreaseClockLength // 5
+    Call @IncreaseClockLength // 6
+    Call @IncreaseClockLength // 7
+    Call @IncreaseClockLength // 8
     Call @RecordNextLoopInGroup2
 
     Call @PrepareGuitarPreset2
