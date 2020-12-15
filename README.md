@@ -4,7 +4,7 @@ Group the Loop Performer (GTL-Performer) is a collection of scripts written in [
 
 - Building song structures (verse, chorus, bridge, etc.) using groups of loops
 - Deciding what should be recorded to a loop (either guitar, or microphone, or both)
-- Applying different FX to guitar (virtual amps) and microphone (chorus, vocoder, etc.)
+- Applying different FX to guitar (virtual amps), keyboard (instruments presets) and microphone (chorus, vocoder, etc.)
 - Creating sets of configurations in advance, so they can be activated by a single button press, one after the other, while performing (like a Step Sequencer)
 
 The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band by letting them perform basic pop/rock/whatever songs in a live situation.
@@ -14,17 +14,20 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - An iOS device
     - I'm using a [2016 iPhone SE](https://en.wikipedia.org/wiki/IPhone_SE_%281st_generation%29)
     - If you're using a more recent device that has USB-C (not Lightning), you need to adapt the following gear list accordingly
-- A guitar that can be plugged into an audio interface
-    - I have an acoustic one (steel strings), but an electric one might be suited even better
 - A microphone
     - I have a generic dynamic one that is similar to the [Shure SM57](https://www.shure.com/en-US/products/microphones/sm58)
+- A MIDI keyboard (optional)
+    - I have a [Korg nanoKEY2](https://www.korg.com/us/products/computergear/nanokey2/)
+- A guitar that can be plugged into an audio interface
+    - I have an acoustic one (steel strings), but an electric one might be suited even better
 - An external audio interface which allows to connect both a guitar and a microphone
     - I'm using an ESI UGM96 as it is ultra portable, but there are [many options available](https://forum.audiob.us/discussion/39270/what-is-the-smallest-2-channel-guitar-mic-usb-audio-interface/p1)
 - Cables to connect the guitar and microphone to the audio interface (probably 1/4 TRS and XLR ones)
 - An [Apple lightning to USB camera adapter](https://www.amazon.com/Apple-Lightning-USB3-Camera-Adapter/dp/B01F7KJDIM/) to connect the audio interface to the iOS device
     - The audio interface will probably need an additional power source, so:
-         - Either make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
+        - Either make sure the adapter has an additional Lightning input that allows to plug it into a power bank (or a power outlet)
         - Or get an audio interface with its own battery power, like the [Zoom U-44](https://zoomcorp.com/en/jp/audio-interface/audio-interfaces/u-24/)
+- A small [USB hub](https://www.aliexpress.com/item/4001003589071.html) to allow both the audio interface and the MIDI keyboard to be connected
 - A [stereo breakout cable](https://www.amazon.com/Hosa-YMM-261-Stereo-Breakout-Cable/dp/B000068O5H/)
     - Possibly a [1/4 to 1/8 adapter](https://www.amazon.com/6-35mm-Female-Adapter-Converter-Headphones/dp/B07SM4ZM33/) to connect the breakout cable to the external sound interface's output
 - Headphones, connected to the left mono output channel of the breakout cable (for receiving audio feedback from GTL-Performer, which is only meant for the artist, like clicks of the metronome, or instruction and confirmation messages, see below)
@@ -42,6 +45,8 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
     - Hosts the input channels and virtual instruments, routes them as needed to GTL, runs the Mozaic scripts, etc.
 - [Mozaic Plugin Workshop (Mozaic)](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653) (8$)
     - Runs the present collection of scripts that manage the interplay between all involved software (using MIDI signals)
+- [MIDI Guitar 2](https://apps.apple.com/us/app/midi-guitar/id523095780) (30$)
+    - Transforms my guitar into a MIDI controller (I'm also playing around with a [Fishman Triple Play Connect](https://www.fishman.com/tripleplay/), hoping to improve accuracy of audio-to-MIDI translation)
 - [Chameleon AUv3 Sampler Plugin (Chameleon)](https://apps.apple.com/us/app/chameleon-auv3-sampler-plugin/id1456474953) (6$)
     - Or a similar sampler plugin that lets you create your own patches (with a specific audio file per MIDI note)
 - [RoughRider3 (RR)](https://apps.apple.com/us/app/roughrider3/id1496058931?ls=1) (free)
@@ -57,17 +62,18 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 
 ### Audio routing
 
-#### Main out
+#### MIDI Guitar
 
-- In AUM, create a new audio channel and call it "Main out"
-- As source ("+" button on the very top), select "Mix Bus" -> "Bus P"
-- As destination (speaker button on the very bottom), select "Hardware Output" -> "Speaker"
-
-#### Receive from GTL
-
-- In AUM, create a new audio channel and call it "Receive from GTL"
-- As source, select "Inter-App Audio" -> "Group the Loop (Main Output)"
-- As destination, select "Mix Bus" -> "Bus P"
+- In AUM, create a new audio channel and call it "MIDI Guitar"
+- As source, select "Hardware Input" -> "Audio interface channel Y" (where your guitar is plugged in)
+- As insert/effect, select "Audio Unit Extension" -> "MIDI Guitar"
+- For another insert/effect, drag the slots up to show a "+1" button, press it, then select "Bus Send" -> "Bus B"
+- Click the channel's name ("MIDI Guitar")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus B: Bypass"
+- Assign MIDI note (not CC!) 12 to channel 3
+- Click "MIDI Guitar: Bypass"
+- Assign MIDI note (not CC!) 13 to channel 3
 
 #### Microphone
 
@@ -75,48 +81,99 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 - As source, select "Hardware Input" -> "Audio interface channel X" (where your microphone is plugged in)
 - As insert/effect ("+" button in the middle between source and destination), select "Bus Send" -> "Bus A"
 - As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Microphone")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 0 to channel 3 (with "Invert" enabled)
+
+#### Keyboard
+
+- In AUM, create a new audio channel and call it "Keyboard"
+- As source, select "Audio Unit Extension" -> "Chameleon"
+- Click the "Chameleon" button
+- Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
+- Click "MIDI Guitar @A2:1"
+- Click "nanoKEY2 KEYBOARD" (optional)
+- Close the window by pressing the "X" button
+- As insert/effect, select "Bus Send" -> "Bus A"
+- As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Keyboard")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 11 to channel 3 (with "Invert" enabled)
+
+To switch between Chameleon's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets (you can also use the factory presets, but they usually have a lot of reverb by default):
+
+- Click the "Chameleon" button
+- Locate a favourite preset (e.g. "Full Concert Grand"), then (if needed) remove "Delay" and "Reverb" (disable "Enable" button) and reduce "Release" to a small value (like 0.10)
+- Open the "Presets" menu (the list icon at the top left of the window) and click "+"
+- Enter a name (typically similar to the preset's name) and click "Save in AUM"
+
+Repeat this process until you have 3 presets. Then close the window by pressing the "X" button.
+
+Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
+
+- Click the channel's name ("Keyboard")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "MIDI Sources"
+- Click "Mozaic @M2:2" (Gtl-Performer)
+- Go back (click "Keyboard" button)
+- Select "Chameleon: Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note (not CC!) 8 to channel 3
+- For the second, assign MIDI note 9
+- For the third, assign MIDI note 10
 
 #### Guitar
 
 - In AUM, create a new audio channel and call it "Guitar"
-- As source, select "Hardware Input" -> "Audio interface channel Y" (where your guitar is plugged in)
+- As source, select "Mix Bus" -> "Receive from Bus B"
 - As insert/effect, select "Audio Unit Extension" -> "Tonebridge"
-- As another insert/effect (drag the slots up to show a "+1" button, then press it), select "Bus Send" -> "Bus A"
+- For another insert/effect, drag the slots up to show a "+1" button, press it, then select "Bus Send" -> "Bus A"
 - As destination, select "Mix Bus" -> "Bus P"
+- Click the channel's name ("Guitar")
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Send to Bus A: Bypass"
+- Assign MIDI note (not CC!) 1 to channel 3 (with "Invert" enabled)
 
-To switch between Tonebridge's FX, it needs some presets that can be toggled using MIDI. First of all, create some presets:
+To switch between Tonebridge's presets, it needs some presets that can be toggled using MIDI. First of all, create some presets:
 
 - Click the "Tonebridge" button
 - Click its "Search" button and locate a favourite preset (e.g. "Wish You Were Here")
-- Open the "Presets" menu (top left of the window) and click "+"
+- Open the "Presets" menu (the list icon at the top left of the window) and click "+"
 - Enter a name (typically similar to the preset's name) and click "Save in AUM"
 
-Repeat this process until you have 6 presets. Then close the window by pressing the "X" button.
+Repeat this process until you have 3 presets. Then close the window by pressing the "X" button.
 
 Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 
 - Click the channel's name ("Guitar")
-- Click the "MIDI settings" button (top left of the menu)
-- Click "Mozaic @M1:9" (AumProxy)
+- Click the "MIDI settings" button (switches icon at the top left of the menu)
+- Click "Mozaic @M2:2" (Gtl-Performer)
 - Go back (click "Guitar" button)
-- Select "Tonebridge Parameters" -> "Preset Load"
-- For the first preset, assign MIDI note (not CC!) 0 to channel 4
-- For the second, assign MIDI note 1, etc.
+- Select "Tonebridge: Parameters" -> "Preset Load"
+- For the first preset, assign MIDI note (not CC!) 2 to channel 3
+- For the second, assign MIDI note 3
+- For the third, assign MIDI note 4
 
-### Keyboard
-
-TODO
-
-// - Keyboard (Audio)
-//     - Input: Audio Unit Extension -> Chameleon
-//     - Insert: Bus Send -> Bus A
-//     - Output: Mix Bus -> Bus P
-
-### Send to GTL
+#### Send to GTL
 
 - In AUM, create a new audio channel and call it "Sed to GTL"
 - As source, select "Mix Bus" -> "Bus A"
 - As destination, select "IAA / Audiobus Output" -> "IAA / AB Output 1" (GTL will listen there)
+
+#### Receive from GTL
+
+- In AUM, create a new audio channel and call it "Receive from GTL"
+- As source, select "Inter-App Audio" -> "Group the Loop (Main Output)"
+- As destination, select "Mix Bus" -> "Bus P"
+
+#### Main out
+
+- In AUM, create a new audio channel and call it "Main out"
+- As source ("+" button on the very top), select "Mix Bus" -> "Bus P"
+- As destination (speaker button on the very bottom), select "Hardware Output" -> "Speaker"
+
+#### Feedbacker
 
 ### Save and close
 

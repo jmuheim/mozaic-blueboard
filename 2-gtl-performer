@@ -22,9 +22,9 @@
 //
 // GTL-Performer assists you in setting up a song inside GTL by providing shortcuts and conventions which will make sense for most songs.
 //
-// During the start of a song, usually you are very busy with singing and playing your instrument (guitar, keyboard, whatever). As such, you don't have any hands free to interact with GTL's GUI. But still, possibly right after the current recording, you want to the next loop to be armed (in the current or any other group), probably switch settings of you instrument (or switch to another instrument), etc. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
+// During the start of a song, usually you are very busy with singing and playing your instrument. As such, you don't have any hands free to interact with GTL's GUI. But still, possibly right after recording the current loop, you want the next loop to be armed (in the current or any other group), probably switch settings of your instrument (or switch to another instrument), and so on. For this, GTL-Performer provides the most needed features at the tip of your toes, so you can control them even while having no hands free.
 //
-// Usually, after a song was successfully built up and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time. This will then allow you to interact with GTL's GUI directly and do more sophisticated stuff manually. So GTL-Performer is not meant to assist you fully throughout a whole song. It simply provides those features which are usually needed most during the beginning of a song, i.e. recording the first few loops inside different groups.
+// Usually, after a song was successfully built up and has some recorded loops and groups, you will be able to keep your hands off your instrument(s) from time to time. This will then allow you to interact with GTL's GUI directly and do more sophisticated stuff manually. So GTL-Performer is not meant to assist you fully throughout a whole song. It simply provides those features which are usually needed most during the beginning of a song, like recording the first few loops inside different groups.
 //
 // Have fun! :-)
 //
@@ -34,20 +34,26 @@
 // - Short tap:
 //   - A: Toggle sending microphone to GTL
 //     - If a microphone preset was prepared (see below), the preset will be activated, and guitar will be sent to GTL anyway
+//   - C: Toggle sending keyboard to GTL
+//     - Same like above, but with keyboard presets
+//     - Disables guitar (either guitar or keyboard can be active, as guitar is also MIDI keyboard)
 //   - D: Toggle sending guitar to GTL
 //     - Same like above, but with guitar presets
+//     - Disables keyboard (either guitar or keyboard can be active, as guitar is also MIDI keyboard)
 // - Medium tap:
 //   - A|B|C|D: Record next loop in group 1|2|3|4
 // - Long tap:
-//   - A|B|C|D: Play group 1|2|3|4
+//   - A|B|C|D: Go to and play group 1|2|3|4
 // - Tap combos:
-//   - B>C: Reset session
-//   - B+C: Decrease clock length
-//   - B+D: Decrease clock length
-//   - A+(B|C|D): Prepare next microphone preset
+//   - A+(B|C|D): Prepare next microphone preset TODO: Better A>(B|C|D)? Would allow to quickly toggle more presets, e.g. A+B>C could activate delay (B) before selecting preset (C)
 //     - It will be activated when pressing A again
+//   - C+(A|B|D): Prepare next keyboard preset
+//     - It will be activated when pressing C again
 //   - D+(A|B|C): Prepare next guitar preset
 //     - It will be activated when pressing D again
+//   - B+C: Decrease clock length
+//   - B+D: Decrease clock length
+//   - B>C: Reset session
 
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
@@ -102,26 +108,33 @@
 @End
 
 @InitAumMidiCodes
-  AUM_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
-  AUM_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  AUM_SEND_MICROPHONE_TO_GTL = 0
+  AUM_SEND_KEYBOARD_TO_GTL = 11
+  AUM_SEND_GUITAR_TO_GTL = 1
 
-  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A] = 2
-  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_B] = 3
-  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_C] = 4
+  AUM_ENABLE_KEYBOARD = 12
+  AUM_ENABLE_GUITAR = 13
 
+  // Microphone button: A
   // Don't do anything yet in AUM... could activate/deactivate echo, delay, vocoder...
   AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_B] = 5
   AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_C] = 6
   AUM_SELECT_MICROPHONE_PRESET[BB_BUTTON_D] = 7
+
+  // Keyboard button: C
+  AUM_SELECT_KEYBOARD_PRESET[BB_BUTTON_A] = 8
+  AUM_SELECT_KEYBOARD_PRESET[BB_BUTTON_B] = 9
+  AUM_SELECT_KEYBOARD_PRESET[BB_BUTTON_D] = 10
+
+  // Guitar button: D
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_A] = 2
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_B] = 3
+  AUM_SELECT_GUITAR_PRESET[BB_BUTTON_C] = 4
 @End
 
 @InitVariables
   midiToSend = UNDEFINED
   midiDelay  = 0
-
-  // Will be toggled, so they'll result in being YES
-  sendingMicrophoneToGtl = NO
-  sendingGuitarToGtl = NO
 @End
 
 @Reset
@@ -142,10 +155,16 @@
   Call @ResetLastActiveLoopsOfGroups
 
   nextMicrophonePreset = BB_BUTTON_D
-  Call @ToggleSendingMicrophoneToGtl
+  Call @ActivateMicrophonePreset
+  Call @EnableSendMicrophoneToGtl
+
+  nextKeyboardPreset = BB_BUTTON_A
+  Call @ActivateKeyboardPreset
+  Call @DisableSendKeyboardToGtl
 
   nextGuitarPreset = BB_BUTTON_A
-  Call @ToggleSendingGuitarToGtl
+  Call @ActivateGuitarPreset
+  Call @EnableSendGuitarToGtl
 
   Call @UnmuteFeedback
 @End
@@ -221,52 +240,120 @@
   SendSysex sysexData, 2
 @End
 
-@ToggleSendingMicrophoneToGtlOff
+@DisableSendMicrophoneToGtl
   Log {Not sending microphone to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
-  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOffToAum
+
+  sendingMicrophoneToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingMicrophoneToGtlOn
+@EnableSendMicrophoneToGtl
   Log {Sending microphone to GTL}
 
   SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_A], 127
 
-  midiToSend = AUM_TOGGLE_SEND_MICROPHONE_TO_GTL
+  midiToSend = AUM_SEND_MICROPHONE_TO_GTL
   Call @SendMidiNoteOnToAum
+
+  sendingMicrophoneToGtl = YES
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_MICROPHONE, FEEDBACK_ACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOff
+@EnableSendKeyboardToGtl
+  Log {Sending keyboard to GTL}
+
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
+
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
+  Call @SendMidiNoteOnToAum
+
+  Call @EnableKeyboard
+  sendingKeyboardToGtl = YES
+
+  if sendingGuitarToGtl
+    Call @DisableSendGuitarToGtl
+  endif
+
+  Call @DisableGuitar
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@EnableSendGuitarToGtl
+  Log {Sending guitar to GTL}
+
+  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
+
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
+  Call @SendMidiNoteOnToAum
+
+  Call @EnableGuitar
+  sendingGuitarToGtl = YES
+
+  if sendingKeyboardToGtl
+    Call @DisableSendKeyboardToGtl
+  endif
+
+  Call @DisableKeyboard
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@DisableSendKeyboardToGtl
+  Log {Not sending keyboard to GTL}
+
+  SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_C], 127
+
+  midiToSend = AUM_SEND_KEYBOARD_TO_GTL
+  Call @SendMidiNoteOffToAum
+  sendingKeyboardToGtl = NO
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_KEYBOARD, FEEDBACK_DEACTIVATED]
+  SendSysex sysexData, 4
+@End
+
+@DisableSendGuitarToGtl
   Log {Not sending guitar to GTL}
 
   SendMidiNoteOff BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
 
-  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+  midiToSend = AUM_SEND_GUITAR_TO_GTL
   Call @SendMidiNoteOffToAum
+  sendingGuitarToGtl = NO
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_DEACTIVATED]
   SendSysex sysexData, 4
 @End
 
-@ToggleSendingGuitarToGtlOn
-  Log {Sending guitar to GTL}
-
-  SendMidiNoteOn BB_MIDI_CHANNEL, BB_BUTTONS_MIDI[BB_BUTTON_D], 127
-
-  midiToSend = AUM_TOGGLE_SEND_GUITAR_TO_GTL
+@EnableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
   Call @SendMidiNoteOnToAum
+@End
 
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_SENDING, FEEDBACK_GUITAR, FEEDBACK_ACTIVATED]
-  SendSysex sysexData, 4
+@DisableKeyboard
+  midiToSend = AUM_ENABLE_KEYBOARD
+  Call @SendMidiNoteOffToAum
+@End
+
+@EnableGuitar
+  midiToSend = AUM_ENABLE_GUITAR
+  Call @SendMidiNoteOnToAum
+@End
+
+@DisableGuitar
+  midiToSend = AUM_ENABLE_GUITAR
+  Call @SendMidiNoteOffToAum
 @End
 
 @SendMidiNoteOnOffToGtl
@@ -299,9 +386,11 @@
   lastButtonId = sysexData[1]
 
   if sysexAction = SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL
-    Call @ToggleSendingMicrophoneToGtl
+    Call @ToggleSendMicrophoneToGtl
+  elseif sysexAction = SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL
+    Call @ToggleSendKeyboardToGtl
   elseif sysexAction = SYSEX_TOGGLE_SEND_GUITAR_TO_GTL
-    Call @ToggleSendingGuitarToGtl
+    Call @ToggleSendGuitarToGtl
   elseif sysexAction = SYSEX_RECORD_NEXT_LOOP_IN_GROUP
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
@@ -314,18 +403,11 @@
     Call @IncreaseClockLength
   elseif sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
     Call @SelectMicrophonePreset
+  elseif sysexAction = SYSEX_SELECT_KEYBOARD_PRESET
+    Call @SelectKeyboardPreset
   elseif sysexAction = SYSEX_SELECT_GUITAR_PRESET
     Call @SelectGuitarPreset
   endif
-@End
-
-@SelectGuitarPreset
-  nextGuitarPreset = lastButtonId
-
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ARMED]
-  SendSysex sysexData, 4
-
-  Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
 @End
 
 @SelectMicrophonePreset
@@ -337,20 +419,63 @@
   Log {Preparing microphone preset stored on button }, nextMicrophonePreset, {, press button }, BB_BUTTON_A, { to activate!}
 @End
 
-@ToggleSendingMicrophoneToGtl
+@SelectKeyboardPreset
+  nextKeyboardPreset = lastButtonId
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_KEYBOARD, nextKeyboardPreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing keyboard preset stored on button }, nextKeyboardPreset, {, press button }, BB_BUTTON_C, { to activate!}
+@End
+
+@SelectGuitarPreset
+  nextGuitarPreset = lastButtonId
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GUITAR, nextGuitarPreset, FEEDBACK_ARMED]
+  SendSysex sysexData, 4
+
+  Log {Preparing guitar preset stored on button }, nextGuitarPreset, {, press button }, BB_BUTTON_D, { to activate!}
+@End
+
+@ToggleSendMicrophoneToGtl
   if nextMicrophonePreset <> UNDEFINED
     Call @ActivateMicrophonePreset
 
     if sendingMicrophoneToGtl = NO
-      Call @ToggleSendingMicrophoneToGtlOn
-      sendingMicrophoneToGtl = YES
+      Call @EnableSendMicrophoneToGtl
     endif
   elseif sendingMicrophoneToGtl
-    Call @ToggleSendingMicrophoneToGtlOff
-    sendingMicrophoneToGtl = NO
+    Call @DisableSendMicrophoneToGtl
   else
-    Call @ToggleSendingMicrophoneToGtlOn
-    sendingMicrophoneToGtl = YES
+    Call @EnableSendMicrophoneToGtl
+  endif
+@End
+
+@ToggleSendKeyboardToGtl
+  if nextKeyboardPreset <> UNDEFINED
+    Call @ActivateKeyboardPreset
+
+    if sendingKeyboardToGtl = NO
+      Call @EnableSendKeyboardToGtl
+    endif
+  elseif sendingKeyboardToGtl
+    Call @DisableSendKeyboardToGtl
+  else
+    Call @EnableSendKeyboardToGtl
+  endif
+@End
+
+@ToggleSendGuitarToGtl
+  if nextGuitarPreset <> UNDEFINED
+    Call @ActivateGuitarPreset
+
+    if sendingGuitarToGtl = NO
+      Call @EnableSendGuitarToGtl
+    endif
+  elseif sendingGuitarToGtl
+    Call @DisableSendGuitarToGtl
+  else
+    Call @EnableSendGuitarToGtl
   endif
 @End
 
@@ -365,21 +490,16 @@
   nextMicrophonePreset = UNDEFINED
 @End
 
-@ToggleSendingGuitarToGtl
-  if nextGuitarPreset <> UNDEFINED
-    Call @ActivateGuitarPreset
+@ActivateKeyboardPreset
+  midiToSend = AUM_SELECT_KEYBOARD_PRESET[nextKeyboardPreset]
+  
+  Call @SendMidiNoteOnOffToAum
+  Log {Activated keyboard preset stored on button }, nextKeyboardPreset, { (AUM MIDI=}, midiToSend, {)}
 
-    if sendingGuitarToGtl = NO
-      Call @ToggleSendingGuitarToGtlOn
-      sendingGuitarToGtl = YES
-    endif
-  elseif sendingGuitarToGtl
-    Call @ToggleSendingGuitarToGtlOff
-    sendingGuitarToGtl = NO
-  else
-    Call @ToggleSendingGuitarToGtlOn
-    sendingGuitarToGtl = YES
-  endif
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_KEYBOARD, nextKeyboardPreset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
+
+  nextKeyboardPreset = UNDEFINED
 @End
 
 @ActivateGuitarPreset
@@ -471,6 +591,8 @@
   SYSEX_ANNOUNCE_FEEDBACK = 9
   SYSEX_MUTE_FEEDBACK = 10
   SYSEX_UNMUTE_FEEDBACK = 11
+  SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
+  SYSEX_SELECT_KEYBOARD_PRESET = 13
 
   // Be aware that in the apps all channels are displayed as +1! So AUM and GTL channel will display 2 (instead of 1).
   BB_MIDI_CHANNEL  = 0 // BlueBoard
@@ -487,4 +609,5 @@
   FEEDBACK_ACTIVATED = 17
   FEEDBACK_DEACTIVATED = 18
   FEEDBACK_ARMED = 19
+  FEEDBACK_KEYBOARD = 21
 @End
