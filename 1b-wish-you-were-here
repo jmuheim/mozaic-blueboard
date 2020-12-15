@@ -74,6 +74,8 @@
 
   // Intro: Drums (1 bar, then "dideldü")
   elseif step = 9
+    Call @ToggleAndSelectGroup1
+
     Call @DecreaseClockLength // 7
     Call @DecreaseClockLength // 6
     Call @DecreaseClockLength // 5
@@ -81,12 +83,9 @@
     Call @DecreaseClockLength // 3
     Call @DecreaseClockLength // 2
     Call @DecreaseClockLength // 1
-    Call @RecordNextLoopInGroup1
-
-    Call @PrepareKeyboardPreset1
+    Call @RecordNextLoopInGroup0
   elseif step = 10
     Call @ToggleSendMicrophone // On
-    Call @ToggleSendKeyboard
 
   // Verse 2 / Chorus: How I wish... (x3)
   elseif step = 11 // 1/3, m+g
@@ -99,9 +98,9 @@
     Call @IncreaseClockLength // 8
     Call @RecordNextLoopInGroup2
 
-    Call @PrepareGuitarPreset2
+    Call @PrepareKeyboardPreset1
   elseif step = 12
-    Call @ToggleSendGuitar
+    Call @ToggleSendKeyboard
   elseif step = 13 // 2/3, m+g
     Call @PrepareGuitarPreset3
     Call @RecordNextLoopInGroup2
@@ -109,8 +108,9 @@
     Call @ToggleSendGuitar
   elseif step = 15 // 3/3, m+g
     Call @RecordNextLoopInGroup2
+    Call @PrepareKeyboardPreset2
   elseif step = 16
-    // Nothing
+    Call @ToggleSendKeyboard
 
   // Intro (again)
   elseif step = 17
@@ -203,6 +203,11 @@
 
 @PrepareGuitarPreset3
   sysexData = [SYSEX_SELECT_GUITAR_PRESET, 3]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup0
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 0]
   SendSysex sysexData, 2
 @End
 
