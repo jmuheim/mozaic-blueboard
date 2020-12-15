@@ -34,22 +34,26 @@
 // - Short tap:
 //   - A: Toggle sending microphone to GTL
 //     - If a microphone preset was prepared (see below), the preset will be activated, and guitar will be sent to GTL anyway
+//   - C: Toggle sending keyboard to GTL
+//     - Same like above, but with keyboard presets
+//     - Disables guitar (either guitar or keyboard can be active, as guitar is also MIDI keyboard)
 //   - D: Toggle sending guitar to GTL
 //     - Same like above, but with guitar presets
+//     - Disables keyboard (either guitar or keyboard can be active, as guitar is also MIDI keyboard)
 // - Medium tap:
 //   - A|B|C|D: Record next loop in group 1|2|3|4
 // - Long tap:
-//   - A|B|C|D: Play group 1|2|3|4
+//   - A|B|C|D: Go to and play group 1|2|3|4
 // - Tap combos:
-//   - B>C: Reset session
-//   - B+C: Decrease clock length
-//   - B+D: Decrease clock length
-//   - A+(B|C|D): Prepare next microphone preset
+//   - A+(B|C|D): Prepare next microphone preset TODO: Better A>(B|C|D)? Would allow to quickly toggle more presets, e.g. A+B>C could activate delay (B) before selecting preset (C)
 //     - It will be activated when pressing A again
 //   - C+(A|B|D): Prepare next keyboard preset
 //     - It will be activated when pressing C again
 //   - D+(A|B|C): Prepare next guitar preset
 //     - It will be activated when pressing D again
+//   - B+C: Decrease clock length
+//   - B+D: Decrease clock length
+//   - B>C: Reset session
 
 // Make sure to start the BlueBoard while pressing the B button!
 @OnLoad
