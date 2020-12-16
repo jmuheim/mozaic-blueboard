@@ -297,6 +297,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  BB_BUTTON_MASTER = 0 // In fact, there is no button like that, but to control the master group (useful in predefined song structures), we pretend there is one
   BB_BUTTON_A = 1
   BB_BUTTON_B = 2
   BB_BUTTON_C = 3

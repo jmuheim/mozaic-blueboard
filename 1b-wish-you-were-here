@@ -144,22 +144,22 @@
 @End
 
 @ToggleAndSelectGroup1
-  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, 1]
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @ToggleAndSelectGroup2
-  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, 2]
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @ToggleAndSelectGroup3
-  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, 3]
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_C]
   SendSysex sysexData, 2
 @End
 
 @ToggleAndSelectGroup4
-  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, 4]
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_D]
   SendSysex sysexData, 2
 @End
 
@@ -179,57 +179,57 @@
 @End
 
 @PrepareKeyboardPreset1
-  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, 1]
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @PrepareKeyboardPreset2
-  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, 2]
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @PrepareKeyboardPreset3
-  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, 3]
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_C]
   SendSysex sysexData, 2
 @End
 
 @PrepareGuitarPreset1
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 1]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @PrepareGuitarPreset2
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 2]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @PrepareGuitarPreset3
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 3]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_C]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup0
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 0]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_MASTER]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup1
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 1]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup2
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 2]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup3
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 3]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_C]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup4
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 4]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_D]
   SendSysex sysexData, 2
 @End
 
@@ -251,6 +251,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  BB_BUTTON_MASTER = 0
   BB_BUTTON_A = 1
   BB_BUTTON_B = 2
   BB_BUTTON_C = 3

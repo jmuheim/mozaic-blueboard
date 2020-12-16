@@ -83,7 +83,7 @@
 @End
 
 @InitGtlMidiCodes
-  GTL_SELECT_GROUP[0] = 14 // Master group (can't be triggered using BlueBoard, but useful in predefined song structures)
+  GTL_SELECT_GROUP[BB_BUTTON_MASTER] = 14
   GTL_SELECT_GROUP[BB_BUTTON_A] = 0
   GTL_SELECT_GROUP[BB_BUTTON_B] = 1
   GTL_SELECT_GROUP[BB_BUTTON_C] = 2
@@ -154,7 +154,8 @@
   Call @SetClockLengthToInitialValue
 
   midiDelay = DURATION_OF_GTL_RESET
-  Call @SelectGroup0
+  lastButtonId = BB_BUTTON_MASTER
+  Call @SelectGroup
 
   nextMicrophonePreset = BB_BUTTON_D
   Call @ActivateMicrophonePreset
@@ -182,7 +183,7 @@
 @End
 
 @ResetLastActiveLoopsOfGroups
-  lastActiveLoopOfGroup[0]           = UNDEFINED // Main group
+  lastActiveLoopOfGroup[BB_BUTTON_MASTER] = UNDEFINED // Master group
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
   lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
@@ -206,6 +207,11 @@
     lastActiveLoopOfGroup[lastButtonId] = 1
   endif
 
+  // Add some delay when selecting loop in master group, as chances are high that in the same moment also another group was toggled and selected, and this seems to confuse GTL (and it's good for the artist to see what's happening, one thing after the other)
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 1000
+  endif
+
   midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
   Call @SendMidiNoteOnOffToGtl
 
@@ -214,11 +220,6 @@
   if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
     Inc lastActiveLoopOfGroup[lastButtonId]
   endif
-@End
-
-@SelectGroup0
-  lastButtonId = 0
-  Call @SelectGroup
 @End
 
 @ResetGtl
@@ -562,6 +563,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  BB_BUTTON_MASTER = 0
   BB_BUTTON_A = 1
   BB_BUTTON_B = 2
   BB_BUTTON_C = 3
