@@ -43,79 +43,84 @@
   // Intro: Mmmh/Uuuh...
   if step = 1 // 1/2, m+g
     Call @PrepareGuitarPreset2
-    Call @ToggleSendGuitar
     Call @RecordNextLoopInGroup1
-  elseif step = 2 // 2/2, m+g
-    Call @RecordNextLoopInGroup1
-    Call @PrepareGuitarPreset3
-  elseif step = 3
+  elseif step = 2
     Call @ToggleSendGuitar
+  elseif step = 3 // 2/2, m+g
+    Call @RecordNextLoopInGroup1
+    Call @PrepareKeyboardPreset1
+  elseif step = 4
+    Call @ToggleSendKeyboard
 
   // Chorus: By the rivers... (x2)
-  elseif step = 4 // 1/2, m+g
-    Call @PrepareGuitarPreset2
+  elseif step = 5 // 1/2, m+g
+    Call @PrepareGuitarPreset1
     Call @RecordNextLoopInGroup2
-  elseif step = 5
+  elseif step = 6
     Call @ToggleSendGuitar
-  elseif step = 6 // 2/2, m+g
-    Call @PrepareGuitarPreset3
+  elseif step = 7 // 2/2, m+g
+    Call @PrepareKeyboardPreset2
     Call @RecordNextLoopInGroup2
-  elseif step = 7
-    Call @ToggleSendGuitar
+  elseif step = 8
+    Call @ToggleSendKeyboard
 
   // Verse: When the wicked... (x2)
-  elseif step = 8 // 1/2, m+g
+  elseif step = 9 // 1/2, m+g
     Call @IncreaseClockLength
-    Call @PrepareGuitarPreset2
+    Call @PrepareGuitarPreset1
     Call @RecordNextLoopInGroup3
-  elseif step = 9
+  elseif step = 10
     Call @ToggleSendGuitar
-  elseif step = 10 // 2/2, m+g
+  elseif step = 11 // 2/2, m+g
     Call @PrepareGuitarPreset3
     Call @RecordNextLoopInGroup3
-  elseif step = 11
+  elseif step = 12
     Call @ToggleSendGuitar
 
   // Intro: Mmmh/Uuuh... (again, x2)
-  elseif step = 12 // 1/2, m+g
+  elseif step = 13 // 1/2, m+g
     Call @DecreaseClockLength
-    Call @PrepareGuitarPreset1
+    Call @PrepareKeyboardPreset3
     Call @RecordNextLoopInGroup1
-  elseif step = 13
-    Call @ToggleSendGuitar
-  elseif step = 14 // 2/2, m+g
+  elseif step = 14
+    Call @ToggleSendKeyboard
+  elseif step = 15 // 2/2, m+g
     Call @PrepareGuitarPreset3
     Call @RecordNextLoopInGroup1
-  elseif step = 15
+  elseif step = 16
     Call @ToggleSendGuitar
 
   // Intro: Let the words... (x2)
-  elseif step = 16 // 1/2, m+g
+  elseif step = 17 // 1/2, m+g
     Call @PrepareGuitarPreset2
     Call @RecordNextLoopInGroup4
-  elseif step = 17
+  elseif step = 18
     Call @ToggleSendGuitar
-  elseif step = 18 // 2/2, m+g
-    Call @PrepareGuitarPreset1
+  elseif step = 19 // 2/2, m+g
+    Call @PrepareKeyboardPreset1
     Call @RecordNextLoopInGroup4
-  elseif step = 19
-    Call @ToggleSendGuitar
+  elseif step = 20
+    Call @ToggleSendKeyboard
 
   // Chorus: By the rivers... (repeat and fade)
-  elseif step = 20 // 1/2, m+g
+  elseif step = 21 // 1/2, m+g
     Call @PrepareGuitarPreset3
     Call @RecordNextLoopInGroup2
-  elseif step = 21
+  elseif step = 22
     Call @ToggleSendGuitar
-  elseif step = 22 // 2/2, m+g
-    Call @PrepareGuitarPreset1
+  elseif step = 23 // 2/2, m+g
+    Call @PrepareKeyboardPreset1
     Call @RecordNextLoopInGroup2
-  elseif step = 23
-    Call @ToggleSendGuitar
+  elseif step = 24
+    Call @ToggleSendKeyboard
 
   // No step left
   else
     Log {No step left!}
+
+    Call @Beep
+    Call @Beep
+    Call @Beep
   endif
 
   if DEBUG
@@ -133,43 +138,93 @@
   SendSysex sysexData, 1
 @End
 
+@ToggleAndSelectGroup1
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup2
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup3
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup4
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_D]
+  SendSysex sysexData, 2
+@End
+
+@ToggleSendMicrophone
+  sysexData = [SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
+@ToggleSendKeyboard
+  sysexData = [SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
 @ToggleSendGuitar
   sysexData = [SYSEX_TOGGLE_SEND_GUITAR_TO_GTL]
   SendSysex sysexData, 1
 @End
 
+@PrepareKeyboardPreset1
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@PrepareKeyboardPreset2
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@PrepareKeyboardPreset3
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
 @PrepareGuitarPreset1
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 1]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @PrepareGuitarPreset2
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 2]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @PrepareGuitarPreset3
-  sysexData = [SYSEX_SELECT_GUITAR_PRESET, 3]
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup0
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_MASTER]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup1
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 1]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_A]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup2
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 2]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_B]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup3
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 3]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_C]
   SendSysex sysexData, 2
 @End
 
 @RecordNextLoopInGroup4
-  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, 4]
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_D]
   SendSysex sysexData, 2
 @End
 
@@ -191,6 +246,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  BB_BUTTON_MASTER = 0
   BB_BUTTON_A = 1
   BB_BUTTON_B = 2
   BB_BUTTON_C = 3
@@ -215,6 +271,8 @@
   SYSEX_SELECT_GUITAR_PRESET = 7
   SYSEX_SELECT_MICROPHONE_PRESET = 8
   SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
+  SYSEX_SELECT_KEYBOARD_PRESET = 13
 
   FEEDBACK_BEEP = 20
 @End
