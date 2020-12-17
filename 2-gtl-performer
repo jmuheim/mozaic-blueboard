@@ -207,11 +207,6 @@
     lastActiveLoopOfGroup[lastButtonId] = 1
   endif
 
-  // Add some delay when selecting loop in master group, as chances are high that in the same moment also another group was toggled and selected, and this seems to confuse GTL (and it's good for the artist to see what's happening, one thing after the other)
-  if lastButtonId = BB_BUTTON_MASTER
-    midiDelay = 1000
-  endif
-
   midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
   Call @SendMidiNoteOnOffToGtl
 
@@ -532,14 +527,29 @@
 @RecordNextLoopInGroup
   Log {Recording next loop in group}
 
+  // Add some delay when selecting loop in master group, as chances are high that in the same moment also one of the other groups was toggled and selected, and too many similar signals in the same fraction of time seem to confuse GTL (and it's good for the artist to see what's exactly happening, one thing after the other)
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 1000
+  endif
   Call @SelectGroup
+
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 1500
+  endif
   Call @SelectNextLoop
 
-  midiToSend = GTL_RECORD_OVERDUB
-  Call @SendMidiNoteOnOffToGtl
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 2000
+  endif
+  Call @RecordOverdub
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastActiveLoopOfGroup[lastButtonId], FEEDBACK_ARMED]
   SendSysex sysexData, 4
+@End
+
+@RecordOverdub
+  midiToSend = GTL_RECORD_OVERDUB
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @SelectGroup
