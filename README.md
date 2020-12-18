@@ -1,3 +1,16 @@
+TODO:
+
+- nanoKONTROL2 support :-) but not needed in any way, only when connected
+- Control groups
+    - Groups 1-4: master group's loops
+    - Groups 5-8: current group's loops
+    - Knob: position on stereo spectrum (should somehow reset to center, or just add/subtract relative value of current position)
+    - Slider: volume (should somehow reset to 50%, or just add/subtract relative value of current volume)
+    - Solo: play solo
+    - Mute: mute
+    - Record: Could toggle between functions of controls, e.g. make knob&slider control high/low pass filter
+- Other controls: ???
+
 # Group the Loop Performer
 
 Group the Loop Performer (GTL-Performer) is a collection of scripts written in [Mozaic](https://apps.apple.com/us/app/mozaic-plugin-workshop/id1457962653). It controls a bunch of iOS apps that enable a singing guitarist to do advanced looping performances, including:
