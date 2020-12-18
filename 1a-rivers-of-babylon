@@ -43,9 +43,9 @@
   // Intro: Mmmh/Uuuh...
   if step = 1 // 1/2, m+g
     Call @PrepareGuitarPreset2
-    Call @RecordNextLoopInGroup1
-  elseif step = 2
     Call @ToggleSendGuitar
+  elseif step = 2
+    Call @RecordNextLoopInGroup1
   elseif step = 3 // 2/2, m+g
     Call @RecordNextLoopInGroup1
     Call @PrepareKeyboardPreset1
@@ -66,7 +66,7 @@
 
   // Verse: When the wicked... (x2)
   elseif step = 9 // 1/2, m+g
-    Call @IncreaseClockLength
+    Call @IncreaseClockLength // 9
     Call @PrepareGuitarPreset1
     Call @RecordNextLoopInGroup3
   elseif step = 10
@@ -79,7 +79,7 @@
 
   // Intro: Mmmh/Uuuh... (again, x2)
   elseif step = 13 // 1/2, m+g
-    Call @DecreaseClockLength
+    Call @DecreaseClockLength // 8
     Call @PrepareKeyboardPreset3
     Call @RecordNextLoopInGroup1
   elseif step = 14
