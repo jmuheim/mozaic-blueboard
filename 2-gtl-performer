@@ -83,7 +83,7 @@
 @End
 
 @InitGtlMidiCodes
-  GTL_SELECT_MASTER_GROUP = 14 // Master group
+  GTL_SELECT_GROUP[BB_BUTTON_MASTER] = 14
   GTL_SELECT_GROUP[BB_BUTTON_A] = 0
   GTL_SELECT_GROUP[BB_BUTTON_B] = 1
   GTL_SELECT_GROUP[BB_BUTTON_C] = 2
@@ -149,10 +149,13 @@
 
   Call @InitVariables
 
-  Call @ResetGtl
-  Call @SelectFirstLoopInMasterGroup
-  Call @SetClockLengthToInitialValue
   Call @ResetLastActiveLoopsOfGroups
+  Call @ResetGtl
+  Call @SetClockLengthToInitialValue
+
+  midiDelay = DURATION_OF_GTL_RESET
+  lastButtonId = BB_BUTTON_MASTER
+  Call @SelectGroup
 
   nextMicrophonePreset = BB_BUTTON_D
   Call @ActivateMicrophonePreset
@@ -180,6 +183,7 @@
 @End
 
 @ResetLastActiveLoopsOfGroups
+  lastActiveLoopOfGroup[BB_BUTTON_MASTER] = UNDEFINED // Master group
   lastActiveLoopOfGroup[BB_BUTTON_A] = UNDEFINED // Group 1
   lastActiveLoopOfGroup[BB_BUTTON_B] = UNDEFINED // Group 2
   lastActiveLoopOfGroup[BB_BUTTON_C] = UNDEFINED // Group 3
@@ -198,22 +202,19 @@
   SendSysex sysexData, 3
 @End
 
-@SelectFirstLoopInMasterGroup
-  Log {Select master group}
-  midiToSend = GTL_SELECT_MASTER_GROUP
-  midiDelay  = DURATION_OF_GTL_RESET
+@SelectNextLoop
+  if lastActiveLoopOfGroup[lastButtonId] = UNDEFINED
+    lastActiveLoopOfGroup[lastButtonId] = 1
+  endif
+
+  midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
   Call @SendMidiNoteOnOffToGtl
 
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, 0]
-  SendSysex sysexData, 3
+  Log {Selected loop }, lastActiveLoopOfGroup[lastButtonId], { in group }, lastActiveLoopOfGroup
 
-  Log {Select first loop}
-  midiToSend = GTL_SELECT_LOOP[BB_BUTTON_A]
-  midiDelay  = DURATION_OF_GTL_RESET + 100
-  Call @SendMidiNoteOnOffToGtl
-
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, 1]
-  SendSysex sysexData, 3
+  if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
+    Inc lastActiveLoopOfGroup[lastButtonId]
+  endif
 @End
 
 @ResetGtl
@@ -526,24 +527,29 @@
 @RecordNextLoopInGroup
   Log {Recording next loop in group}
 
+  // Add some delay when selecting loop in master group, as chances are high that in the same moment also one of the other groups was toggled and selected, and too many similar signals in the same fraction of time seem to confuse GTL (and it's good for the artist to see what's exactly happening, one thing after the other)
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 1000
+  endif
   Call @SelectGroup
 
-  if lastActiveLoopOfGroup[lastButtonId] = UNDEFINED
-    lastActiveLoopOfGroup[lastButtonId] = 1
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 1500
   endif
+  Call @SelectNextLoop
 
-  midiToSend = GTL_SELECT_LOOP[lastActiveLoopOfGroup[lastButtonId]]
-  Call @SendMidiNoteOnOffToGtl
-
-  midiToSend = GTL_RECORD_OVERDUB
-  Call @SendMidiNoteOnOffToGtl
+  if lastButtonId = BB_BUTTON_MASTER
+    midiDelay = 2000
+  endif
+  Call @RecordOverdub
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LOOP, lastActiveLoopOfGroup[lastButtonId], FEEDBACK_ARMED]
   SendSysex sysexData, 4
+@End
 
-  if lastActiveLoopOfGroup[lastButtonId] < NUMBER_OF_LOOPS_PER_GROUP_IN_GTL
-    Inc lastActiveLoopOfGroup[lastButtonId]
-  endif
+@RecordOverdub
+  midiToSend = GTL_RECORD_OVERDUB
+  Call @SendMidiNoteOnOffToGtl
 @End
 
 @SelectGroup
@@ -552,6 +558,8 @@
 
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_GROUP, lastButtonId]
   SendSysex sysexData, 3
+
+  Log {Selected group }, lastButtonId
 @End
 
 
@@ -565,6 +573,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  BB_BUTTON_MASTER = 0
   BB_BUTTON_A = 1
   BB_BUTTON_B = 2
   BB_BUTTON_C = 3
