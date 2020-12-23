@@ -40,6 +40,18 @@
   Call @Beep
   Inc step
 
+  if MidiNote = BB_BUTTON_A
+    Call @Reset
+  else
+    Call @ProceedWithSong
+  endif
+
+  if DEBUG
+    Log {@OnMidiNoteOff: MidiNote=}, MidiNote
+  endif
+@End
+
+@ProceedWithSong
   // Intro: Guitar solo (x2)
   if step = 1 // 1/2, g
     Call @ToggleSendMicrophone // Off
@@ -110,9 +122,10 @@
   elseif step = 14
     Call @ToggleSendGuitar
   elseif step = 15 // 3/3, m+g
-    Call @RecordNextLoopInGroup2
+    // Do some manual stuff here, e.g. mute drums for a moment at the end
+    Call @PrepareGuitarPreset3
   elseif step = 16
-    // Nothing
+    Call @ToggleSendGuitar
 
   // Intro (again)
   elseif step = 17
@@ -127,10 +140,6 @@
     Call @Beep
     Call @Beep
     Call @Beep
-  endif
-
-  if DEBUG
-    Log {@OnMidiNoteOff: MidiNote=}, MidiNote
   endif
 @End
 
