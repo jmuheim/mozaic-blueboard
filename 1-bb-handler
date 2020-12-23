@@ -84,8 +84,6 @@
       Call @Beep
     endif
   endif
-
-  Log {tapType=}, tapType
 @End
 
 @Beep
@@ -109,7 +107,6 @@
 
 @InitVariables
   lastButtonId = UNDEFINED
-  ignoreLastButtonUp = NO
 
   Call @ResetButtonCombo
 @End
@@ -119,6 +116,8 @@
 
   lastButtonDownTime = SystemTime
   tapType = UNDEFINED
+
+  ignoreLastButtonUp = NO
 
   Call @ConvertBbMidiNoteToId
   lastButtonDownId = lastButtonId
@@ -257,18 +256,18 @@
     sysexAction = SYSEX_INCREASE_CLOCK_LENGTH
   endif
 
-  // A+B, A+C, A+D
-  if buttonCombo = 126 or buttonCombo = 137 or buttonCombo = 148
+  // A>B, A>C, A>D
+  if buttonCombo = 1256 or buttonCombo = 1357 or buttonCombo = 1458
     sysexAction = SYSEX_SELECT_MICROPHONE_PRESET
   endif
 
-  // D+A, D+B, D+C
-  if buttonCombo = 415 or buttonCombo = 426 or buttonCombo = 437
+  // D>A, D>B, D>C
+  if buttonCombo = 4185 or buttonCombo = 4286 or buttonCombo = 4387
     sysexAction = SYSEX_SELECT_GUITAR_PRESET
   endif
 
-  // C+A, C+B, C+D
-  if buttonCombo = 315 or buttonCombo = 326 or buttonCombo = 348
+  // C>A, C>B, C>D
+  if buttonCombo = 3175 or buttonCombo = 3276 or buttonCombo = 3478
     sysexAction = SYSEX_SELECT_KEYBOARD_PRESET
   endif
   

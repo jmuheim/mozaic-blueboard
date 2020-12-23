@@ -45,11 +45,11 @@
 // - Long tap:
 //   - A|B|C|D: Go to and play group 1|2|3|4
 // - Tap combos:
-//   - A+(B|C|D): Prepare next microphone preset TODO: Better A>(B|C|D)? Would allow to quickly toggle more presets, e.g. A+B>C could activate delay (B) before selecting preset (C)
+//   - A>(B|C|D): Prepare next microphone preset TODO: Better A>(B|C|D)? Would allow to quickly toggle more presets, e.g. A+B>C could activate delay (B) before selecting preset (C)
 //     - It will be activated when pressing A again
-//   - C+(A|B|D): Prepare next keyboard preset
+//   - C>(A|B|D): Prepare next keyboard preset
 //     - It will be activated when pressing C again
-//   - D+(A|B|C): Prepare next guitar preset
+//   - D>(A|B|C): Prepare next guitar preset
 //     - It will be activated when pressing D again
 //   - B+C: Decrease clock length
 //   - B+D: Decrease clock length
