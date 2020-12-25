@@ -1,62 +1,62 @@
 # Pink Floyd - Wish you were here
 
-Interpretation by "Josh wants to be a band", see <josh.ch>
+Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ## Intro
 
 ### 1st guitar (epic riff)
 
-🎤 ❌ 1    @ToggleSendMicrophone off
-🎸 ✔️ 3    @PrepareGuitarPreset3, @ToggleSendGuitar
-⏲️ 10       @IncreaseClockLength (2x)
+🎤 ❌ 1    @ToggleSendMicrophone off  
+🎸 ✔️ 3    @PrepareGuitarPreset3, @ToggleSendGuitar  
+⏲️ 10       @IncreaseClockLength (2x)  
 
 ---
 
-🅾️🧱 1     @RecordNextLoopInGroup1
+🅾️🧱 1     @RecordNextLoopInGroup1  
 
 ### 2nd guitar
 
-🅾️🧱 1     @RecordNextLoopInGroup1
-🎸 1        @PrepareGuitarPreset1
+🅾️🧱 1     @RecordNextLoopInGroup1  
+🎸 1        @PrepareGuitarPreset1  
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar
+🎸 ✔️      @ToggleSendGuitar  
 
 ## Verse 1
 
 ### So, so you think you can tell...
 
-⏲️ 8        @DecreaseClockLength (2x)
-🅾️🧱 2      @RecordNextLoopInGroup2
-🎸 1        @PrepareGuitarPreset1
+⏲️ 8        @DecreaseClockLength (2x)  
+🅾️🧱 2      @RecordNextLoopInGroup2  
+🎸 1        @PrepareGuitarPreset1  
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar
+🎸 ✔️      @ToggleSendGuitar  
 
 ### Did they get you to trade...
 
-🎸 3       @PrepareGuitarPreset3
-🅾️🧱 2     @RecordNextLoopInGroup2
+🎸 3       @PrepareGuitarPreset3  
+🅾️🧱 2     @RecordNextLoopInGroup2  
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar
+🎸 ✔️      @ToggleSendGuitar  
 
 ## Intro (again)
 
 ### Drums (1 bar, then "dideldü" and keyboard)
 
-▶️🧱 1     @ToggleAndSelectGroup1
-⏲️ 1        @DecreaseClockLength (7x)
-🅾️🧱 0     @RecordNextLoopInGroup0
-🎹 1        @PrepareKeyboardPreset1
+▶️🧱 1     @ToggleAndSelectGroup1  
+⏲️ 1        @DecreaseClockLength (7x)  
+🅾️🧱 0     @RecordNextLoopInGroup0  
+🎹 1        @PrepareKeyboardPreset1  
 
 ---
 
-🎤 ✔️      @ToggleSendMicrophone on
-🎹 ✔️      @ToggleSendKeyboard on
+🎤 ✔️      @ToggleSendMicrophone on  
+🎹 ✔️      @ToggleSendKeyboard on  
 
 ## Verse 2 (Chorus)
 
