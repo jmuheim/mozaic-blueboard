@@ -7,7 +7,7 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 ### 1st guitar (epic riff)
 
 🎤 ❌ 1    @ToggleSendMicrophone off  
-🎸 ✔️ 3    @PrepareGuitarPreset3, @ToggleSendGuitar  
+🎸 ✔️ 3    @PrepareGuitarPreset3, @ToggleSendGuitar on  
 ⏲️ 10       @IncreaseClockLength (2x)  
 
 ---
@@ -21,7 +21,7 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar  
+🎸 ✔️      @ToggleSendGuitar on  
 
 ## Verse 1
 
@@ -33,7 +33,7 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar  
+🎸 ✔️      @ToggleSendGuitar on  
 
 ### Did they get you to trade...
 
@@ -42,7 +42,7 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ---
 
-🎸 ✔️      @ToggleSendGuitar  
+🎸 ✔️      @ToggleSendGuitar on  
 
 ## Intro (again)
 
@@ -58,37 +58,37 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 🎤 ✔️      @ToggleSendMicrophone on  
 🎹 ✔️      @ToggleSendKeyboard on  
 
-## Verse 2 (Chorus)
+## Verse 2 / Chorus
 
-### How I wish... (x3)
-  elseif step = 11 // 1/3, m+g
-    Call @IncreaseClockLength // 2
-    Call @IncreaseClockLength // 3
-    Call @IncreaseClockLength // 4
-    Call @IncreaseClockLength // 5
-    Call @IncreaseClockLength // 6
-    Call @IncreaseClockLength // 7
-    Call @IncreaseClockLength // 8
-    Call @RecordNextLoopInGroup2
+### How I wish... (1st voice)
 
-    Call @PrepareKeyboardPreset1
-  elseif step = 12
-    Call @ToggleSendKeyboard
-  elseif step = 13 // 2/3, m+g
-    Call @RecordNextLoopInGroup2
-    Call @PrepareGuitarPreset2
-  elseif step = 14
-    Call @ToggleSendGuitar
-  elseif step = 15 // 3/3, m+g
-    // Do some manual stuff here, e.g. mute drums for a moment at the end
-    Call @PrepareGuitarPreset3
-  elseif step = 16
-    Call @ToggleSendGuitar
+⏲️ 8        @IncreaseClockLength (7x)  
+🅾️🧱 2     @RecordNextLoopInGroup2  
+🎹 1        @PrepareKeyboardPreset1  
 
-  // Intro (again)
-  elseif step = 17
-    Call @ToggleAndSelectGroup1
-  elseif step = 18
-    // Nothing
+---
 
-  // No step left
+🎹 ✔️      @ToggleSendKeyboard on  
+
+### How I wish... (2nd voice)
+
+🅾️🧱 2     @RecordNextLoopInGroup2  
+🎹 2        @PrepareKeyboardPreset2  
+
+---
+
+🎸 ✔️      @ToggleSendGuitar on  
+
+### How I wish... (3rd voice)
+
+Do some manual stuff here, e.g. mute 1st and 2nd loop and mute drums for the last two bars.
+
+🎸 3       @PrepareGuitarPreset3  
+
+---
+
+🎸 ✔️      @ToggleSendGuitar on  
+
+## Intro (again)
+
+▶️🧱 1     @ToggleAndSelectGroup1  
