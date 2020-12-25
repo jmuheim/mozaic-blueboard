@@ -6,17 +6,21 @@ Interpretation by "Josh wants to be a band", see <josh.ch>
 
 ### 1st guitar (epic riff)
 
-🎤 ❌ 1    @ToggleSendMicrophone
+🎤 ❌ 1    @ToggleSendMicrophone off
 🎸 ✔️ 3    @PrepareGuitarPreset3, @ToggleSendGuitar
 ⏲️ 10       @IncreaseClockLength (2x)
+
 ---
+
 🅾️🧱 1     @RecordNextLoopInGroup1
 
 ### 2nd guitar
 
 🅾️🧱 1     @RecordNextLoopInGroup1
 🎸 1        @PrepareGuitarPreset1
+
 ---
+
 🎸 ✔️      @ToggleSendGuitar
 
 ## Verse 1
@@ -26,37 +30,37 @@ Interpretation by "Josh wants to be a band", see <josh.ch>
 ⏲️ 8        @DecreaseClockLength (2x)
 🅾️🧱 2      @RecordNextLoopInGroup2
 🎸 1        @PrepareGuitarPreset1
+
 ---
+
 🎸 ✔️      @ToggleSendGuitar
 
 ### Did they get you to trade...
 
 🎸 3       @PrepareGuitarPreset3
 🅾️🧱 2     @RecordNextLoopInGroup2
+
 ---
+
 🎸 ✔️      @ToggleSendGuitar
 
-## Intro
+## Intro (again)
 
-### Drums (1 bar, then "dideldü")
+### Drums (1 bar, then "dideldü" and keyboard)
 
 ▶️🧱 1     @ToggleAndSelectGroup1
+⏲️ 1        @DecreaseClockLength (7x)
+🅾️🧱 0     @RecordNextLoopInGroup0
+🎹 1        @PrepareKeyboardPreset1
 
-    Call @DecreaseClockLength // 7
-    Call @DecreaseClockLength // 6
-    Call @DecreaseClockLength // 5
-    Call @DecreaseClockLength // 4
-    Call @DecreaseClockLength // 3
-    Call @DecreaseClockLength // 2
-    Call @DecreaseClockLength // 1
-    Call @RecordNextLoopInGroup0 // TODO: Add timer when also a non-master group was selected before?
+---
 
-    Call @PrepareKeyboardPreset1
-  elseif step = 10
-    Call @ToggleSendMicrophone // On
-    Call @ToggleSendKeyboard
+🎤 ✔️      @ToggleSendMicrophone on
+🎹 ✔️      @ToggleSendKeyboard on
 
-  // Verse 2 / Chorus: How I wish... (x3)
+## Verse 2 (Chorus)
+
+### How I wish... (x3)
   elseif step = 11 // 1/3, m+g
     Call @IncreaseClockLength // 2
     Call @IncreaseClockLength // 3
