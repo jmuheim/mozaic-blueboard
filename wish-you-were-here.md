@@ -12,7 +12,8 @@ TODO: BPM would be 121!
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
-| 1st guitar (epic riff) | 🎤❌<br>🎸 3✔️<br>⏲️ 10 | ⏺️ 1 |
+| Pre-solo (improv) | 🎸 3 | 🎤❌<br>🎸✔️ |
+| 1st guitar (epic riff) | ⏲️ 10<br>⏺️ 1 | |
 | 2nd guitar | ⏺️ 1<br>🎸 1 | 🎸✔️ |
 
 ## Verse 1
