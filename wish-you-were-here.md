@@ -38,7 +38,7 @@ TODO: BPM would be 121!
 | --- | --- | --- |
 | How I wish... (1st voice) | ⏲️ 8<br>⏺️ 2<br>🎹 1 | 🎹✔️ |
 | (2nd voice) | ⏺️ 2<br>🎹 2 | 🎹✔️ |
-| (3rd voice) | 🎸 3<br>Do some manual stuff here, e.g.:<ul><li>mute 1st and 2nd loop</li><li>mute drums for the last two bars</li></ul> | 🎸✔️ |
+| (3rd voice) | 🎸 3<br>Do some manual stuff here, e.g. mute 1st and 2nd loop, mute drums for the last two bars... | 🎸✔️ |
 
 ## Intro (again)
 
