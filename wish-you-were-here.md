@@ -1,6 +1,6 @@
 # Pink Floyd - Wish you were here
 
-Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
+Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 ## Intro
 
