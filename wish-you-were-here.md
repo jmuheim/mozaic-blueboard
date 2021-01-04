@@ -3,6 +3,7 @@
 Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 | Setting | Value |
+| --- | --- |
 | BPM | 60 |
 
 TODO: BPM would be 121!
