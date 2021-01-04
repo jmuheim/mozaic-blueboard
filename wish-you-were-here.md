@@ -4,63 +4,34 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ## Intro
 
-| Name | Prepare | Activate |
+| Part | Prepare | Activate |
 | --- | --- | --- |
 | 1st guitar (epic riff) | 🎤 ❌<br>🎸 ✔️<br>⏲️ 10 | 🅾️🧱 1 |
 | 2nd guitar | 🅾️🧱 1<br>🎸 1 | 🎸 ✔️ |
 
 ## Verse 1
 
-| Name | Prepare | Activate |
+| Part | Prepare | Activate |
 | --- | --- | --- |
 | So, so you think you can tell | ⏲️ 8<br>🅾️🧱 2<br>🎸 1 | 🎸 ✔️ |
 | Did they get you to trade | 🎸 3<br>🅾️🧱 2<br> | 🎸 ✔️ |
 
 ## Intro (again)
 
-### Drums (1 bar, then "dideldü" and keyboard)
-
-▶️🧱 1  
-⏲️ 1  
-🅾️🧱 0  
-🎹 1  
-
----
-
-🎤 ✔️  
-🎹 ✔️  
+| Part | Prepare | Activate |
+| --- | --- | --- |
+| Drums (1 bar, then "dideldü" and keyboard) | ▶️🧱 1<br>⏲️ 1<br>🅾️🧱 0<br>🎹 1 | 🎤 ✔️<br>🎹 ✔️ |
 
 ## Verse 2 / Chorus
 
-### How I wish... (1st voice)
-
-⏲️ 8  
-🅾️🧱 2  
-🎹 1  
-
----
-
-🎹 ✔️  
-
-### How I wish... (2nd voice)
-
-🅾️🧱 2  
-🎹 2  
-
----
-
-🎸 ✔️  
-
-### How I wish... (3rd voice)
-
-Do some manual stuff here, e.g. mute 1st and 2nd loop and mute drums for the last two bars.
-
-🎸 3       @PrepareGuitarPreset3  
-
----
-
-🎸 ✔️      @ToggleSendGuitar on  
+| Part | Prepare | Activate |
+| --- | --- | --- |
+| How I wish... (1st voice) | ⏲️ 8<br>🅾️🧱 2<br>🎹 1 | 🎹 ✔️ |
+| (2nd voice) | 🅾️🧱 2<br>🎹 2 | 🎹 ✔️ |
+| (3rd voice) | 🎸 3<br>Do some manual stuff here, e.g. mute 1st and 2nd loop and mute drums for the last two bars. | 🎸 ✔️ |
 
 ## Intro (again)
 
-▶️🧱 1     @ToggleAndSelectGroup1  
+| Part | Prepare | Activate |
+| --- | --- | --- |
+| Fade out | Do some manual stuff here, then stop group manually | ▶️🧱 1 |
