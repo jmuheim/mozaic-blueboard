@@ -4,6 +4,12 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ## Intro
 
+-------     ------ ----------   -------
+     12     12        12             12
+    123     123       123           123
+      1     1          1              1
+-------     ------ ----------   -------
+
 ### 1st guitar (epic riff)
 
 🎤 ❌  
