@@ -40,10 +40,12 @@
   Call @Beep
   Inc step
 
-  if MidiNote = BB_BUTTON_A
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     Call @Reset
-  else
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
     Call @ProceedWithSong
+  else
+    Call @Beep
   endif
 
   if DEBUG
@@ -96,11 +98,8 @@
     Call @DecreaseClockLength // 2
     Call @DecreaseClockLength // 1
     Call @RecordNextLoopInGroup0 // TODO: Add timer when also a non-master group was selected before?
-
-    Call @PrepareKeyboardPreset1
   elseif step = 10
     Call @ToggleSendMicrophone // On
-    Call @ToggleSendKeyboard
 
   // Verse 2 / Chorus: How I wish... (x3)
   elseif step = 11 // 1/3, m+g
@@ -118,22 +117,18 @@
     Call @ToggleSendKeyboard
   elseif step = 13 // 2/3, m+g
     Call @RecordNextLoopInGroup2
-    Call @PrepareGuitarPreset2
+    Call @PrepareGuitarPreset3
   elseif step = 14
     Call @ToggleSendGuitar
-  elseif step = 15 // 3/3, m+g
-    // Do some manual stuff here, e.g. mute drums for a moment at the end
-    Call @PrepareGuitarPreset3
-  elseif step = 16
-    Call @ToggleSendGuitar
 
-  // Intro (again)
-  elseif step = 17
-    Call @ToggleAndSelectGroup1
-  elseif step = 18
-    // Nothing
+    Call @Beep
+    Call @Beep
+    Call @Beep
 
-  // No step left
+    // Do some manual stuff here, e.g.:
+    // - mute guitars (loop 1+2)
+    // - mute drums for a moment at the end of "wishing you were here"
+    // - go back to intro and fade...
   else
     Log {No step left!}
 
