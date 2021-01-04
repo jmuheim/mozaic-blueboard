@@ -24,13 +24,13 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 | So, so you think you can tell | ⏲️ 8<br>⏺️ 2<br>🎸 1 | 🎸✔️ |
 | Did they get you to trade | 🎸 3<br>⏺️ 2<br> | 🎸✔️ |
 
-## Intro (again)
+## Intro
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
 | Drums (1 bar, then "dideldü" and keyboard) | ▶️ 1<br>⏲️ 1<br>⏺️ 0<br>🎹 1 | 🎤✔️<br>🎹✔️ |
 
-## Verse 2 / Chorus
+## Verse 2 (or chorus)
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
@@ -38,7 +38,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 | (2nd voice) | ⏺️ 2<br>🎹 2 | 🎹✔️ |
 | (3rd voice) | 🎸 3<br>Do some manual stuff here, e.g. mute 1st and 2nd loop, mute drums for the last two bars... | 🎸✔️ |
 
-## Intro (again)
+## Intro
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
