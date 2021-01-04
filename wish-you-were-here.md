@@ -4,13 +4,10 @@ Interpretation by "Josh wants to be a band", see [josh.ch](http://josh.ch)
 
 ## Intro
 
-| 1st guitar (epic riff) | Go! |
-| --- | --- |
-| 🎤 ❌<br>🎸 ✔️<br>⏲️ 10 | 🅾️🧱 1 |
-
-| 2nd guitar | Go! |
-| --- | --- |
-| 🅾️🧱 1<br>🎸 1 | 🎸 ✔️ |
+| Name | Cue | Go |
+| --- | --- | --- |
+| 1st guitar (epic riff) | 🎤 ❌<br>🎸 ✔️<br>⏲️ 10 | 🅾️🧱 1 |
+| 2nd guitar | 🅾️🧱 1<br>🎸 1 | 🎸 ✔️ |
 
 ## Verse 1
 
