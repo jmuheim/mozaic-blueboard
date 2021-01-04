@@ -4,13 +4,11 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 | Setting | Value |
 | --- | --- |
-| BPM | 60 |
+| BPM | 60 (TODO: would be 121!) |
 | 🎸 1 | Wish you were here |
 | 🎸 3 | Oasis |
 | 🎹 1 | Piano |
 | 🎹 2 | Marimba |
-
-TODO: BPM would be 121!
 
 ## Intro
 
