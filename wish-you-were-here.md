@@ -5,6 +5,10 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 | Setting | Value |
 | --- | --- |
 | BPM | 60 |
+| 🎸 1 | Wish you were here |
+| 🎸 3 | Oasis |
+| 🎹 1 | Piano |
+| 🎹 2 | Marimba |
 
 TODO: BPM would be 121!
 
@@ -12,8 +16,7 @@ TODO: BPM would be 121!
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
-| Pre-solo (improv) | 🎸 3 | 🎤❌<br>🎸✔️ |
-| 1st guitar (epic riff) | ⏲️ 10<br>⏺️ 1 | |
+| 1st guitar (epic riff) | 🎤❌<br>🎸 3✔️<br>⏲️ 10<br> | ⏺️ 1 |
 | 2nd guitar | ⏺️ 1<br>🎸 1 | 🎸✔️ |
 
 ## Verse 1
