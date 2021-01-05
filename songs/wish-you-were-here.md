@@ -18,8 +18,8 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
     - ⏲️ 10
     - ⏺️ 1
 - 2nd guitar
-    - 🎸 1
     - ⏺️ 1
+    - 🎸 1
 
 ## Verse 1
 

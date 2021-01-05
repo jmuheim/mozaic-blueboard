@@ -50,11 +50,14 @@ class SongsBuilder
     @doc.html.body.h2.each_with_index do |h2, i|
       @result << "// #{h2.text}"
 
-      table = @doc.html.body.table[i + 1] # See https://stackoverflow.com/questions/65576289/
-      table.tbody.tr.each do |tr|
-        next if tr.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
+      ul = @doc.html.body.ul[i] # See https://stackoverflow.com/questions/65576289/
+      ul.li.each do |li|
+        next if li.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
 
-        generate_prepare  tr.td[0].text, extract_settings(tr.td[1])
+        part = li.children.reject(&:element?).first.text.strip # Text of first <li> element
+        settings = li.ul.li.select(&:element?).map(&:text)        # All texts of contained <li> elements (2nd level list items)
+
+        generate_prepare  part, settings
         generate_activate unless @step == 2 # The very first song part will be activated immediately
       end
 
@@ -62,12 +65,6 @@ class SongsBuilder
     end
 
     @result << "endif"
-  end
-
-  def extract_settings(td)
-    td.children.reject {|child| child.name == 'br' } # Remove <br> nodes
-               .map(&:text)                          # Use text of nodes
-               .map { |text| text.gsub(/\s/, '')}    # Remove white space from text
   end
 
   def generate_prepare(part, settings)
@@ -90,12 +87,12 @@ class SongsBuilder
     codes = []
 
     case setting
-    when /🎤❌/
+    when /🎤\s?❌/
       if @sendMicrophone
         @sendMicrophone = false
         codes << 'ToggleSendMicrophone // 🎤❌'
       end
-    when /🎸([1-3])(✔️)?/
+    when /🎸\s?([1-3])\s?(✔️)?/
       codes << "PrepareGuitarPreset#{$1} // 🎸#{$1}"
       @nextGuitarPreset = $1
 
@@ -104,7 +101,7 @@ class SongsBuilder
         codes << 'ToggleSendGuitar // 🎸✔️'
         @nextGuitarPreset = nil
       end
-    when /🎹([1-3])(✔️)?/
+    when /🎹\s?([1-3])(\s?✔️)?/
       codes << "PrepareKeyboardPreset#{$1} // 🎹#{$1}"
       @nextKeyboardPreset = $1
 
@@ -113,7 +110,7 @@ class SongsBuilder
         codes << 'ToggleSendKeyboard // 🎹✔️'
         @nextKeyboardPreset = nil
       end
-    when /⏲️(\d+)/
+    when /⏲️\s?(\d+)/
       while @clockLength != $1.to_i
         if @clockLength < $1.to_i
           @clockLength += 1
@@ -123,7 +120,7 @@ class SongsBuilder
           codes << "DecreaseClockLength // ⏲️#{@clockLength}"
         end
       end
-    when /⏺️([0-4])/
+    when /⏺️\s?([0-4])/
       codes << "RecordNextLoopInGroup#{$1} // ⏺️#{$1}"
     else
       print_script_to_file
