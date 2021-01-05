@@ -55,7 +55,7 @@ class SongsBuilder
         next if tr.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
 
         generate_prepare  tr.td[0].text, extract_settings(tr.td[1])
-        generate_activate
+        generate_activate unless @step == 2 # The very first song part will be activated immediately
       end
 
       @result << ""
@@ -152,6 +152,9 @@ class SongsBuilder
 
   def print_script_to_file
     puts @result.join("\n")
+    file = File.new("songs/wish-you-were-here.mozaic", "w")
+    file.puts(@result.join("\n"))
+    file.close
   end
 end
 
