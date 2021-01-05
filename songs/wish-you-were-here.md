@@ -45,6 +45,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
     - ⏲️ 8
     - ⏺️ 2
     - 🎹 1
+    - 🎤 ✔️
 - (2nd voice)
     - ⏺️ 2
     - 🎹 2

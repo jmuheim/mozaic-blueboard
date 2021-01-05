@@ -65,3 +65,12 @@ elseif @step = 13
   Call @ToggleSendKeyboard // 🎹 ✔️
 elseif @step = 14 // (3rd voice)
   Call @PrepareGuitarPreset3 // 🎸 3
+elseif @step = 15
+  Call @ToggleSendGuitar // 🎸 ✔️
+
+// Intro
+elseif @step = 16 // Fade out
+  Call @RecordNextLoopInGroup1 // ▶️ 1
+elseif @step = 17
+
+endif

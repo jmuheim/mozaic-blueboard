@@ -125,11 +125,9 @@ class SongsBuilder
     when /⏺️\s?([0-4])/
       codes << "RecordNextLoopInGroup#{$1} // ⏺️ #{$1}"
     when /▶️\s?([1-4])/
-      codes << "RecordNextLoopInGroup#{$1} // ▶️ #{$1}"
+      codes << "ToggleAndSelectGroup#{$1} // ▶️ #{$1}"
     else
-      print_script_to_file
-      tear_down
-      raise "Unknown setting #{setting}!"
+      puts "Unknown setting #{setting}, assuming it's just text."
     end
 
     codes
