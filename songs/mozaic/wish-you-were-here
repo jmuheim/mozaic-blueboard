@@ -1,5 +1,5 @@
 @OnLoad
-  SetShortName {1-wish-you-were-here}
+  SetShortName {1-Pink Floyd - Wish you were here}
 
   Log {Set DEBUG=YES to see runtime details}
 
@@ -10,7 +10,7 @@
 
 @Reset
   Log {+------------------+}
-  Log {|wish-you-were-here|}
+  Log {|Pink Floyd - Wish you were here|}
   Log {+------------------+}
 
   Call @InitVariables

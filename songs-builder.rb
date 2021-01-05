@@ -164,7 +164,7 @@ class SongBuilder
   def print_script_to_file
     template = File.open("songs/mozaic/_template").read
 
-    template.gsub! "{{TITLE}}", @file
+    template.gsub! "{{TITLE}}", @doc.html.body.h1.text
     template.gsub! "{{CODE}}", @result.map { |line| line = "  #{line}" }.join("\n")
 
     file = File.new("songs/mozaic/#{@file}", "w")

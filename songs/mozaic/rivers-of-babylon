@@ -1,5 +1,5 @@
 @OnLoad
-  SetShortName {1-rivers-of-babylon}
+  SetShortName {1-Boney M. - By the Rivers of Babylon}
 
   Log {Set DEBUG=YES to see runtime details}
 
@@ -10,7 +10,7 @@
 
 @Reset
   Log {+------------------+}
-  Log {|rivers-of-babylon|}
+  Log {|Boney M. - By the Rivers of Babylon|}
   Log {+------------------+}
 
   Call @InitVariables
