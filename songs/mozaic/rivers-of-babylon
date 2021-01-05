@@ -1,10 +1,5 @@
-// Wish you were here
-// ==================
-//
-// A great song. Monika's first guitar song! :-)
-
 @OnLoad
-  SetShortName {1b-Wish}
+  SetShortName {1-Boney M. - By the Rivers of Babylon}
 
   Log {Set DEBUG=YES to see runtime details}
 
@@ -14,9 +9,7 @@
 @End
 
 @Reset
-  Log {+------------------+}
-  Log {|Wish you were here|}
-  Log {+------------------+}
+  Log {Boney M. - By the Rivers of Babylon}
 
   Call @InitVariables
   Call @ResetGtl
@@ -54,84 +47,80 @@
 @End
 
 @ProceedWithSong
-  // Intro: Guitar solo (x2)
-  if step = 1 // 1/2, g
-    Call @ToggleSendMicrophone // Off
-
-    Call @PrepareGuitarPreset3
-    Call @ToggleSendGuitar
-
-    Call @IncreaseClockLength // 9
-    Call @IncreaseClockLength // 10
-  elseif step = 2
-    Call @RecordNextLoopInGroup1
-  elseif step = 3 // 2/2, g
-    Call @RecordNextLoopInGroup1
-    Call @PrepareGuitarPreset1
-  elseif step = 4
-    Call @ToggleSendGuitar
-
-  // Verse 1: So, so you think... / Did they get you...
-  elseif step = 5 // 1/2, g
-    Call @DecreaseClockLength // 9
-    Call @DecreaseClockLength // 8
-    Call @RecordNextLoopInGroup2
-
-    Call @PrepareGuitarPreset1
-  elseif step = 6
-    Call @ToggleSendGuitar
-  elseif step = 7 // 2/2, g
-    Call @PrepareGuitarPreset3
-    Call @RecordNextLoopInGroup2
-  elseif step = 8
-    Call @ToggleSendGuitar
-
-  // Intro: Drums (1 bar, then "dideldü")
+  // Intro
+  if step = 1 // Mmmh…
+    Call @PrepareGuitarPreset2 // 🎸 2
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif step = 2 // Uuuh…
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+    Call @PrepareKeyboardPreset1 // 🎹 1
+  elseif step = 3
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Chorus
+  elseif step = 4 // By the rivers…
+    Call @PrepareGuitarPreset1 // 🎸 1
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif step = 5
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif step = 6 // (Again)
+    Call @PrepareKeyboardPreset2 // 🎹 2
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif step = 7
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Verse
+  elseif step = 8 // When the wicked…
+    Call @IncreaseClockLength // ⏲️ 9
+    Call @PrepareGuitarPreset1 // 🎸 1
+    Call @RecordNextLoopInGroup3 // ⏺️ 3
   elseif step = 9
-    Call @ToggleAndSelectGroup1
-
-    Call @DecreaseClockLength // 7
-    Call @DecreaseClockLength // 6
-    Call @DecreaseClockLength // 5
-    Call @DecreaseClockLength // 4
-    Call @DecreaseClockLength // 3
-    Call @DecreaseClockLength // 2
-    Call @DecreaseClockLength // 1
-    Call @RecordNextLoopInGroup0 // TODO: Add timer when also a non-master group was selected before?
-  elseif step = 10
-    Call @ToggleSendMicrophone // On
-
-  // Verse 2 / Chorus: How I wish... (x3)
-  elseif step = 11 // 1/3, m+g
-    Call @IncreaseClockLength // 2
-    Call @IncreaseClockLength // 3
-    Call @IncreaseClockLength // 4
-    Call @IncreaseClockLength // 5
-    Call @IncreaseClockLength // 6
-    Call @IncreaseClockLength // 7
-    Call @IncreaseClockLength // 8
-    Call @RecordNextLoopInGroup2
-
-    Call @PrepareKeyboardPreset1
-  elseif step = 12
-    Call @ToggleSendKeyboard
-  elseif step = 13 // 2/3, m+g
-    Call @RecordNextLoopInGroup2
-    Call @PrepareGuitarPreset3
-  elseif step = 14
-    Call @ToggleSendGuitar
-
-    Call @Beep
-    Call @Beep
-    Call @Beep
-
-    // Do some manual stuff here, e.g.:
-    // - mute guitars (loop 1+2)
-    // - mute drums for a moment at the end of "wishing you were here"
-    // - go back to intro and fade...
-  else
-    Log {No step left!}
-
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif step = 10 // (Again)
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup3 // ⏺️ 3
+  elseif step = 11
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Intro
+  elseif step = 12 // Mmmh (deep voice)
+    Call @DecreaseClockLength // ⏲️ 8
+    Call @PrepareKeyboardPreset3 // 🎹 3
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif step = 13
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  elseif step = 14 // Uuuh (add spontaneous hailings)
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif step = 15
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Bridge
+  elseif step = 16 // Let the words… (deep voice)
+    Call @PrepareGuitarPreset2 // 🎸 2
+    Call @RecordNextLoopInGroup4 // ⏺️ 4
+  elseif step = 17
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif step = 18 // Let the words… (high voice)
+    Call @PrepareKeyboardPreset1 // 🎹 1
+    Call @RecordNextLoopInGroup4 // ⏺️ 4
+  elseif step = 19
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Chorus
+  elseif step = 20 // By the rivers…
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif step = 21
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif step = 22 // (Again)
+    Call @PrepareKeyboardPreset1 // 🎹 1
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif step = 23
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
     Call @Beep
     Call @Beep
     Call @Beep

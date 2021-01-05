@@ -1,10 +1,5 @@
-// Rivers of Babylon
-// =================
-//
-// A nice song. Favorite of Monika's mom! :-)
-
 @OnLoad
-  SetShortName {1a-Rivers}
+  SetShortName {1-{{TITLE}}}
 
   Log {Set DEBUG=YES to see runtime details}
 
@@ -14,9 +9,7 @@
 @End
 
 @Reset
-  Log {+-----------------+}
-  Log {|Rivers of Babylon|}
-  Log {+-----------------+}
+  Log {{{TITLE}}}
 
   Call @InitVariables
   Call @ResetGtl
@@ -40,10 +33,12 @@
   Call @Beep
   Inc step
 
-  if MidiNote = BB_BUTTON_A
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     Call @Reset
-  else
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
     Call @ProceedWithSong
+  else
+    Call @Beep
   endif
 
   if DEBUG
@@ -52,88 +47,7 @@
 @End
 
 @ProceedWithSong
-  // Intro: Mmmh/Uuuh...
-  if step = 1 // 1/2, m+g
-    Call @PrepareGuitarPreset2
-    Call @ToggleSendGuitar
-  elseif step = 2
-    Call @RecordNextLoopInGroup1
-  elseif step = 3 // 2/2, m+g
-    Call @RecordNextLoopInGroup1
-    Call @PrepareKeyboardPreset1
-  elseif step = 4
-    Call @ToggleSendKeyboard
-
-  // Chorus: By the rivers... (x2)
-  elseif step = 5 // 1/2, m+g
-    Call @PrepareGuitarPreset1
-    Call @RecordNextLoopInGroup2
-  elseif step = 6
-    Call @ToggleSendGuitar
-  elseif step = 7 // 2/2, m+g
-    Call @PrepareKeyboardPreset2
-    Call @RecordNextLoopInGroup2
-  elseif step = 8
-    Call @ToggleSendKeyboard
-
-  // Verse: When the wicked... (x2)
-  elseif step = 9 // 1/2, m+g
-    Call @IncreaseClockLength // 9
-    Call @PrepareGuitarPreset1
-    Call @RecordNextLoopInGroup3
-  elseif step = 10
-    Call @ToggleSendGuitar
-  elseif step = 11 // 2/2, m+g
-    Call @PrepareGuitarPreset3
-    Call @RecordNextLoopInGroup3
-  elseif step = 12
-    Call @ToggleSendGuitar
-
-  // Intro: Mmmh/Uuuh... (again, x2)
-  elseif step = 13 // 1/2, m+g
-    Call @DecreaseClockLength // 8
-    Call @PrepareKeyboardPreset3
-    Call @RecordNextLoopInGroup1
-  elseif step = 14
-    Call @ToggleSendKeyboard
-  elseif step = 15 // 2/2, m+g
-    Call @PrepareGuitarPreset3
-    Call @RecordNextLoopInGroup1
-  elseif step = 16
-    Call @ToggleSendGuitar
-
-  // Intro: Let the words... (x2)
-  elseif step = 17 // 1/2, m+g
-    Call @PrepareGuitarPreset2
-    Call @RecordNextLoopInGroup4
-  elseif step = 18
-    Call @ToggleSendGuitar
-  elseif step = 19 // 2/2, m+g
-    Call @PrepareKeyboardPreset1
-    Call @RecordNextLoopInGroup4
-  elseif step = 20
-    Call @ToggleSendKeyboard
-
-  // Chorus: By the rivers... (repeat and fade)
-  elseif step = 21 // 1/2, m+g
-    Call @PrepareGuitarPreset3
-    Call @RecordNextLoopInGroup2
-  elseif step = 22
-    Call @ToggleSendGuitar
-  elseif step = 23 // 2/2, m+g
-    Call @PrepareKeyboardPreset1
-    Call @RecordNextLoopInGroup2
-  elseif step = 24
-    Call @ToggleSendKeyboard
-
-  // No step left
-  else
-    Log {No step left!}
-
-    Call @Beep
-    Call @Beep
-    Call @Beep
-  endif
+{{CODE}}
 @End
 
 @Beep
