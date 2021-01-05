@@ -144,7 +144,7 @@ class SongBuilder
   end
 
   def generate_activate
-    @result << "#{:else if @step > 1}if @step = #{@step}"
+    @result << "#{:else if @step > 1}if step = #{@step}"
 
     if @nextMicrophonePreset
       @result << '  Call @ToggleSendMicrophone // 🎤 ✔️'

@@ -59,7 +59,7 @@
   elseif step = 2 // 2nd guitar
     Call @RecordNextLoopInGroup1 // ⏺️ 1
     Call @PrepareGuitarPreset1 // 🎸 1
-  elseif @step = 3
+  elseif step = 3
     Call @ToggleSendGuitar // 🎸 ✔️
   
   // Verse 1
@@ -69,12 +69,12 @@
   
     Call @RecordNextLoopInGroup2 // ⏺️ 2
     Call @PrepareGuitarPreset1 // 🎸 1
-  elseif @step = 5
+  elseif step = 5
     Call @ToggleSendGuitar // 🎸 ✔️
   elseif step = 6 // Did they get you to trade
     Call @PrepareGuitarPreset3 // 🎸 3
     Call @RecordNextLoopInGroup2 // ⏺️ 2
-  elseif @step = 7
+  elseif step = 7
     Call @ToggleSendGuitar // 🎸 ✔️
   
   // Intro
@@ -90,7 +90,7 @@
   
     Call @RecordNextLoopInGroup0 // ⏺️ 0
     Call @PrepareKeyboardPreset1 // 🎹 1
-  elseif @step = 9
+  elseif step = 9
     Call @ToggleSendMicrophone // 🎤 ✔️
     Call @ToggleSendKeyboard // 🎹 ✔️
   
@@ -106,22 +106,22 @@
   
     Call @RecordNextLoopInGroup2 // ⏺️ 2
     Call @PrepareKeyboardPreset1 // 🎹 1
-  elseif @step = 11
+  elseif step = 11
     Call @ToggleSendKeyboard // 🎹 ✔️
   elseif step = 12 // (2nd voice)
     Call @RecordNextLoopInGroup2 // ⏺️ 2
     Call @PrepareKeyboardPreset2 // 🎹 2
-  elseif @step = 13
+  elseif step = 13
     Call @ToggleSendKeyboard // 🎹 ✔️
   elseif step = 14 // (3rd voice)
     Call @PrepareGuitarPreset3 // 🎸 3
-  elseif @step = 15
+  elseif step = 15
     Call @ToggleSendGuitar // 🎸 ✔️
   
   // Intro
   elseif step = 16 // Fade out
     Call @ToggleAndSelectGroup1 // ▶️ 1
-  elseif @step = 17
+  elseif step = 17
   
     Call @Beep
     Call @Beep
