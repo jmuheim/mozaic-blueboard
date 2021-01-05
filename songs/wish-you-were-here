@@ -54,7 +54,7 @@
 @End
 
 @ProceedWithSong
-    // Intro
+  // Intro
   if @step = 1 // 1st guitar (epic riff)
     Call @ToggleSendMicrophone // 🎤 ❌
     Call @PrepareGuitarPreset3 // 🎸 3

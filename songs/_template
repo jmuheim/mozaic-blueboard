@@ -54,7 +54,7 @@
 @End
 
 @ProceedWithSong
-  {{CODE}}
+{{CODE}}
 @End
 
 @Beep
