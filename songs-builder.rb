@@ -90,38 +90,38 @@ class SongsBuilder
     when /🎤\s?❌/
       if @sendMicrophone
         @sendMicrophone = false
-        codes << 'ToggleSendMicrophone // 🎤❌'
+        codes << 'ToggleSendMicrophone // 🎤 ❌'
       end
     when /🎸\s?([1-3])\s?(✔️)?/
-      codes << "PrepareGuitarPreset#{$1} // 🎸#{$1}"
+      codes << "PrepareGuitarPreset#{$1} // 🎸 #{$1}"
       @nextGuitarPreset = $1
 
       if $2 == '✔️'
         @sendGuitar = true
-        codes << 'ToggleSendGuitar // 🎸✔️'
+        codes << 'ToggleSendGuitar // 🎸 ✔️'
         @nextGuitarPreset = nil
       end
     when /🎹\s?([1-3])(\s?✔️)?/
-      codes << "PrepareKeyboardPreset#{$1} // 🎹#{$1}"
+      codes << "PrepareKeyboardPreset#{$1} // 🎹 #{$1}"
       @nextKeyboardPreset = $1
 
       if $2 == '✔️'
         @sendKeyboard = true
-        codes << 'ToggleSendKeyboard // 🎹✔️'
+        codes << 'ToggleSendKeyboard // 🎹 ✔️'
         @nextKeyboardPreset = nil
       end
     when /⏲️\s?(\d+)/
       while @clockLength != $1.to_i
         if @clockLength < $1.to_i
           @clockLength += 1
-          codes << "IncreaseClockLength // ⏲️#{@clockLength}"
+          codes << "IncreaseClockLength // ⏲️ #{@clockLength}"
         else
           @clockLength -= 1
-          codes << "DecreaseClockLength // ⏲️#{@clockLength}"
+          codes << "DecreaseClockLength // ⏲️ #{@clockLength}"
         end
       end
     when /⏺️\s?([0-4])/
-      codes << "RecordNextLoopInGroup#{$1} // ⏺️#{$1}"
+      codes << "RecordNextLoopInGroup#{$1} // ⏺️ #{$1}"
     else
       print_script_to_file
       tear_down
@@ -135,12 +135,12 @@ class SongsBuilder
     @result << "#{:else if @step > 1}if @step = #{@step}"
 
     if @nextKeyboardPreset
-      @result << '  Call @ToggleSendKeyboard // 🎹✔️'
+      @result << '  Call @ToggleSendKeyboard // 🎹 ✔️'
       @nextKeyboardPreset = nil
     end
 
     if @nextGuitarPreset
-      @result << '  Call @ToggleSendGuitar // 🎸✔️'
+      @result << '  Call @ToggleSendGuitar // 🎸 ✔️'
       @nextGuitarPreset = nil
     end
 

@@ -1,45 +1,45 @@
 // Intro
 if @step = 1 // 1st guitar (epic riff)
-  Call @ToggleSendMicrophone // 🎤❌
-  Call @PrepareGuitarPreset3 // 🎸3
-  Call @ToggleSendGuitar // 🎸✔️
+  Call @ToggleSendMicrophone // 🎤 ❌
+  Call @PrepareGuitarPreset3 // 🎸 3
+  Call @ToggleSendGuitar // 🎸 ✔️
 
-  Call @IncreaseClockLength // ⏲️9
-  Call @IncreaseClockLength // ⏲️10
-  Call @RecordNextLoopInGroup1 // ⏺️1
+  Call @IncreaseClockLength // ⏲️ 9
+  Call @IncreaseClockLength // ⏲️ 10
+  Call @RecordNextLoopInGroup1 // ⏺️ 1
 elseif @step = 2 // 2nd guitar
-  Call @RecordNextLoopInGroup1 // ⏺️1
-  Call @PrepareGuitarPreset1 // 🎸1
+  Call @RecordNextLoopInGroup1 // ⏺️ 1
+  Call @PrepareGuitarPreset1 // 🎸 1
 elseif @step = 3
-  Call @ToggleSendGuitar // 🎸✔️
+  Call @ToggleSendGuitar // 🎸 ✔️
 
 // Verse 1
 elseif @step = 4 // So, so you think you can tell
-  Call @DecreaseClockLength // ⏲️9
-  Call @DecreaseClockLength // ⏲️8
+  Call @DecreaseClockLength // ⏲️ 9
+  Call @DecreaseClockLength // ⏲️ 8
 
-  Call @RecordNextLoopInGroup2 // ⏺️2
-  Call @PrepareGuitarPreset1 // 🎸1
+  Call @RecordNextLoopInGroup2 // ⏺️ 2
+  Call @PrepareGuitarPreset1 // 🎸 1
 elseif @step = 5
-  Call @ToggleSendGuitar // 🎸✔️
+  Call @ToggleSendGuitar // 🎸 ✔️
 elseif @step = 6 // Did they get you to trade
-  Call @PrepareGuitarPreset3 // 🎸3
-  Call @RecordNextLoopInGroup2 // ⏺️2
+  Call @PrepareGuitarPreset3 // 🎸 3
+  Call @RecordNextLoopInGroup2 // ⏺️ 2
 elseif @step = 7
-  Call @ToggleSendGuitar // 🎸✔️
+  Call @ToggleSendGuitar // 🎸 ✔️
 
 // Intro
 
 // Verse 2 (or chorus)
 elseif @step = 8 // How I wish… (1st voice)
-  Call @RecordNextLoopInGroup2 // ⏺️2
-  Call @PrepareKeyboardPreset1 // 🎹1
+  Call @RecordNextLoopInGroup2 // ⏺️ 2
+  Call @PrepareKeyboardPreset1 // 🎹 1
 elseif @step = 9
-  Call @ToggleSendKeyboard // 🎹✔️
+  Call @ToggleSendKeyboard // 🎹 ✔️
 elseif @step = 10 // (2nd voice)
-  Call @RecordNextLoopInGroup2 // ⏺️2
-  Call @PrepareKeyboardPreset2 // 🎹2
+  Call @RecordNextLoopInGroup2 // ⏺️ 2
+  Call @PrepareKeyboardPreset2 // 🎹 2
 elseif @step = 11
-  Call @ToggleSendKeyboard // 🎹✔️
+  Call @ToggleSendKeyboard // 🎹 ✔️
 elseif @step = 12 // (3rd voice)
-  Call @PrepareGuitarPreset3 // 🎸3
+  Call @PrepareGuitarPreset3 // 🎸 3
