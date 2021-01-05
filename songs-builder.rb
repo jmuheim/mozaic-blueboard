@@ -92,7 +92,7 @@ class SongsBuilder
     when /🎤\s?❌/
       if @sendMicrophone
         @sendMicrophone = false
-        codes << 'ToggleSendMicrophone // 🎤 ❌'
+        codes << 'ToggleSendMicrophone // 🎤 ❌' # TODO: Should not happen immediately!
       end
     when /🎤\s?✔️/
       if !@sendMicrophone
