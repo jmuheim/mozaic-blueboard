@@ -6,59 +6,56 @@ gemfile do
   gem 'nokogiri'
 end
 
-puts `pandoc -s -o song.html songs/wish-you-were-here.md --metadata title="No title"`
+class SongsBuilder
+  HTML_FILE = "song.html"
 
-step = 1
-result = []
+  def initialize
+    @step = 1
+    @result = []
 
-doc = File.open("song.html") { |f| Nokogiri::Slop(f) }
+    @sendMicrophone = true
+    @sendKeyboard   = false
+    @sendGuitar     = true
+  end
 
-doc.html.body.h2.each_with_index do |h2, i|
-  result << "// #{h2.text}"
+  def process!
+    convert_md_to_html!
+    generate_mozaic_script!
+    tear_down!
+  end
 
-  table = doc.html.body.table[i + 1] # See https://stackoverflow.com/questions/65576289/
-  table.tbody.tr.each do |tr|
-    next if tr.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
+  def tear_down!
+    puts `unlink #{HTML_FILE}`
+  end
 
-    part     = tr.td[0].text
-    prepare  = tr.td[1].text
-    activate = tr.td[2].text
+  def convert_md_to_html!
+    puts `pandoc -s -o #{HTML_FILE} songs/wish-you-were-here.md --metadata title="No title"`
+    @doc = File.open(HTML_FILE) { |f| Nokogiri::Slop(f) }
+  end
 
-    result << "if step = #{step} // #{part}"
+  def generate_mozaic_script!
+    @doc.html.body.h2.each_with_index do |h2, i|
+      @result << "// #{h2.text}"
 
-    step += 1
+      table = @doc.html.body.table[i + 1] # See https://stackoverflow.com/questions/65576289/
+      table.tbody.tr.each do |tr|
+        next if tr.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
+
+        part     = tr.td[0].text
+        prepare  = tr.td[1].text
+        activate = tr.td[2].text
+
+        @result << "#{:else if @step > 1}if @step = #{@step} // #{part}"
+
+        @step += 1
+      end
+
+      @result << ""
+    end
+
+    @result << "endif"
+    puts @result.join("\n")
   end
 end
 
-puts result.join("\n")
-
-# result = File.open("index.html").read
-#
-# result.gsub!("<body>", '<body><input type="checkbox" id="toggle-chords-visibility" /><label for="toggle-chords-visibility"></label><a href="#" id="toggle-theme" onclick="document.getElementById(\'theme\').setAttribute(\'href\',\'revealjs/style/theme/serif.css\'); return false;"></a><a href="#/1" id="go-to-toc"></a>')
-# result.gsub!('<style>', '<style>' + File.open("style/night.css").read + File.open("style/shared.css").read)
-#
-# file = File.open("index.html", "w")
-# file.write(result)
-# file.close
-#
-# # Word
-# # puts `pandoc -s -o songs.docx all-songs.md --no-highlight --toc --toc-depth=1`
-#
-# # Powerpoint
-# # puts `pandoc -s -o songs.pptx all-songs.md --slide-level=2`
-#
-# # Printable song book
-# puts `pandoc -t revealjs -s -o print.html all-songs.md --slide-level=2 --no-highlight --toc --toc-depth=1 -V theme=serif -V progress=false -V revealjs-url=./style/revealjs`
-#
-# result = File.open("print.html").read
-#
-# result.gsub!('<style>', '<style>' + File.open("style/serif.css").read + File.open("style/shared.css").read) # Add
-# result.gsub!(/<section id="resources[-\d]*?" class="slide level2">(.*?)<\/section>/m, "") # Remove "Resources" slides (they contain links that are useless/ugly in a printed document)
-# result.gsub!('<section id="title-slide"', '<section id="title-slide" data-background-image="style/background.jpg"') # Add background to title slide
-#
-# file = File.open("print.html", "w")
-# file.write(result)
-# file.close
-#
-# print_file = "#{URI::encode(File.expand_path(File.dirname(__FILE__))).to_s}/print.html"
-# puts `decktape -s 1600x1200 file://#{print_file} print.pdf`
+SongsBuilder.new.process!
