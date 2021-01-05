@@ -6,7 +6,7 @@ gemfile do
   gem 'nokogiri'
 end
 
-class SongsBuilder
+class SongBuilder
   HTML_FILE = "song.html"
 
   DEFAULT_CLOCK_LENGTH = 8
@@ -15,7 +15,8 @@ class SongsBuilder
   DEFAULT_SEND_KEYBOARD   = false
   DEFAULT_SEND_GUITAR     = true
 
-  def initialize
+  def initialize(file)
+    @file = file
     @step = 1
     @result = []
 
@@ -25,8 +26,9 @@ class SongsBuilder
     @sendKeyboard   = DEFAULT_SEND_KEYBOARD
     @sendGuitar     = DEFAULT_SEND_GUITAR
 
-    @nextGuitarPreset   = nil
-    @nextKeyboardPreset = nil
+    @nextMicrophonePreset = nil
+    @nextKeyboardPreset   = nil
+    @nextGuitarPreset     = nil
   end
 
   def process
@@ -41,7 +43,7 @@ class SongsBuilder
   end
 
   def convert_md_to_html
-    puts `pandoc -s -o #{HTML_FILE} songs/wish-you-were-here.md --metadata title="No title"`
+    puts `pandoc -s -o #{HTML_FILE} songs/#{@file}.md --metadata title="No title"`
   end
 
   def generate_mozaic_script
@@ -162,13 +164,15 @@ class SongsBuilder
   def print_script_to_file
     template = File.open("songs/mozaic/_template").read
 
-    template.gsub! "{{TITLE}}", 'wish-you-were-here'
+    template.gsub! "{{TITLE}}", @file
     template.gsub! "{{CODE}}", @result.map { |line| line = "  #{line}" }.join("\n")
 
-    file = File.new("songs/mozaic/wish-you-were-here", "w")
+    file = File.new("songs/mozaic/#{@file}", "w")
     file.puts(template)
     file.close
   end
 end
 
-SongsBuilder.new.process
+Dir["songs/*.md"].each do |file|
+  SongBuilder.new(File.basename(file, ".*")).process
+end

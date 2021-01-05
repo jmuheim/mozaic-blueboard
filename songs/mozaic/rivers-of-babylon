@@ -1,5 +1,5 @@
 @OnLoad
-  SetShortName {1-{{TITLE}}}
+  SetShortName {1-rivers-of-babylon}
 
   Log {Set DEBUG=YES to see runtime details}
 
@@ -10,7 +10,7 @@
 
 @Reset
   Log {+------------------+}
-  Log {|{{TITLE}}|}
+  Log {|rivers-of-babylon|}
   Log {+------------------+}
 
   Call @InitVariables
@@ -49,7 +49,81 @@
 @End
 
 @ProceedWithSong
-{{CODE}}
+  // Intro
+  if @step = 1 // Mmmh…
+    Call @PrepareGuitarPreset2 // 🎸 2
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif @step = 2 // Uuuh…
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+    Call @PrepareKeyboardPreset1 // 🎹 1
+  elseif @step = 3
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Chorus
+  elseif @step = 4 // By the rivers…
+    Call @PrepareGuitarPreset1 // 🎸 1
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif @step = 5
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif @step = 6 // (Again)
+    Call @PrepareKeyboardPreset2 // 🎹 2
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif @step = 7
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Verse
+  elseif @step = 8 // When the wicked…
+    Call @IncreaseClockLength // ⏲️ 9
+    Call @PrepareGuitarPreset1 // 🎸 1
+    Call @RecordNextLoopInGroup3 // ⏺️ 3
+  elseif @step = 9
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif @step = 10 // (Again)
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup3 // ⏺️ 3
+  elseif @step = 11
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Intro
+  elseif @step = 12 // Mmmh (deep voice)
+    Call @DecreaseClockLength // ⏲️ 8
+    Call @PrepareKeyboardPreset3 // 🎹 3
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif @step = 13
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  elseif @step = 14 // Uuuh (add spontaneous hailings)
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif @step = 15
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Bridge
+  elseif @step = 16 // Let the words… (deep voice)
+    Call @PrepareGuitarPreset2 // 🎸 2
+    Call @RecordNextLoopInGroup4 // ⏺️ 4
+  elseif @step = 17
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif @step = 18 // Let the words… (high voice)
+    Call @PrepareKeyboardPreset1 // 🎹 1
+    Call @RecordNextLoopInGroup4 // ⏺️ 4
+  elseif @step = 19
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Chorus
+  elseif @step = 20 // By the rivers…
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif @step = 21
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif @step = 22 // (Again)
+    Call @PrepareKeyboardPreset1 // 🎹 1
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif @step = 23
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  endif
 @End
 
 @Beep
