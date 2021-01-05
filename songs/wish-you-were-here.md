@@ -36,6 +36,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 - Drums (1 bar, then "dideldü" and keyboard)
     - ▶️ 1
     - ⏲️ 1
+    - 🎤 ✔️
     - ⏺️ 0
     - 🎹 1
 
@@ -45,7 +46,6 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
     - ⏲️ 8
     - ⏺️ 2
     - 🎹 1
-    - 🎤 ✔️
 - (2nd voice)
     - ⏺️ 2
     - 🎹 2

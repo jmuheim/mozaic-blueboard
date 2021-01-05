@@ -94,6 +94,11 @@ class SongsBuilder
         @sendMicrophone = false
         codes << 'ToggleSendMicrophone // 🎤 ❌'
       end
+    when /🎤\s?✔️/
+      if !@sendMicrophone
+        @sendMicrophone = true
+        @nextMicrophonePreset = 1
+      end
     when /🎸\s?([1-3])\s?(✔️)?/
       codes << "PrepareGuitarPreset#{$1} // 🎸 #{$1}"
       @nextGuitarPreset = $1
@@ -103,7 +108,7 @@ class SongsBuilder
         codes << 'ToggleSendGuitar // 🎸 ✔️'
         @nextGuitarPreset = nil
       end
-    when /🎹\s?([1-3])(\s?✔️)?/
+    when /🎹\s?([1-3])\s?(✔️)?/
       codes << "PrepareKeyboardPreset#{$1} // 🎹 #{$1}"
       @nextKeyboardPreset = $1
 
@@ -136,6 +141,11 @@ class SongsBuilder
   def generate_activate
     @result << "#{:else if @step > 1}if @step = #{@step}"
 
+    if @nextMicrophonePreset
+      @result << '  Call @ToggleSendMicrophone // 🎤 ✔️'
+      @nextMicrophonePreset = nil
+    end
+
     if @nextKeyboardPreset
       @result << '  Call @ToggleSendKeyboard // 🎹 ✔️'
       @nextKeyboardPreset = nil
@@ -150,7 +160,7 @@ class SongsBuilder
   end
 
   def print_script_to_file
-    puts @result.join("\n")
+    # puts @result.join("\n")
     file = File.new("songs/wish-you-were-here.mozaic", "w")
     file.puts(@result.join("\n"))
     file.close
