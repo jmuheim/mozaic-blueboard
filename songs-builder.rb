@@ -75,7 +75,7 @@ class SongBuilder
   end
 
   def generate_prepare(part, settings)
-    @result << "#{:else if @step > 1}if @step = #{@step} // #{part}"
+    @result << "#{:else if @step > 1}if step = #{@step} // #{part}"
 
     settings.each_with_index do |setting, i|
       if codes = convert_setting_to_code(setting)
