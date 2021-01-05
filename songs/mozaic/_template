@@ -9,9 +9,7 @@
 @End
 
 @Reset
-  Log {+------------------+}
-  Log {|{{TITLE}}|}
-  Log {+------------------+}
+  Log {{{TITLE}}}
 
   Call @InitVariables
   Call @ResetGtl

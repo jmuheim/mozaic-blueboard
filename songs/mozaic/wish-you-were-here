@@ -9,9 +9,7 @@
 @End
 
 @Reset
-  Log {+------------------+}
-  Log {|Pink Floyd - Wish you were here|}
-  Log {+------------------+}
+  Log {Pink Floyd - Wish you were here}
 
   Call @InitVariables
   Call @ResetGtl

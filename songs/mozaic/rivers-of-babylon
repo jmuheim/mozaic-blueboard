@@ -9,9 +9,7 @@
 @End
 
 @Reset
-  Log {+------------------+}
-  Log {|Boney M. - By the Rivers of Babylon|}
-  Log {+------------------+}
+  Log {Boney M. - By the Rivers of Babylon}
 
   Call @InitVariables
   Call @ResetGtl
