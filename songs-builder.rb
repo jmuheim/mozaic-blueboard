@@ -24,6 +24,9 @@ class SongsBuilder
     @sendMicrophone = DEFAULT_SEND_MICROPHONE
     @sendKeyboard   = DEFAULT_SEND_KEYBOARD
     @sendGuitar     = DEFAULT_SEND_GUITAR
+
+    @nextGuitarPreset   = nil
+    @nextKeyboardPreset = nil
   end
 
   def process
@@ -52,7 +55,7 @@ class SongsBuilder
         next if tr.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
 
         generate_prepare  tr.td[0].text, extract_settings(tr.td[1])
-        generate_activate extract_settings(tr.td[2])
+        generate_activate
       end
 
       @result << ""
@@ -93,18 +96,22 @@ class SongsBuilder
         codes << 'ToggleSendMicrophone // 🎤❌'
       end
     when /🎸([1-3])(✔️)?/
-      codes << "PrepareGuitarPreset#{$1} // 🎸$1"
+      codes << "PrepareGuitarPreset#{$1} // 🎸#{$1}"
+      @nextGuitarPreset = $1
 
       if $2 == '✔️'
         @sendGuitar = true
         codes << 'ToggleSendGuitar // 🎸✔️'
+        @nextGuitarPreset = nil
       end
     when /🎹([1-3])(✔️)?/
-      codes << "PrepareKeyboardPreset#{$1} // 🎹$1"
+      codes << "PrepareKeyboardPreset#{$1} // 🎹#{$1}"
+      @nextKeyboardPreset = $1
 
       if $2 == '✔️'
         @sendKeyboard = true
         codes << 'ToggleSendKeyboard // 🎹✔️'
+        @nextKeyboardPreset = nil
       end
     when /⏲️(\d+)/
       while @clockLength != $1.to_i
@@ -120,15 +127,26 @@ class SongsBuilder
       codes << "RecordNextLoopInGroup#{$1} // ⏺️#{$1}"
     else
       print_script_to_file
+      tear_down
       raise "Unknown setting #{setting}!"
     end
 
     codes
   end
 
-  def generate_activate(settings)
+  def generate_activate
     @result << "#{:else if @step > 1}if @step = #{@step}"
-    @result << '  // TODO'
+
+    if @nextKeyboardPreset
+      @result << '  Call @ToggleSendKeyboard // 🎹✔️'
+      @nextKeyboardPreset = nil
+    end
+
+    if @nextGuitarPreset
+      @result << '  Call @ToggleSendGuitar // 🎸✔️'
+      @nextGuitarPreset = nil
+    end
+
     @step += 1
   end
 
