@@ -123,6 +123,9 @@
     Call @ToggleAndSelectGroup1 // ▶️ 1
   elseif @step = 17
   
+    Call @Beep
+    Call @Beep
+    Call @Beep
   endif
 @End
 

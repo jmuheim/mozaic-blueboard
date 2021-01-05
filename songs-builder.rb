@@ -68,6 +68,9 @@ class SongBuilder
       @result << ""
     end
 
+    @result << '  Call @Beep'
+    @result << '  Call @Beep'
+    @result << '  Call @Beep'
     @result << "endif"
   end
 

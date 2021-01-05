@@ -121,6 +121,9 @@
   elseif @step = 23
     Call @ToggleSendKeyboard // 🎹 ✔️
   
+    Call @Beep
+    Call @Beep
+    Call @Beep
   endif
 @End
 
