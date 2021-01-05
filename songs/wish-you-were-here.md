@@ -14,7 +14,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 | Part | Prepare | Activate |
 | --- | --- | --- |
-| 1st guitar (epic riff) | 🎤❌<br>🎸 3✔️<br>⏲️ 10<br> | ⏺️ 1 |
+| 1st guitar (epic riff) | 🎤❌<br>🎸 3✔️<br>⏲️ 10 | ⏺️ 1 |
 | 2nd guitar | ⏺️ 1<br>🎸 1 | 🎸✔️ |
 
 ## Verse 1
