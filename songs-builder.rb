@@ -50,9 +50,11 @@ class SongsBuilder
     @doc.html.body.h2.each_with_index do |h2, i|
       @result << "// #{h2.text}"
 
-      ul = @doc.html.body.ul[i] # See https://stackoverflow.com/questions/65576289/
-      ul.li.each do |li|
-        next if li.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
+      li = @doc.html.body.ul[i].li
+      li = [li] if li.count == 0 # See https://stackoverflow.com/questions/65576289/
+
+      li.each do |li|
+        # next if li.is_a?(Array) # See https://stackoverflow.com/questions/65576168/
 
         part = li.children.reject(&:element?).first.text.strip # Text of first <li> element
         settings = li.ul.li.select(&:element?).map(&:text)        # All texts of contained <li> elements (2nd level list items)
@@ -122,6 +124,8 @@ class SongsBuilder
       end
     when /⏺️\s?([0-4])/
       codes << "RecordNextLoopInGroup#{$1} // ⏺️ #{$1}"
+    when /▶️\s?([1-4])/
+      codes << "RecordNextLoopInGroup#{$1} // ▶️ #{$1}"
     else
       print_script_to_file
       tear_down

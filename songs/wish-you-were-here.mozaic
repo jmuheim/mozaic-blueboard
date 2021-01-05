@@ -29,17 +29,39 @@ elseif @step = 7
   Call @ToggleSendGuitar // 🎸 ✔️
 
 // Intro
+elseif @step = 8 // Drums (1 bar, then “dideldü” and keyboard)
+  Call @RecordNextLoopInGroup1 // ▶️ 1
+  Call @DecreaseClockLength // ⏲️ 7
+  Call @DecreaseClockLength // ⏲️ 6
+  Call @DecreaseClockLength // ⏲️ 5
+  Call @DecreaseClockLength // ⏲️ 4
+  Call @DecreaseClockLength // ⏲️ 3
+  Call @DecreaseClockLength // ⏲️ 2
+  Call @DecreaseClockLength // ⏲️ 1
 
-// Verse 2 (or chorus)
-elseif @step = 8 // How I wish… (1st voice)
-  Call @RecordNextLoopInGroup2 // ⏺️ 2
+  Call @RecordNextLoopInGroup0 // ⏺️ 0
   Call @PrepareKeyboardPreset1 // 🎹 1
 elseif @step = 9
   Call @ToggleSendKeyboard // 🎹 ✔️
-elseif @step = 10 // (2nd voice)
+
+// Verse 2 (or chorus)
+elseif @step = 10 // How I wish… (1st voice)
+  Call @IncreaseClockLength // ⏲️ 2
+  Call @IncreaseClockLength // ⏲️ 3
+  Call @IncreaseClockLength // ⏲️ 4
+  Call @IncreaseClockLength // ⏲️ 5
+  Call @IncreaseClockLength // ⏲️ 6
+  Call @IncreaseClockLength // ⏲️ 7
+  Call @IncreaseClockLength // ⏲️ 8
+
   Call @RecordNextLoopInGroup2 // ⏺️ 2
-  Call @PrepareKeyboardPreset2 // 🎹 2
+  Call @PrepareKeyboardPreset1 // 🎹 1
 elseif @step = 11
   Call @ToggleSendKeyboard // 🎹 ✔️
-elseif @step = 12 // (3rd voice)
+elseif @step = 12 // (2nd voice)
+  Call @RecordNextLoopInGroup2 // ⏺️ 2
+  Call @PrepareKeyboardPreset2 // 🎹 2
+elseif @step = 13
+  Call @ToggleSendKeyboard // 🎹 ✔️
+elseif @step = 14 // (3rd voice)
   Call @PrepareGuitarPreset3 // 🎸 3
