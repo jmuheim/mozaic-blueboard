@@ -160,9 +160,13 @@ class SongsBuilder
   end
 
   def print_script_to_file
-    # puts @result.join("\n")
-    file = File.new("songs/wish-you-were-here.mozaic", "w")
-    file.puts(@result.join("\n"))
+    template = File.open("songs/_template").read
+
+    template.gsub! "{{TITLE}}", 'wish-you-were-here'
+    template.gsub! "{{CODE}}", @result.map { |line| line = "  #{line}" }.join("\n")
+
+    file = File.new("songs/wish-you-were-here", "w")
+    file.puts(template)
     file.close
   end
 end

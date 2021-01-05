@@ -1,0 +1,283 @@
+// wish-you-were-here
+// ==================
+//
+// A great song. Monika's first guitar song! :-)
+
+@OnLoad
+  SetShortName {1-wish-you-were-here}
+
+  Log {Set DEBUG=YES to see runtime details}
+
+  Call @InitSharedConstants
+  Call @InitConstants
+  Call @Reset
+@End
+
+@Reset
+  Log {+------------------+}
+  Log {|wish-you-were-here|}
+  Log {+------------------+}
+
+  Call @InitVariables
+  Call @ResetGtl
+@End
+
+@InitConstants
+  DEBUG = YES
+@End
+
+@InitVariables
+  step = 0
+@End
+
+@OnMidiNoteOn
+  if DEBUG
+    Log {@OnMidiNoteOn: MidiNote=}, MidiNote
+  endif
+@End
+
+@OnMidiNoteOff
+  Call @Beep
+  Inc step
+
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
+    Call @Reset
+  elseif MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+    Call @ProceedWithSong
+  else
+    Call @Beep
+  endif
+
+  if DEBUG
+    Log {@OnMidiNoteOff: MidiNote=}, MidiNote
+  endif
+@End
+
+@ProceedWithSong
+    // Intro
+  if @step = 1 // 1st guitar (epic riff)
+    Call @ToggleSendMicrophone // 🎤 ❌
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+    Call @IncreaseClockLength // ⏲️ 9
+    Call @IncreaseClockLength // ⏲️ 10
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+  elseif @step = 2 // 2nd guitar
+    Call @RecordNextLoopInGroup1 // ⏺️ 1
+    Call @PrepareGuitarPreset1 // 🎸 1
+  elseif @step = 3
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Verse 1
+  elseif @step = 4 // So, so you think you can tell
+    Call @DecreaseClockLength // ⏲️ 9
+    Call @DecreaseClockLength // ⏲️ 8
+  
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+    Call @PrepareGuitarPreset1 // 🎸 1
+  elseif @step = 5
+    Call @ToggleSendGuitar // 🎸 ✔️
+  elseif @step = 6 // Did they get you to trade
+    Call @PrepareGuitarPreset3 // 🎸 3
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+  elseif @step = 7
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Intro
+  elseif @step = 8 // Drums (1 bar, then “dideldü” and keyboard)
+    Call @ToggleAndSelectGroup1 // ▶️ 1
+    Call @DecreaseClockLength // ⏲️ 7
+    Call @DecreaseClockLength // ⏲️ 6
+    Call @DecreaseClockLength // ⏲️ 5
+    Call @DecreaseClockLength // ⏲️ 4
+    Call @DecreaseClockLength // ⏲️ 3
+    Call @DecreaseClockLength // ⏲️ 2
+    Call @DecreaseClockLength // ⏲️ 1
+  
+    Call @RecordNextLoopInGroup0 // ⏺️ 0
+    Call @PrepareKeyboardPreset1 // 🎹 1
+  elseif @step = 9
+    Call @ToggleSendMicrophone // 🎤 ✔️
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  
+  // Verse 2 (or chorus)
+  elseif @step = 10 // How I wish… (1st voice)
+    Call @IncreaseClockLength // ⏲️ 2
+    Call @IncreaseClockLength // ⏲️ 3
+    Call @IncreaseClockLength // ⏲️ 4
+    Call @IncreaseClockLength // ⏲️ 5
+    Call @IncreaseClockLength // ⏲️ 6
+    Call @IncreaseClockLength // ⏲️ 7
+    Call @IncreaseClockLength // ⏲️ 8
+  
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+    Call @PrepareKeyboardPreset1 // 🎹 1
+  elseif @step = 11
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  elseif @step = 12 // (2nd voice)
+    Call @RecordNextLoopInGroup2 // ⏺️ 2
+    Call @PrepareKeyboardPreset2 // 🎹 2
+  elseif @step = 13
+    Call @ToggleSendKeyboard // 🎹 ✔️
+  elseif @step = 14 // (3rd voice)
+    Call @PrepareGuitarPreset3 // 🎸 3
+  elseif @step = 15
+    Call @ToggleSendGuitar // 🎸 ✔️
+  
+  // Intro
+  elseif @step = 16 // Fade out
+    Call @ToggleAndSelectGroup1 // ▶️ 1
+  elseif @step = 17
+  
+  endif
+@End
+
+@Beep
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
+  SendSysex sysexData, 2
+@End
+
+@ResetGtl
+  sysexData = [SYSEX_RESET]
+  SendSysex sysexData, 1
+@End
+
+@ToggleAndSelectGroup1
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup2
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup3
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@ToggleAndSelectGroup4
+  sysexData = [SYSEX_TOGGLE_AND_SELECT_GROUP, BB_BUTTON_D]
+  SendSysex sysexData, 2
+@End
+
+@ToggleSendMicrophone
+  sysexData = [SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
+@ToggleSendKeyboard
+  sysexData = [SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
+@ToggleSendGuitar
+  sysexData = [SYSEX_TOGGLE_SEND_GUITAR_TO_GTL]
+  SendSysex sysexData, 1
+@End
+
+@PrepareKeyboardPreset1
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@PrepareKeyboardPreset2
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@PrepareKeyboardPreset3
+  sysexData = [SYSEX_SELECT_KEYBOARD_PRESET, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@PrepareGuitarPreset1
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@PrepareGuitarPreset2
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@PrepareGuitarPreset3
+  sysexData = [SYSEX_SELECT_GUITAR_PRESET, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup0
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_MASTER]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup1
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_A]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup2
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_B]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup3
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_C]
+  SendSysex sysexData, 2
+@End
+
+@RecordNextLoopInGroup4
+  sysexData = [SYSEX_RECORD_NEXT_LOOP_IN_GROUP, BB_BUTTON_D]
+  SendSysex sysexData, 2
+@End
+
+@IncreaseClockLength
+  sysexData = [SYSEX_INCREASE_CLOCK_LENGTH]
+  SendSysex sysexData, 1
+@End
+
+@DecreaseClockLength
+  sysexData = [SYSEX_DECREASE_CLOCK_LENGTH]
+  SendSysex sysexData, 1
+@End
+
+
+//////////////////////////////////////////////////////////
+// These constants are shared across all Mozaic scripts //
+//////////////////////////////////////////////////////////
+
+@InitSharedConstants
+  UNDEFINED = -1
+
+  BB_BUTTON_MASTER = 0
+  BB_BUTTON_A = 1
+  BB_BUTTON_B = 2
+  BB_BUTTON_C = 3
+  BB_BUTTON_D = 4
+
+  BB_BUTTONS_MIDI[BB_BUTTON_A] = 60
+  BB_BUTTONS_MIDI[BB_BUTTON_B] = 62
+  BB_BUTTONS_MIDI[BB_BUTTON_C] = 64
+  BB_BUTTONS_MIDI[BB_BUTTON_D] = 65
+
+  TAP_SHORT  = 0    // Up to 299ms
+  TAP_MEDIUM = 300  // Between 300 and 999ms
+  TAP_LONG   = 1000 // 1000ms or more
+
+  SYSEX_TOGGLE_SEND_MICROPHONE_TO_GTL = 0
+  SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
+  SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
+  SYSEX_TOGGLE_AND_SELECT_GROUP = 3
+  SYSEX_RESET = 4
+  SYSEX_DECREASE_CLOCK_LENGTH = 5
+  SYSEX_INCREASE_CLOCK_LENGTH = 6
+  SYSEX_SELECT_GUITAR_PRESET = 7
+  SYSEX_SELECT_MICROPHONE_PRESET = 8
+  SYSEX_ANNOUNCE_FEEDBACK = 9
+  SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
+  SYSEX_SELECT_KEYBOARD_PRESET = 13
+
+  FEEDBACK_BEEP = 20
+@End
