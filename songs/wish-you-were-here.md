@@ -1,5 +1,7 @@
 # Pink Floyd - Wish you were here
 
+Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
+
 | Setting | Value |
 | --- | --- |
 | BPM | 60 (TODO: would be 121!) |

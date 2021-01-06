@@ -1,5 +1,7 @@
 # Boney M. - By the Rivers of Babylon
 
+Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
+
 | Setting | Value |
 | --- | --- |
 | BPM | 110 |
