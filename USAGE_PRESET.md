@@ -6,7 +6,7 @@ You can create presets (pre-defined song structures) that will handle all the co
 
 Presets are written in [Markdown](https://en.wikipedia.org/wiki/Markdown) (using fancy emojis 🎤🎸🎹), and then compiled into a Mozaic script (using a Ruby script).
 
-For example, take a look at [Pink Floyd - Wish You Were Here](./songs/wish-you-were-here.md). Using `songs-builder.rb`, it will be compiled to [`songs/mozaic/wish-you-were-here`](./songs/mozaic/wish-you-were-here), which can then be loaded into AUM.
+For example, take a look at [songs/wish-you-were-here.md](./songs/wish-you-were-here.md). Using `songs-builder.rb`, it will be compiled to [`songs/mozaic/wish-you-were-here`](./songs/mozaic/wish-you-were-here), which can then be loaded into AUM.
 
 Each preset contains the following:
 
@@ -62,3 +62,11 @@ Parameters are defined using combinations of emojis and associated values (numbe
 - ⏲️ 10 (set clock length to 10)
 - ⏺️ 1 (record next loop in group #1)
 - ▶️ 3 (play group #3)
+
+## Compile to Mozaic Code
+
+Run `$ ruby songs-builder.rb`.
+
+## Load Preset in Mozaic
+
+In AUM, load the preset into the first Mozaic slot (replacing `1-bb-handler`).
