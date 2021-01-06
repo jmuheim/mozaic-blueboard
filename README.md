@@ -16,7 +16,21 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 
 ## See it in action
 
+### Preset mode
+
+You can create presets (pre-defined song structures) that will handle all the complex stuff for you when performing live. At the tip of your toe, by clicking a button on your BlueBoard, you can walk through a preset, one step at a time (similar to a step sequencer).
+
 [![Josh wants to be a band - Wish you were here (Pink Floyd)](./media/wish-you-were-here.jpg)](https://www.youtube.com/watch?v=qK1rAW2jbXA)
+
+Presets are written in a simple configuration-language (using fancy emojis 🎸).
+
+See [Preset mode](./USAGE_PRESET.md) for more details.
+
+### Live mode
+
+TODO
+
+See [Live mode](./USAGE_LIVE.md) for more details.
 
 ## Usage
 
