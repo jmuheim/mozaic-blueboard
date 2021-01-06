@@ -11,16 +11,16 @@ The goal of GTL-Performer is to enable a single person to become a 1-wo*man-band
 
 ## Setting up all the gear
 
-- [Requirements (Hardware and Apps)](REQUIREMENTS.md)
-- [Configuration](CONFIGURATION.md)
+- [Requirements (Hardware and Apps)](./REQUIREMENTS.md)
+- [Configuration](./CONFIGURATION.md)
 
 ## See it in action
 
-[![Josh wants to be a band - Wish you were here (Pink Floyd)](media/wish-you-were-here.jpg)](https://www.youtube.com/watch?v=qK1rAW2jbXA)
+[![Josh wants to be a band - Wish you were here (Pink Floyd)](./media/wish-you-were-here.jpg)](https://www.youtube.com/watch?v=qK1rAW2jbXA)
 
 ## Usage
 
-- [Usage](USAGE.md)
+- [Usage](./USAGE.md)
 
 ## Future ideas
 
