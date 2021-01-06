@@ -23,7 +23,7 @@ You can create presets (pre-defined song structures) that will handle all the co
 
 [![Josh wants to be a band - Wish you were here (Pink Floyd)](./media/wish-you-were-here.jpg)](https://www.youtube.com/watch?v=qK1rAW2jbXA)
 
-Presets are written in a simple language (using fancy emojis 🎸).
+Presets are written in Markdown (using fancy emojis 🎤🎸🎹).
 
 See [Preset mode](./USAGE_PRESET.md) for more details.
 
