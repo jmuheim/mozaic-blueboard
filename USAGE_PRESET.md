@@ -6,7 +6,7 @@ You can create presets (pre-defined song structures) that will handle all the co
 
 Presets are written in [Markdown](https://en.wikipedia.org/wiki/Markdown) (using fancy emojis 🎤🎸🎹), and then compiled into a Mozaic script (using a Ruby script).
 
-For example, take a look at [`songs/wish-you-were-here.md`](./songs/wish-you-were-here.md). It is very simple, can be printed and used as an orientation while performing. Using `songs-builder.rb`, the Markdown code will then be compiled to Mozaic code, as seen in [`songs/mozaic/wish-you-were-here`](./songs/mozaic/wish-you-were-here). This code can then be loaded into AUM.
+For example, take a look at [`presets/wish-you-were-here.md`](./presets/wish-you-were-here.md). It is very simple, can be printed and used as an orientation while performing. Using `presets-builder.rb`, the Markdown code will then be compiled to Mozaic code, as seen in [`presets/mozaic/wish-you-were-here`](./presets/mozaic/wish-you-were-here). This code can then be loaded into AUM.
 
 ## General Structure
 
@@ -71,7 +71,7 @@ Place some more description here if you like...
 
 ## Compile to Mozaic Code
 
-Run `$ ruby songs-builder.rb`. Each preset will result in its own file, stored in [`songs/mozaic`](./songs/mozaic).
+Run `$ ruby presets-builder.rb`. Each preset will result in its own file, stored in [`songs/mozaic`](./songs/mozaic).
 
 ## Load Preset in Mozaic
 

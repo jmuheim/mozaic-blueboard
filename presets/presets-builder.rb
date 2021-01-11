@@ -6,7 +6,7 @@ gemfile do
   gem 'nokogiri'
 end
 
-class SongBuilder
+class PresetBuilder
   HTML_FILE = "song.html"
 
   DEFAULT_CLOCK_LENGTH = 8
@@ -43,7 +43,7 @@ class SongBuilder
   end
 
   def convert_md_to_html
-    puts `pandoc -s -o #{HTML_FILE} songs/#{@file}.md --metadata title="No title"`
+    puts `pandoc -s -o #{HTML_FILE} presets/#{@file}.md --metadata title="No title"`
   end
 
   def generate_mozaic_script
@@ -165,17 +165,17 @@ class SongBuilder
   end
 
   def print_script_to_file
-    template = File.open("songs/mozaic/_template").read
+    template = File.open("presets/mozaic/_template").read
 
     template.gsub! "{{TITLE}}", @doc.html.body.h1.text
     template.gsub! "{{CODE}}", @result.map { |line| line = "  #{line}" }.join("\n")
 
-    file = File.new("songs/mozaic/#{@file}", "w")
+    file = File.new("presets/mozaic/#{@file}", "w")
     file.puts(template)
     file.close
   end
 end
 
-Dir["songs/*.md"].each do |file|
-  SongBuilder.new(File.basename(file, ".*")).process
+Dir["presets/*.md"].each do |file|
+  PresetBuilder.new(File.basename(file, ".*")).process
 end
