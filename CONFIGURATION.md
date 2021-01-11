@@ -20,7 +20,7 @@ It's quite a task to set up everything properly. Be sure to be very careful.
 
 - Start AUM
 - Create a new MIDI channel and call it "Mozaic"
-- Go through each script file (from top to bottom) and apply their specific installation instructions.
+- Go through each script file in [`src`](./src) (from top to bottom) and apply their specific installation instructions.
 
 ## Audio routing
 
