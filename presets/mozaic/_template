@@ -13,7 +13,7 @@
   Log {|Presets-Handler|}
   Log {+---------------+}
 
-  Log {Press A to increase preset ID}
+  Log {Select preset ID: Use C to increase selection (or B to decrease)!}
 
   Call @InitVariables
   Call @ResetGtl
@@ -38,22 +38,21 @@
 @End
 
 @OnMidiNoteOff
-  Call @Beep
-  Inc step
-
   if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     Call @Reset
   else
     if presetSelectionConfirmed
       if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+        Inc step
         Call @ProceedWithPreset
+        Call @Beep
       else
         Call @Error
       endif
     else // No preset selected!
       if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
         if presetId = 0
-          Log {Please select a preset first using A!}
+          Log {Please select a preset first! Use C to increase selection (or B to decrease)!}
           Call @Error
         else
           presetSelectionConfirmed = YES
@@ -62,20 +61,20 @@
         endif
       else // BB_BUTTON_B or BB_BUTTON_C
         if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
-          if presetId = presetsSize
-            Log {Current presetId=0 already! Can't decrease!}
-            Call @Error
-          else
-            Inc presetId
-            Log {Current presetId=}, presetId, {, press B again to decrease, C to increase, or D to confirm!}
-            Call @Beep
-          endif
-        else // BB_BUTTON_C
           if presetId = 0
             Log {Current presetId=0 already! Can't decrease!}
             Call @Error
           else
             Dec presetId
+            Log {Current presetId=}, presetId, {, press B again to decrease, C to increase, or D to confirm!}
+            Call @Beep
+          endif
+        else // BB_BUTTON_C
+          if presetId = presetsSize
+            Log {Current presetId=}, presetsSize, { already! Can't increase!}
+            Call @Error
+          else
+            Inc presetId
             Log {Current presetId=}, presetId, {, press C again to increase, B to decrease, or D to confirm!}
             Call @Beep
           endif
