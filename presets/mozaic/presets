@@ -24,7 +24,7 @@
 @End
 
 @InitVariables
-  presetsSize = {{PRESETS_SIZE}}
+  presetsSize = 2
   presetId = 0
   presetSelectionConfirmed = NO
 
@@ -98,7 +98,163 @@
 @End
 
 @ProceedWithPreset
-{{CODE}}
+  if presetId = 1 // Boney M. - By the Rivers of Babylon
+    // Intro
+    if step = 1 // Mmmh…
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 2 // Uuuh…
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+      Call @PrepareKeyboardPreset1 // 🎹 1
+    elseif step = 3
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    
+    // Chorus
+    elseif step = 4 // By the rivers…
+      Call @PrepareGuitarPreset1 // 🎸 1
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 5
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 6 // (Again)
+      Call @PrepareKeyboardPreset2 // 🎹 2
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 7
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    
+    // Verse
+    elseif step = 8 // When the wicked…
+      Call @IncreaseClockLength // ⏲️ 9
+      Call @PrepareGuitarPreset1 // 🎸 1
+      Call @RecordNextLoopInGroup3 // ⏺️ 3
+    elseif step = 9
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 10 // (Again)
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @RecordNextLoopInGroup3 // ⏺️ 3
+    elseif step = 11
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Intro
+    elseif step = 12 // Mmmh (deep voice)
+      Call @DecreaseClockLength // ⏲️ 8
+      Call @PrepareKeyboardPreset3 // 🎹 3
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 13
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    elseif step = 14 // Uuuh (add spontaneous hailings)
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 15
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Bridge
+    elseif step = 16 // Let the words… (deep voice)
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @RecordNextLoopInGroup4 // ⏺️ 4
+    elseif step = 17
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 18 // Let the words… (high voice)
+      Call @PrepareKeyboardPreset1 // 🎹 1
+      Call @RecordNextLoopInGroup4 // ⏺️ 4
+    elseif step = 19
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    
+    // Chorus
+    elseif step = 20 // By the rivers…
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 21
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 22 // (Again)
+      Call @PrepareKeyboardPreset1 // 🎹 1
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 23
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    
+      Call @Error
+    endif
+  elseif presetId = 2 // Pink Floyd - Wish you were here
+    // Intro
+    if step = 1 // 1st guitar (epic riff)
+      Call @ToggleSendMicrophone // 🎤 ❌
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+      Call @IncreaseClockLength // ⏲️ 9
+      Call @IncreaseClockLength // ⏲️ 10
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 2 // 2nd guitar
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+      Call @PrepareGuitarPreset1 // 🎸 1
+    elseif step = 3
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Verse 1
+    elseif step = 4 // So, so you think you can tell
+      Call @DecreaseClockLength // ⏲️ 9
+      Call @DecreaseClockLength // ⏲️ 8
+    
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+      Call @PrepareGuitarPreset1 // 🎸 1
+    elseif step = 5
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 6 // Did they get you to trade
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 7
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Intro
+    elseif step = 8 // Drums (1 bar, then “dideldü” and keyboard)
+      Call @ToggleAndSelectGroup1 // ▶️ 1
+      Call @DecreaseClockLength // ⏲️ 7
+      Call @DecreaseClockLength // ⏲️ 6
+      Call @DecreaseClockLength // ⏲️ 5
+      Call @DecreaseClockLength // ⏲️ 4
+      Call @DecreaseClockLength // ⏲️ 3
+      Call @DecreaseClockLength // ⏲️ 2
+      Call @DecreaseClockLength // ⏲️ 1
+    
+      Call @RecordNextLoopInGroup0 // ⏺️ 0
+      Call @PrepareKeyboardPreset1 // 🎹 1
+    elseif step = 9
+      Call @ToggleSendMicrophone // 🎤 ✔️
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    
+    // Verse 2 (or chorus)
+    elseif step = 10 // How I wish… (1st voice)
+      Call @IncreaseClockLength // ⏲️ 2
+      Call @IncreaseClockLength // ⏲️ 3
+      Call @IncreaseClockLength // ⏲️ 4
+      Call @IncreaseClockLength // ⏲️ 5
+      Call @IncreaseClockLength // ⏲️ 6
+      Call @IncreaseClockLength // ⏲️ 7
+      Call @IncreaseClockLength // ⏲️ 8
+    
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+      Call @PrepareKeyboardPreset1 // 🎹 1
+    elseif step = 11
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    elseif step = 12 // (2nd voice)
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+      Call @PrepareKeyboardPreset2 // 🎹 2
+    elseif step = 13
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    elseif step = 14 // (3rd voice)
+      Call @PrepareGuitarPreset3 // 🎸 3
+    elseif step = 15
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Intro
+    elseif step = 16 // Fade out
+      Call @ToggleAndSelectGroup1 // ▶️ 1
+    elseif step = 17
+    
+      Call @Error
+    endif
+  endif
 @End
 
 @Beep

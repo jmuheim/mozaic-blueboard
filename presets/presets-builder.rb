@@ -7,8 +7,6 @@ gemfile do
 end
 
 class PresetBuilder
-  HTML_FILE = "song.html"
-
   DEFAULT_CLOCK_LENGTH = 8
 
   DEFAULT_SEND_MICROPHONE = true
@@ -19,6 +17,7 @@ class PresetBuilder
     @file = file
     @step = 1
     @result = []
+    @title = nil
 
     @clockLength = DEFAULT_CLOCK_LENGTH
 
@@ -29,25 +28,40 @@ class PresetBuilder
     @nextMicrophonePreset = nil
     @nextKeyboardPreset   = nil
     @nextGuitarPreset     = nil
+
+    process
+  end
+
+  def title
+    @title
+  end
+
+  def code
+    @result.map {|line| line = "    #{line}"}.join("\n")
+  end
+
+  def tmp_file
+    "#{@file}.html"
   end
 
   def process
     convert_md_to_html
     generate_mozaic_script
-    print_script_to_file
     tear_down
   end
 
   def tear_down
-    puts `unlink #{HTML_FILE}`
+    puts `unlink #{tmp_file}`
   end
 
   def convert_md_to_html
-    puts `pandoc -s -o #{HTML_FILE} presets/#{@file}.md --metadata title="No title"`
+    puts `pandoc -s -o #{tmp_file} #{@file} --metadata title="No title"`
   end
 
   def generate_mozaic_script
-    @doc = File.open(HTML_FILE) { |f| Nokogiri::Slop(f) }
+    @doc = File.open(tmp_file) { |f| Nokogiri::Slop(f) }
+
+    @title = @doc.html.body.h1.text
 
     @doc.html.body.h2.each_with_index do |h2, i|
       @result << "// #{h2.text}"
@@ -68,9 +82,7 @@ class PresetBuilder
       @result << ""
     end
 
-    @result << '  Call @Beep'
-    @result << '  Call @Beep'
-    @result << '  Call @Beep'
+    @result << '  Call @Error'
     @result << "endif"
   end
 
@@ -163,19 +175,40 @@ class PresetBuilder
 
     @step += 1
   end
+end
+
+class PresetsBuilder
+  def initialize
+    @presets = []
+
+    process
+    print_script_to_file
+  end
+
+  def process
+    Dir["*.md"].each do |file|
+      @presets << PresetBuilder.new(file)
+    end
+  end
 
   def print_script_to_file
-    template = File.open("presets/mozaic/_template").read
+    result = []
+    template = File.open("mozaic/_template").read
 
-    template.gsub! "{{TITLE}}", @doc.html.body.h1.text
-    template.gsub! "{{CODE}}", @result.map { |line| line = "  #{line}" }.join("\n")
+    template.gsub! "{{PRESETS_SIZE}}", @presets.size.to_s
 
-    file = File.new("presets/mozaic/#{@file}", "w")
+    @presets.each_with_index do |preset, i|
+      result << "  #{:else if i > 0}if presetId = #{i + 1} // #{preset.title}"
+      result << preset.code
+    end
+    result << "  endif"
+
+    template.gsub! "{{CODE}}", result.join("\n")
+
+    file = File.new("mozaic/presets", "w")
     file.puts(template)
     file.close
   end
 end
 
-Dir["presets/*.md"].each do |file|
-  PresetBuilder.new(File.basename(file, ".*")).process
-end
+PresetsBuilder.new
