@@ -1,7 +1,10 @@
 @OnLoad
   SetShortName {1-PresetsHandler}
 
-  Log {Set DEBUG=YES to see runtime details}
+  DEBUG = NO
+  if DEBUG = NO
+    Log {Set DEBUG=YES to see runtime details}
+  endif
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -20,7 +23,6 @@
 @End
 
 @InitConstants
-  DEBUG = YES
 @End
 
 @InitVariables
@@ -38,13 +40,12 @@
 @End
 
 @OnMidiNoteOff
-  Inc step
-
   if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     Call @Reset
   else
     if presetSelectionConfirmed
       if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+        Inc step
         Call @ProceedWithPreset
         Call @Beep
       else
@@ -80,8 +81,6 @@
             Call @Beep
           endif
         endif
-      else
-        Call @Error
       endif
     endif
   endif

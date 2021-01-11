@@ -28,7 +28,10 @@
 @OnLoad
   SetShortName {9-Feedbacker}
 
-  Log {Set DEBUG=YES to see more runtime details}
+  DEBUG = NO // Has no effect here yet
+  if DEBUG = NO
+    Log {Set DEBUG=YES to see runtime details}
+  endif
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -36,8 +39,6 @@
 @End
 
 @InitConstants
-  DEBUG = NO // Has no effect here yet
-
   AUDIO_OVERLAP_DURATION = 150 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
 
   PAUSE_BETWEEN_FEEDBACKS = 300 // After a group of feedbacks was played, add some silence before the next group.

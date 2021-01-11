@@ -1,7 +1,10 @@
 @OnLoad
   SetShortName {1-PresetsHandler}
 
-  Log {Set DEBUG=YES to see runtime details}
+  DEBUG = NO
+  if DEBUG = NO
+    Log {Set DEBUG=YES to see runtime details}
+  endif
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -20,7 +23,6 @@
 @End
 
 @InitConstants
-  DEBUG = YES
 @End
 
 @InitVariables
@@ -79,8 +81,6 @@
             Call @Beep
           endif
         endif
-      else
-        Call @Error
       endif
     endif
   endif

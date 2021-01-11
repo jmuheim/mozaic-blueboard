@@ -59,7 +59,10 @@
 @OnLoad
   SetShortName {2-GtlPerformer}
 
-  Log {Set DEBUG=YES to see runtime details}
+  DEBUG = NO
+  if DEBUG = NO
+    Log {Set DEBUG=YES to see runtime details}
+  endif
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -74,8 +77,6 @@
 @End
 
 @InitConstants
-  DEBUG = YES
-
   NUMBER_OF_LOOPS_PER_GROUP_IN_GTL = 4
   CLOCK_LENGTH_AFTER_RESET = 1
   DEFAULT_CLOCK_LENGTH = 8

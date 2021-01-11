@@ -57,7 +57,10 @@
 @OnLoad
   SetShortName {1-BbHandler}
 
-  Log {Set DEBUG=YES to see runtime details}
+  DEBUG = YES
+  if DEBUG = NO
+    Log {Set DEBUG=YES to see runtime details}
+  endif
 
   Call @InitSharedConstants
   Call @InitConstants
@@ -106,8 +109,6 @@
 @End
 
 @InitConstants
-  DEBUG = YES
-
   NUMBER_OF_BB_BUTTONS = 4
 @End
 
