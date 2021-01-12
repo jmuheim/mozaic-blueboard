@@ -108,12 +108,12 @@
   Log {+---------+}
 
   Call @InitVariables
-  Call @ResetGtl
+  Call @ResetAll
   Call @AnnounceWelcome
 @End
 
-@ResetGtl
-  sysexData = [SYSEX_RESET]
+@ResetAll
+  sysexData = [SYSEX_RESET_ALL]
   SendSysex sysexData, 1
 @End
 
@@ -258,7 +258,6 @@
 
   // B>C
   if buttonCombo = 2367
-    sysexAction = SYSEX_RESET
     Call @Reset
   endif
 
@@ -325,7 +324,7 @@
   SYSEX_TOGGLE_SEND_GUITAR_TO_GTL = 1
   SYSEX_RECORD_NEXT_LOOP_IN_GROUP = 2
   SYSEX_TOGGLE_AND_SELECT_GROUP = 3
-  SYSEX_RESET = 4
+  SYSEX_RESET_ALL = 4
   SYSEX_DECREASE_CLOCK_LENGTH = 5
   SYSEX_INCREASE_CLOCK_LENGTH = 6
   SYSEX_SELECT_GUITAR_PRESET = 7

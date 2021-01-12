@@ -28,7 +28,7 @@
 @OnLoad
   SetShortName {3-Feedbacker}
 
-  DEBUG = NO // Has no effect here yet
+  DEBUG = NO
   if DEBUG = NO
     Log {Set DEBUG=YES to see runtime details}
   endif
@@ -94,30 +94,44 @@
   sysexAction = sysexData[0]
 
   if sysexAction = SYSEX_ANNOUNCE_FEEDBACK
-    if muted
-      Log {Muted (not giving any feedback)}
-    else
-      Call @IterateOverFeedbacks
-    endif
+    Call @IterateOverFeedbacks
   elseif sysexAction = SYSEX_MUTE_FEEDBACK
+    if DEBUG
+      Log {muted=YES}
+    endif
+
     muted = YES
   elseif sysexAction = SYSEX_UNMUTE_FEEDBACK
+    if DEBUG
+      Log {muted=NO}
+    endif
+
     muted = NO
+  elseif sysexAction = SYSEX_RESET_ALL
+    Call @Reset
   endif
 @End
 
 @IterateOverFeedbacks
-  Log {@IterateOverFeedbacks}
+  if DEBUG
+    Log {@IterateOverFeedbacks}
+  endif
 
   for i = 1 to sysexLength - 1 // Ignore first sysex argument (sysexAction)
     feedbackId = sysexData[i]
-    Call @CueFeedback
+    if muted
+      Log {Muted! Not playing feedback feedbackId=}, feedbackId, {.}
+    else
+      Call @CueFeedback
+    endif
   endfor
 
   audioPlayingUntil = audioPlayingUntil + PAUSE_BETWEEN_FEEDBACKS
 @End
 
 @CueFeedback
+  Log {Playing feedback feedbackId=}, feedbackId, {.}
+
   feedbackLength = AUDIO_SAMPLES_LENGTHS[feedbackId]
 
   now = SystemTime
@@ -131,7 +145,9 @@
 
   delayForCurrentMidiOff = delayForCurrentMidiOn + feedbackLength
 
-  Log {@CueFeedback feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, now=}, now, {, delayForCurrentMidiOn=}, delayForCurrentMidiOn, {, delayForCurrentMidiOff=}, delayForCurrentMidiOff, {, audioPlayingUntil=}, audioPlayingUntil
+  if DEBUG
+    Log {@CueFeedback feedbackId=}, feedbackId, {, feedbackLength=}, feedbackLength, {, now=}, now, {, delayForCurrentMidiOn=}, delayForCurrentMidiOn, {, delayForCurrentMidiOff=}, delayForCurrentMidiOff, {, audioPlayingUntil=}, audioPlayingUntil
+  endif
 
   SendMidiNoteOn  MIDI_CHANNEL_FB, feedbackId, 127, delayForCurrentMidiOn
   SendMidiNoteOff MIDI_CHANNEL_FB, feedbackId,   0, delayForCurrentMidiOff
@@ -151,6 +167,7 @@
 @InitSharedConstants
   UNDEFINED = -1
 
+  SYSEX_RESET_ALL = 4
   SYSEX_ANNOUNCE_FEEDBACK = 9
   SYSEX_MUTE_FEEDBACK = 10
   SYSEX_UNMUTE_FEEDBACK = 11

@@ -394,7 +394,7 @@
     Call @RecordNextLoopInGroup
   elseif sysexAction = SYSEX_TOGGLE_AND_SELECT_GROUP
     Call @ToggleAndSelectGroup
-  elseif sysexAction = SYSEX_RESET
+  elseif sysexAction = SYSEX_RESET_ALL
     Call @Reset
   elseif sysexAction = SYSEX_DECREASE_CLOCK_LENGTH
     Call @DecreaseClockLength
