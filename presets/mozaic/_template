@@ -27,7 +27,7 @@
 
 @InitVariables
   presetsSize = {{PRESETS_SIZE}}
-  presetId = 0
+  presetId = 1
   presetSelectionConfirmed = NO
 
   step = 0
@@ -53,18 +53,13 @@
       endif
     else // No preset selected!
       if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
-        if presetId = 0
-          Log {Please select a preset first! Use C to increase selection (or B to decrease)!}
-          Call @Error
-        else
-          presetSelectionConfirmed = YES
-          Log {Preset selected! Press D to walk through it step by step.}
-          Call @Beep
-        endif
+        presetSelectionConfirmed = YES
+        Log {Preset }, presetId, { selected! Press D to walk through it step by step.}
+        Call @Beep
       else // BB_BUTTON_B or BB_BUTTON_C
         if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
-          if presetId = 0
-            Log {Current presetId=0 already! Can't decrease!}
+          if presetId = 1
+            Log {Current presetId=}, presetId, { already! Can't decrease!}
             Call @Error
           else
             Dec presetId
@@ -73,7 +68,7 @@
           endif
         else // BB_BUTTON_C
           if presetId = presetsSize
-            Log {Current presetId=}, presetsSize, { already! Can't increase!}
+            Log {Current presetId=}, presetsSize, { already, which is the max! Can't increase!}
             Call @Error
           else
             Inc presetId

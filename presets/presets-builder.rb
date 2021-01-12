@@ -4,6 +4,7 @@ gemfile do
   source 'https://rubygems.org'
   gem 'pry'
   gem 'nokogiri'
+  gem 'activesupport'
 end
 
 class PresetBuilder
@@ -198,8 +199,12 @@ class PresetsBuilder
     template.gsub! "{{PRESETS_SIZE}}", @presets.size.to_s
 
     @presets.each_with_index do |preset, i|
-      result << "  #{:else if i > 0}if presetId = #{i + 1} // #{preset.title}"
+      result << "  //////////////////"
+      result << "  // #{preset.title}"
+      result << "  //////////////////"
+      result << "  #{:else if i > 0}if presetId = #{i + 1}"
       result << preset.code
+      result << ""
     end
     result << "  endif"
 
