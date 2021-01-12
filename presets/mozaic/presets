@@ -27,7 +27,7 @@
 
 @InitVariables
   presetsSize = 2
-  presetId = 1
+  preset = 1
   presetSelectionConfirmed = NO
 
   step = 0
@@ -44,45 +44,70 @@
     Call @Reset
   else
     if presetSelectionConfirmed
-      if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
-        Inc step
-        Call @ProceedWithPreset
-        Call @Beep
-      else
-        Call @Error
-      endif
-    else // No preset selected!
-      if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
-        presetSelectionConfirmed = YES
-        Log {Preset }, presetId, { selected! Press D to walk through it step by step.}
-        Call @Beep
-      else // BB_BUTTON_B or BB_BUTTON_C
-        if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
-          if presetId = 1
-            Log {Current presetId=}, presetId, { already! Can't decrease!}
-            Call @Error
-          else
-            Dec presetId
-            Log {Current presetId=}, presetId, {, press B again to decrease, C to increase, or D to confirm!}
-            Call @Beep
-          endif
-        else // BB_BUTTON_C
-          if presetId = presetsSize
-            Log {Current presetId=}, presetsSize, { already, which is the max! Can't increase!}
-            Call @Error
-          else
-            Inc presetId
-            Log {Current presetId=}, presetId, {, press C again to increase, B to decrease, or D to confirm!}
-            Call @Beep
-          endif
-        endif
-      endif
+      Call @ProcessSelectedPreset
+    else
+      Call @ProcessPresetSelection
     endif
   endif
 
   if DEBUG
     Log {@OnMidiNoteOff: MidiNote=}, MidiNote
   endif
+@End
+
+@ProcessSelectedPreset
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+    Inc step
+    Call @ProceedWithPreset
+    Call @Beep
+  else
+    // TODO: What other functions could be triggered using B and C buttons?
+    Call @Error
+  endif
+@End
+
+@ProcessPresetSelection
+  if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_D]
+    Call @ConfirmSelectedPreset
+  else // BB_BUTTON_B or BB_BUTTON_C
+    if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_B]
+      Call @DecreasePreset
+    else // BB_BUTTON_C
+      Call @IncreasePreset
+    endif
+
+    sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, preset]
+    SendSysex sysexData, 3
+  endif
+@End
+
+@IncreasePreset
+  if preset = presetsSize
+    Log {Current preset=}, preset, { already, which is the max! Can't increase!}
+    Call @Error
+  else
+    Inc preset
+    Log {Current preset=}, preset, {, press C again to increase, B to decrease, or D to confirm!}
+  endif
+@End
+
+@DecreasePreset
+  if preset = 1
+    Log {Current preset=}, preset, { already, which is the min! Can't decrease!}
+    Call @Error
+  else
+    Dec preset
+    Log {Current preset=}, preset, {, press B again to decrease, C to increase, or D to confirm!}
+  endif
+@End
+
+@ConfirmSelectedPreset
+  presetSelectionConfirmed = YES
+
+  Log {Preset }, preset, { selected! Press D to walk through it step by step.}
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, preset, FEEDBACK_ACTIVATED]
+  SendSysex sysexData, 4
 @End
 
 @Error
