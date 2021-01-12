@@ -4,7 +4,6 @@ gemfile do
   source 'https://rubygems.org'
   gem 'pry'
   gem 'nokogiri'
-  gem 'activesupport'
 end
 
 class PresetBuilder
