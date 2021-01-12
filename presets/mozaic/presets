@@ -10,8 +10,17 @@
   Call @InitConstants
   Call @Reset
 
+  Call @AnnounceWelcome
+@End
+
+@AnnounceWelcome
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
+  SendSysex sysexData, 2
+
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, FEEDBACK_MODE]
   SendSysex sysexData, 3
+
+  Call @AnnounceCurrentPreset
 @End
 
 @Reset
@@ -79,9 +88,13 @@
       Call @IncreasePreset
     endif
 
-    sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, preset]
-    SendSysex sysexData, 3
+    Call @AnnounceCurrentPreset
   endif
+@End
+
+@AnnounceCurrentPreset
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, preset]
+  SendSysex sysexData, 3
 @End
 
 @IncreasePreset
@@ -123,7 +136,7 @@
   //////////////////
   // Boney M. - By the Rivers of Babylon
   //////////////////
-  if presetId = 1
+  if preset = 1
     // Intro
     if step = 1 // Mmmh…
       Call @PrepareGuitarPreset2 // 🎸 2
@@ -204,7 +217,7 @@
   //////////////////
   // Pink Floyd - Wish you were here
   //////////////////
-  elseif presetId = 2
+  elseif preset = 2
     // Intro
     if step = 1 // 1st guitar (epic riff)
       Call @ToggleSendMicrophone // 🎤 ❌
@@ -433,6 +446,7 @@
   SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
   SYSEX_SELECT_KEYBOARD_PRESET = 13
 
+  FEEDBACK_ACTIVATED = 17
   FEEDBACK_BEEP = 20
   FEEDBACK_PRESET = 22
   FEEDBACK_MODE = 24

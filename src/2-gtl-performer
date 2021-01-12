@@ -143,9 +143,6 @@
   Log {|GTL-Performer|}
   Log {+-------------+}
 
-  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_WELCOME]
-  SendSysex sysexData, 2
-
   Call @MuteFeedback
 
   Call @InitVariables
@@ -609,7 +606,6 @@
   GTL_MIDI_CHANNEL = 1 // Group The Loop
   AUM_MIDI_CHANNEL = 2 // AUM
 
-  FEEDBACK_WELCOME = 10
   FEEDBACK_GROUP = 11
   FEEDBACK_LOOP = 12
   FEEDBACK_CLOCK_LENGTH = 13

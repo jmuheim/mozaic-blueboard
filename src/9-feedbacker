@@ -39,7 +39,7 @@
 @End
 
 @InitConstants
-  AUDIO_OVERLAP_DURATION = 150 // All audio samples have some silence at the start and end. To make sound it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
+  AUDIO_OVERLAP_DURATION = 150 // All audio samples have some silence at the start and end. To make it sound smoother when multiple audios are announced together (e.g. FEEDBACK_SELECT and FEEDBACK_GROUP), we overlap the end of the previous with the start of the next audio.
 
   PAUSE_BETWEEN_FEEDBACKS = 300 // After a group of feedbacks was played, add some silence before the next group.
 
@@ -66,9 +66,9 @@
   AUDIO_SAMPLES_LENGTHS[19] = 228 // FEEDBACK_ARMED
   AUDIO_SAMPLES_LENGTHS[20] = 102 // FEEDBACK_BEEP
   AUDIO_SAMPLES_LENGTHS[21] = 312 // FEEDBACK_KEYBOARD
-  AUDIO_SAMPLES_LENGTHS[22] = 290 // FEEDBACK_PRESET
+  AUDIO_SAMPLES_LENGTHS[22] = 384 // FEEDBACK_PRESET
   AUDIO_SAMPLES_LENGTHS[23] = 266 // FEEDBACK_LIVE
-  AUDIO_SAMPLES_LENGTHS[24] = 170 // FEEDBACK_MODE
+  AUDIO_SAMPLES_LENGTHS[24] = 228 // FEEDBACK_MODE
 @End
 
 @InitVariables

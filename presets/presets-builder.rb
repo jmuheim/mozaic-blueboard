@@ -201,7 +201,7 @@ class PresetsBuilder
       result << "  //////////////////"
       result << "  // #{preset.title}"
       result << "  //////////////////"
-      result << "  #{:else if i > 0}if presetId = #{i + 1}"
+      result << "  #{:else if i > 0}if preset = #{i + 1}"
       result << preset.code
       result << ""
     end
