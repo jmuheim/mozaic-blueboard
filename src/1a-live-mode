@@ -55,7 +55,7 @@
 // This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
 
 @OnLoad
-  SetShortName {1-LiveMode}
+  SetShortName {1a-LiveMode}
 
   DEBUG = YES
   if DEBUG = NO
@@ -67,8 +67,6 @@
   Call @Reset
 
   SetTimerInterval 10
-
-  Call @AnnounceWelcome
 @End
 
 @AnnounceWelcome
@@ -111,6 +109,7 @@
 
   Call @InitVariables
   Call @ResetGtl
+  Call @AnnounceWelcome
 @End
 
 @ResetGtl

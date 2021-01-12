@@ -1,5 +1,5 @@
 @OnLoad
-  SetShortName {1-LiveMode}
+  SetShortName {1b-PresetMode}
 
   DEBUG = NO
   if DEBUG = NO
@@ -9,8 +9,6 @@
   Call @InitSharedConstants
   Call @InitConstants
   Call @Reset
-
-  Call @AnnounceWelcome
 @End
 
 @AnnounceWelcome
@@ -24,14 +22,15 @@
 @End
 
 @Reset
-  Log {+---------+}
-  Log {|Live-Mode|}
-  Log {+---------+}
+  Log {+-----------+}
+  Log {|Preset-Mode|}
+  Log {+-----------+}
 
   Log {Select preset ID: Use C to increase selection (or B to decrease)!}
 
   Call @InitVariables
   Call @ResetGtl
+  Call @AnnounceWelcome
 @End
 
 @InitConstants

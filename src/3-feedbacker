@@ -26,7 +26,7 @@
 // Instead, we use a specific Chameleon preset (GTL Performer.spatch) which has a bunch of spoken words (or sentences) loaded in it. Those will be used to play audio feedback upon interacting with the script. For example, when short-tapping button A (to toggle whether the microphone is sent to GTL), you will hear "Sending microphone activated".
 
 @OnLoad
-  SetShortName {9-Feedbacker}
+  SetShortName {3-Feedbacker}
 
   DEBUG = NO // Has no effect here yet
   if DEBUG = NO
