@@ -66,6 +66,9 @@
   Call @InitConstants
   Call @Reset
 
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_LIVE, FEEDBACK_MODE]
+  SendSysex sysexData, 3
+
   SetTimerInterval 10
 @End
 
@@ -326,4 +329,6 @@
   SYSEX_SELECT_KEYBOARD_PRESET = 13
 
   FEEDBACK_BEEP = 20
+  FEEDBACK_LIVE = 23
+  FEEDBACK_MODE = 24
 @End

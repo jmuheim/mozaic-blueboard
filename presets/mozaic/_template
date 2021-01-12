@@ -9,6 +9,9 @@
   Call @InitSharedConstants
   Call @InitConstants
   Call @Reset
+
+  sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_PRESET, FEEDBACK_MODE]
+  SendSysex sysexData, 3
 @End
 
 @Reset
@@ -267,4 +270,6 @@
   SYSEX_SELECT_KEYBOARD_PRESET = 13
 
   FEEDBACK_BEEP = 20
+  FEEDBACK_PRESET = 22
+  FEEDBACK_MODE = 24
 @End
