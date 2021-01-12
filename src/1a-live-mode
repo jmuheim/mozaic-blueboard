@@ -1,5 +1,5 @@
-// BlueBoard-Handler
-// =================
+// Live-Mode
+// =========
 //
 // Installation:
 // -------------
@@ -55,7 +55,7 @@
 // This tap type is sent (together with the number) to GtlPerformer, where it can trigger different behaviours.
 
 @OnLoad
-  SetShortName {1-BbHandler}
+  SetShortName {1-LiveMode}
 
   DEBUG = YES
   if DEBUG = NO
@@ -105,9 +105,9 @@
 @End
 
 @Reset
-  Log {+-----------------+}
-  Log {|BlueBoard-Handler|}
-  Log {+-----------------+}
+  Log {+---------+}
+  Log {|Live-Mode|}
+  Log {+---------+}
 
   Call @InitVariables
   Call @ResetGtl

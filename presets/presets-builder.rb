@@ -186,14 +186,14 @@ class PresetsBuilder
   end
 
   def process
-    Dir["*.md"].each do |file|
+    Dir["songs/*.md"].each do |file|
       @presets << PresetBuilder.new(file)
     end
   end
 
   def print_script_to_file
     result = []
-    template = File.open("mozaic/_template").read
+    template = File.open("_template").read
 
     template.gsub! "{{PRESETS_SIZE}}", @presets.size.to_s
 
@@ -209,7 +209,7 @@ class PresetsBuilder
 
     template.gsub! "{{CODE}}", result.join("\n")
 
-    file = File.new("mozaic/presets", "w")
+    file = File.new("../src/1b-preset-mode", "w")
     file.puts(template)
     file.close
   end

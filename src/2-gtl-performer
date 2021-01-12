@@ -11,10 +11,10 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M2:1" (BlueBoard-Handler)
+// - Click "Mozaic @M2:1" (Live-Mode)
 // - Close the window by pressing the "X" button
 // - Click the global "MIDI Route" button (the "backwards S" at the top right, or by accessing it through the main menu)
-// - Route BlueBoard-Handler's (Mozaic @M1:2) output to "iRig BlueBoard Bluetooth"
+// - Route Live-Mode's (Mozaic @M1:2) output to "iRig BlueBoard Bluetooth"
 // - Press "Close"
 //
 // About:

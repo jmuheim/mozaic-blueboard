@@ -1,5 +1,5 @@
 @OnLoad
-  SetShortName {1-PresetsHandler}
+  SetShortName {1-LiveMode}
 
   DEBUG = NO
   if DEBUG = NO
@@ -24,9 +24,9 @@
 @End
 
 @Reset
-  Log {+---------------+}
-  Log {|Presets-Handler|}
-  Log {+---------------+}
+  Log {+---------+}
+  Log {|Live-Mode|}
+  Log {+---------+}
 
   Log {Select preset ID: Use C to increase selection (or B to decrease)!}
 
@@ -446,6 +446,7 @@
   SYSEX_TOGGLE_SEND_KEYBOARD_TO_GTL = 12
   SYSEX_SELECT_KEYBOARD_PRESET = 13
 
+  FEEDBACK_WELCOME = 10
   FEEDBACK_ACTIVATED = 17
   FEEDBACK_BEEP = 20
   FEEDBACK_PRESET = 22

@@ -11,7 +11,7 @@
 // - Replace the default code with the one in this file
 // - Click "Upload"
 // - Click the "MIDI Route" button (the "backwards S" in the window's menu bar)
-// - Click "Mozaic @M2:1" (BlueBoard-Handler)
+// - Click "Mozaic @M2:1" (Live-Mode)
 // - Click "Mozaic @M2:2" (GTL-Performer)
 // - Close the window by pressing the "X" button
 // - TODO: Create audio channel with Chameleon and load GTL-Performer preset, then route GTL-Performer's (Mozaic @M1:3) output to it
@@ -67,7 +67,7 @@
   AUDIO_SAMPLES_LENGTHS[20] = 102 // FEEDBACK_BEEP
   AUDIO_SAMPLES_LENGTHS[21] = 312 // FEEDBACK_KEYBOARD
   AUDIO_SAMPLES_LENGTHS[22] = 384 // FEEDBACK_PRESET
-  AUDIO_SAMPLES_LENGTHS[23] = 266 // FEEDBACK_LIVE
+  AUDIO_SAMPLES_LENGTHS[23] = 360 // FEEDBACK_LIVE
   AUDIO_SAMPLES_LENGTHS[24] = 228 // FEEDBACK_MODE
 @End
 

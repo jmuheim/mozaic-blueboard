@@ -78,7 +78,7 @@ Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 - Click the channel's name ("Keyboard")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
 - Click "MIDI Sources"
-- Click "Mozaic @M2:2" (Gtl-Performer)
+- Click "Mozaic @M2:2" (GTL-Performer)
 - Go back (click "Keyboard" button)
 - Select "Chameleon: Parameters" -> "Preset Load"
 - For the first preset, assign MIDI note (not CC!) 8 to channel 3
@@ -110,7 +110,7 @@ Now each preset needs to listen to some MIDI signal so it can be toggled on/off:
 
 - Click the channel's name ("Guitar")
 - Click the "MIDI settings" button (switches icon at the top left of the menu)
-- Click "Mozaic @M2:2" (Gtl-Performer)
+- Click "Mozaic @M2:2" (GTL-Performer)
 - Go back (click "Guitar" button)
 - Select "Tonebridge: Parameters" -> "Preset Load"
 - For the first preset, assign MIDI note (not CC!) 2 to channel 3
