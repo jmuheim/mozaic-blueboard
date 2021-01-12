@@ -38,8 +38,12 @@
 
 @InitVariables
   presetsSize = {{PRESETS_SIZE}}
-  preset = 1
   presetSelectionConfirmed = NO
+
+  // Keep current preset when resetting!
+  if Unassigned preset
+    preset = 1
+  endif
 
   step = 0
 @End
