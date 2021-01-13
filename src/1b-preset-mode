@@ -36,7 +36,7 @@
 @End
 
 @InitVariables
-  presetsSize = 2
+  presetsSize = 3
   presetSelectionConfirmed = NO
 
   // Keep current preset when resetting!
@@ -298,6 +298,54 @@
     elseif step = 16 // Fade out
       Call @ToggleAndSelectGroup1 // ▶️ 1
     elseif step = 17
+    
+      Call @Error
+    endif
+
+  //////////////////
+  // Ween - Buenas Tardes Amigo
+  //////////////////
+  elseif preset = 3
+    // Intro (verse 1 + 2)
+    if step = 1 // Verse 1: Buenas tardes amigo… (slow strum each bar)
+      Call @ToggleSendMicrophone // 🎤 ❌
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 2 // Verse 2: You killed my brother… (fingerstyle guitar)
+      Call @PrepareGuitarPreset1 // 🎸 1
+      Call @RecordNextLoopInGroup1 // ⏺️ 1
+    elseif step = 3
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Build up (other verses, except last 2)
+    elseif step = 4 // Verse 3: I looked at every fiesta… (tender 3/4 strumming)
+      Call @PrepareGuitarPreset1 // 🎸 1
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 5
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 6 // Verse 4: You, you look like my brother… (bass line)
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 7
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 8 // Verse 5: The village all gathered… (arpeggio low)
+      Call @PrepareKeyboardPreset1 // 🎹 1
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 9
+      Call @ToggleSendKeyboard // 🎹 ✔️
+    elseif step = 10 // Verse 5: The people of the village… (arpeggio high)
+    elseif step = 11
+    
+    // Dramatic instrumentation
+    elseif step = 12 // 1st guitar (low)
+      Call @PrepareGuitarPreset3 // 🎸 3
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
+    elseif step = 13
+      Call @ToggleSendGuitar // 🎸 ✔️
+    elseif step = 14 // 2nd guitar (high)
+    elseif step = 15
     
       Call @Error
     endif

@@ -186,7 +186,7 @@ class PresetsBuilder
   end
 
   def process
-    Dir["songs/*.md"].each do |file|
+    Dir["songs/*.md"].sort.each do |file|
       @presets << PresetBuilder.new(file)
     end
   end

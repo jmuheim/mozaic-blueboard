@@ -5,6 +5,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 | Setting | Value |
 | --- | --- |
 | BPM | 60 (TODO: would be 121!) |
+| ⏲️ | 8 |
 | 🎸 1 | Wish you were here |
 | 🎸 3 | Oasis |
 | 🎹 1 | Piano |
