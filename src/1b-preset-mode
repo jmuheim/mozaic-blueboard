@@ -29,7 +29,6 @@
   Log {Select preset ID: Use C to increase selection (or B to decrease)!}
 
   Call @InitVariables
-  Call @ResetAll
   Call @AnnounceWelcome
 @End
 
@@ -57,6 +56,9 @@
 @OnMidiNoteOff
   if MidiNote = BB_BUTTONS_MIDI[BB_BUTTON_A]
     Call @Reset
+
+    sysexData = [SYSEX_RESET_ALL]
+    SendSysex sysexData, 1
   else
     if presetSelectionConfirmed
       Call @ProcessSelectedPreset
@@ -306,11 +308,6 @@
 @Beep
   sysexData = [SYSEX_ANNOUNCE_FEEDBACK, FEEDBACK_BEEP]
   SendSysex sysexData, 2
-@End
-
-@ResetAll
-  sysexData = [SYSEX_RESET_ALL]
-  SendSysex sysexData, 1
 @End
 
 @ToggleAndSelectGroup1

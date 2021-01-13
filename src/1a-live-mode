@@ -108,13 +108,7 @@
   Log {+---------+}
 
   Call @InitVariables
-  Call @ResetAll
   Call @AnnounceWelcome
-@End
-
-@ResetAll
-  sysexData = [SYSEX_RESET_ALL]
-  SendSysex sysexData, 1
 @End
 
 @InitConstants
@@ -259,6 +253,7 @@
   // B>C
   if buttonCombo = 2367
     Call @Reset
+    sysexAction = SYSEX_RESET_ALL
   endif
 
   // B+C
