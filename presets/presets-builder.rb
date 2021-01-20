@@ -193,9 +193,9 @@ class PresetsBuilder
 
   def print_script_to_file
     result = []
-    template = File.open("_template").read
+    template = File.open("../src/1b-preset-mode").read
 
-    template.gsub! "{{PRESETS_SIZE}}", @presets.size.to_s
+    template.gsub! /presetsSize = \d+/, "presetsSize = #{@presets.size}"
 
     @presets.each_with_index do |preset, i|
       result << "  //////////////////"
@@ -207,7 +207,7 @@ class PresetsBuilder
     end
     result << "  endif"
 
-    template.gsub! "{{CODE}}", result.join("\n")
+    template.gsub! /\n@ProceedWithPreset\n(.*?)\n@End\n/m, "\n@ProceedWithPreset\n#{result.join("\n")}\n@End\n"
 
     file = File.new("../src/1b-preset-mode", "w")
     file.puts(template)
