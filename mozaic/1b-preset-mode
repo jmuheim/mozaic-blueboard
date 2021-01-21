@@ -293,19 +293,19 @@
     // Intro
     if step = 1 // Mmmh…
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
       Call @ToggleSendGuitar
-      Call @Log {🎸 ✔️}
+      Call Log {🎸 ✔️}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
     elseif step = 2 // Uuuh…
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     
     elseif step = 3
       Call @ToggleSendKeyboard
@@ -314,20 +314,20 @@
     // Chorus
     elseif step = 4 // By the rivers…
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 5
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 6 // (Again)
       Call @PrepareKeyboardPreset2
-      Call @Log {🎹 2}
+      Call Log {🎹 2}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 7
       Call @ToggleSendKeyboard
@@ -336,22 +336,22 @@
     // Verse
     elseif step = 8 // When the wicked…
       Call @IncreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
     
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @RecordNextLoopInGroup3
-      Call @Log {⏺️ 3}
+      Call Log {⏺️ 3}
     elseif step = 9
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 10 // (Again)
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
       Call @RecordNextLoopInGroup3
-      Call @Log {⏺️ 3}
+      Call Log {⏺️ 3}
     
     elseif step = 11
       Call @ToggleSendGuitar
@@ -360,22 +360,22 @@
     // Intro
     elseif step = 12 // Mmmh (deep voice)
       Call @DecreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
     
       Call @PrepareKeyboardPreset3
-      Call @Log {🎹 3}
+      Call Log {🎹 3}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     elseif step = 13
       Call @ToggleSendKeyboard
       Log {🎹 ✔️}
     elseif step = 14 // Uuuh (add spontaneous hailings)
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
     elseif step = 15
       Call @ToggleSendGuitar
@@ -384,20 +384,20 @@
     // Bridge
     elseif step = 16 // Let the words… (deep voice)
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
     
       Call @RecordNextLoopInGroup4
-      Call @Log {⏺️ 4}
+      Call Log {⏺️ 4}
     
     elseif step = 17
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 18 // Let the words… (high voice)
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     
       Call @RecordNextLoopInGroup4
-      Call @Log {⏺️ 4}
+      Call Log {⏺️ 4}
     
     elseif step = 19
       Call @ToggleSendKeyboard
@@ -406,20 +406,20 @@
     // Chorus
     elseif step = 20 // By the rivers…
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 21
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 22 // (Again)
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 23
       Call @ToggleSendKeyboard
@@ -435,27 +435,27 @@
     // Intro
     if step = 1 // 1st guitar (epic riff)
       Call @ToggleSendMicrophone
-      Call @Log {🎤 ❌}
+      Call Log {🎤 ❌}
     
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
       Call @ToggleSendGuitar
-      Call @Log {🎸 ✔️}
+      Call Log {🎸 ✔️}
     
       Call @IncreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 10}
+      Call Log {⏲️ 10}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
     elseif step = 2 // 2nd guitar
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
     elseif step = 3
       Call @ToggleSendGuitar
@@ -464,24 +464,24 @@
     // Verse 1
     elseif step = 4 // So, so you think you can tell
       Call @DecreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     elseif step = 5
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 6 // Did they get you to trade
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 7
       Call @ToggleSendGuitar
@@ -490,28 +490,28 @@
     // Intro
     elseif step = 8 // Drums (1 bar, then “dideldü” and keyboard)
       Call @ToggleAndSelectGroup1
-      Call @Log {▶️ 1}
+      Call Log {▶️ 1}
     
       Call @DecreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 5}
+      Call Log {⏲️ 5}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 4}
+      Call Log {⏲️ 4}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 3}
+      Call Log {⏲️ 3}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 2}
+      Call Log {⏲️ 2}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 1}
+      Call Log {⏲️ 1}
     
       Call @RecordNextLoopInGroup0
-      Call @Log {⏺️ 0}
+      Call Log {⏺️ 0}
     
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     
     elseif step = 9
       Call @ToggleSendMicrophone
@@ -522,41 +522,41 @@
     // Verse 2 (or chorus)
     elseif step = 10 // How I wish… (1st voice)
       Call @IncreaseClockLength
-      Call @Log {⏲️ 2}
+      Call Log {⏲️ 2}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 3}
+      Call Log {⏲️ 3}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 4}
+      Call Log {⏲️ 4}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 5}
+      Call Log {⏲️ 5}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     elseif step = 11
       Call @ToggleSendKeyboard
       Log {🎹 ✔️}
     elseif step = 12 // (2nd voice)
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
       Call @PrepareKeyboardPreset2
-      Call @Log {🎹 2}
+      Call Log {🎹 2}
     
     elseif step = 13
       Call @ToggleSendKeyboard
       Log {🎹 ✔️}
     elseif step = 14 // (3rd voice)
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
     elseif step = 15
       Call @ToggleSendGuitar
@@ -565,7 +565,7 @@
     // Intro
     elseif step = 16 // Fade out
       Call @ToggleAndSelectGroup1
-      Call @Log {▶️ 1}
+      Call Log {▶️ 1}
     
     elseif step = 17
     
@@ -579,21 +579,21 @@
     // Intro (verse 1 + 2)
     if step = 1 // Verse 1: Buenas tardes amigo… (slow strum each bar)
       Call @ToggleSendMicrophone
-      Call @Log {🎤 ❌}
+      Call Log {🎤 ❌}
     
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
       Call @ToggleSendGuitar
-      Call @Log {🎸 ✔️}
+      Call Log {🎸 ✔️}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     elseif step = 2 // Verse 2: You killed my brother… (fingerstyle guitar)
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
     elseif step = 3
       Call @ToggleSendGuitar
@@ -602,30 +602,30 @@
     // Build up (other verses, except last 2)
     elseif step = 4 // Verse 3: I looked at every fiesta… (tender 3/4 strumming)
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 5
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 6 // Verse 4: You, you look like my brother… (bass line)
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 7
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 8 // Verse 5: The village all gathered… (arpeggio low)
       Call @PrepareKeyboardPreset1
-      Call @Log {🎹 1}
+      Call Log {🎹 1}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 9
       Call @ToggleSendKeyboard
@@ -636,10 +636,10 @@
     // Dramatic instrumentation
     elseif step = 12 // 1st guitar (low)
       Call @PrepareGuitarPreset3
-      Call @Log {🎸 3}
+      Call Log {🎸 3}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 13
       Call @ToggleSendGuitar
@@ -657,56 +657,56 @@
     // Pre-Intro
     if step = 1 // 2x start of main riff
       Call @ToggleSendMicrophone
-      Call @Log {🎤 ❌}
+      Call Log {🎤 ❌}
     
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
       Call @ToggleSendGuitar
-      Call @Log {🎸 ✔️}
+      Call Log {🎸 ✔️}
     
       Call @DecreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 5}
+      Call Log {⏲️ 5}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 4}
+      Call Log {⏲️ 4}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 3}
+      Call Log {⏲️ 3}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 2}
+      Call Log {⏲️ 2}
     
       Call @RecordNextLoopInGroup1
-      Call @Log {⏺️ 1}
+      Call Log {⏺️ 1}
     
     
     // Chorus
     elseif step = 2 // Jolene… (fingerstyle guitar)
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @IncreaseClockLength
-      Call @Log {⏲️ 3}
+      Call Log {⏲️ 3}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 4}
+      Call Log {⏲️ 4}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 5}
+      Call Log {⏲️ 5}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 10}
+      Call Log {⏲️ 10}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 11}
+      Call Log {⏲️ 11}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     
     elseif step = 3
       Call @ToggleSendMicrophone
@@ -717,36 +717,36 @@
     // Verse 1
     elseif step = 4 // Your beauty… / Your smile…
       Call @ToggleSendMicrophone
-      Call @Log {🎤 ❌}
+      Call Log {🎤 ❌}
     
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @DecreaseClockLength
-      Call @Log {⏲️ 10}
+      Call Log {⏲️ 10}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @DecreaseClockLength
-      Call @Log {⏲️ 5}
+      Call Log {⏲️ 5}
     
       Call @RecordNextLoopInGroup3
-      Call @Log {⏺️ 3}
+      Call Log {⏺️ 3}
     
     elseif step = 5
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
     elseif step = 6 // He talks about… / And I can easily understand…
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
     
       Call @RecordNextLoopInGroup3
-      Call @Log {⏺️ 3}
+      Call Log {⏺️ 3}
     
     elseif step = 7
       Call @ToggleSendGuitar
@@ -755,23 +755,23 @@
     // Chorus
     elseif step = 8 // Jolene…
       Call @PrepareGuitarPreset2
-      Call @Log {🎸 2}
+      Call Log {🎸 2}
     
       Call @IncreaseClockLength
-      Call @Log {⏲️ 6}
+      Call Log {⏲️ 6}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 7}
+      Call Log {⏲️ 7}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 8}
+      Call Log {⏲️ 8}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 9}
+      Call Log {⏲️ 9}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 10}
+      Call Log {⏲️ 10}
       Call @IncreaseClockLength
-      Call @Log {⏲️ 11}
+      Call Log {⏲️ 11}
     
       Call @RecordNextLoopInGroup2
-      Call @Log {⏺️ 2}
+      Call Log {⏺️ 2}
     elseif step = 9
       Call @ToggleSendGuitar
      Log {🎸 ✔️}
@@ -779,10 +779,10 @@
     // Verse 2
     elseif step = 10 // You can have your choice… / I had to have this talk…
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @ToggleAndSelectGroup3
-      Call @Log {▶️ 3}
+      Call Log {▶️ 3}
     
     elseif step = 11
       Call @ToggleSendGuitar
@@ -791,10 +791,10 @@
     // Chorus
     elseif step = 12 // Jolene…
       Call @PrepareGuitarPreset1
-      Call @Log {🎸 1}
+      Call Log {🎸 1}
     
       Call @ToggleAndSelectGroup2
-      Call @Log {▶️ 2}
+      Call Log {▶️ 2}
     
     elseif step = 13
       Call @ToggleSendGuitar
