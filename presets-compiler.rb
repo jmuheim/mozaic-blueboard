@@ -177,7 +177,7 @@ class PresetBuilder
   end
 end
 
-class PresetsBuilder
+class PresetsCompiler
   def initialize
     @presets = []
 
@@ -186,14 +186,14 @@ class PresetsBuilder
   end
 
   def process
-    Dir["songs/*.md"].sort.each do |file|
+    Dir["presets/*.md"].sort.each do |file|
       @presets << PresetBuilder.new(file)
     end
   end
 
   def print_script_to_file
     result = []
-    template = File.open("../src/1b-preset-mode").read
+    template = File.open("mozaic/1b-preset-mode").read
 
     template.gsub! /presetsSize = \d+/, "presetsSize = #{@presets.size}"
 
@@ -209,10 +209,10 @@ class PresetsBuilder
 
     template.gsub! /\n@ProceedWithPreset\n(.*?)\n@End\n/m, "\n@ProceedWithPreset\n#{result.join("\n")}\n@End\n"
 
-    file = File.new("../src/1b-preset-mode", "w")
+    file = File.new("mozaic/1b-preset-mode", "w")
     file.puts(template)
     file.close
   end
 end
 
-PresetsBuilder.new
+PresetsCompiler.new
