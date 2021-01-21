@@ -532,13 +532,6 @@
     // Verse 1
     elseif step = 4 // Your beauty…
       Call @PrepareGuitarPreset1 // 🎸 1
-      Call @IncreaseClockLength // ⏲️ 6
-      Call @IncreaseClockLength // ⏲️ 7
-      Call @IncreaseClockLength // ⏲️ 8
-      Call @IncreaseClockLength // ⏲️ 9
-      Call @IncreaseClockLength // ⏲️ 10
-      Call @IncreaseClockLength // ⏲️ 11
-    
       Call @RecordNextLoopInGroup3 // ⏺️ 3
     elseif step = 5
       Call @ToggleSendGuitar // 🎸 ✔️
@@ -552,6 +545,7 @@
     // Chorus
     elseif step = 12 // Jolene…
       Call @PrepareGuitarPreset1 // 🎸 1
+      Call @IncreaseClockLength // ⏲️ 6
       Call @ToggleAndSelectGroup2 // ▶️ 2
     elseif step = 13
       Call @ToggleSendGuitar // 🎸 ✔️

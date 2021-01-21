@@ -31,7 +31,6 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 - Your beauty...
     - 🎸 1
-    - ⏲️ 11
     - ⏺️ 3
 - Your smile...
     - 🎸 1
@@ -44,6 +43,7 @@ Interpretation by "I wanna be a band", see [josh.ch](http://josh.ch)
 
 - Jolene...
     - 🎸 1
+    - ⏲️ 6
     - ▶️ 2
 
 ## Verse 2
