@@ -523,6 +523,12 @@
       Call @IncreaseClockLength // ⏲️ 3
       Call @IncreaseClockLength // ⏲️ 4
       Call @IncreaseClockLength // ⏲️ 5
+      Call @IncreaseClockLength // ⏲️ 6
+      Call @IncreaseClockLength // ⏲️ 7
+      Call @IncreaseClockLength // ⏲️ 8
+      Call @IncreaseClockLength // ⏲️ 9
+      Call @IncreaseClockLength // ⏲️ 10
+      Call @IncreaseClockLength // ⏲️ 11
     
       Call @RecordNextLoopInGroup2 // ⏺️ 2
     elseif step = 3
@@ -530,40 +536,51 @@
       Call @ToggleSendGuitar // 🎸 ✔️
     
     // Verse 1
-    elseif step = 4 // Your beauty…
+    elseif step = 4 // Your beauty… / Your smile…
+      Call @ToggleSendMicrophone // 🎤 ❌
       Call @PrepareGuitarPreset1 // 🎸 1
+      Call @DecreaseClockLength // ⏲️ 10
+      Call @DecreaseClockLength // ⏲️ 9
+      Call @DecreaseClockLength // ⏲️ 8
+      Call @DecreaseClockLength // ⏲️ 7
+      Call @DecreaseClockLength // ⏲️ 6
+      Call @DecreaseClockLength // ⏲️ 5
+    
       Call @RecordNextLoopInGroup3 // ⏺️ 3
     elseif step = 5
       Call @ToggleSendGuitar // 🎸 ✔️
-    elseif step = 6 // Your smile…
+    elseif step = 6 // He talks about… / And I can easily understand…
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @RecordNextLoopInGroup3 // ⏺️ 3
     elseif step = 7
-    elseif step = 8 // He talks about…
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Chorus
+    elseif step = 8 // Jolene…
+      Call @PrepareGuitarPreset2 // 🎸 2
+      Call @IncreaseClockLength // ⏲️ 6
+      Call @IncreaseClockLength // ⏲️ 7
+      Call @IncreaseClockLength // ⏲️ 8
+      Call @IncreaseClockLength // ⏲️ 9
+      Call @IncreaseClockLength // ⏲️ 10
+      Call @IncreaseClockLength // ⏲️ 11
+    
+      Call @RecordNextLoopInGroup2 // ⏺️ 2
     elseif step = 9
-    elseif step = 10 // And I can easily understand…
+      Call @ToggleSendGuitar // 🎸 ✔️
+    
+    // Verse 2
+    elseif step = 10 // You can have your choice… / I had to have this talk…
+      Call @PrepareGuitarPreset1 // 🎸 1
+      Call @ToggleAndSelectGroup3 // ▶️ 3
     elseif step = 11
+      Call @ToggleSendGuitar // 🎸 ✔️
     
     // Chorus
     elseif step = 12 // Jolene…
       Call @PrepareGuitarPreset1 // 🎸 1
-      Call @IncreaseClockLength // ⏲️ 6
       Call @ToggleAndSelectGroup2 // ▶️ 2
     elseif step = 13
-      Call @ToggleSendGuitar // 🎸 ✔️
-    
-    // Verse 2
-    elseif step = 14 // You can have your choice…
-      Call @PrepareGuitarPreset1 // 🎸 1
-      Call @ToggleAndSelectGroup3 // ▶️ 3
-    elseif step = 15
-      Call @ToggleSendGuitar // 🎸 ✔️
-    elseif step = 16 // I had to have this talk…
-    elseif step = 17
-    
-    // Chorus
-    elseif step = 18 // Jolene…
-      Call @PrepareGuitarPreset1 // 🎸 1
-      Call @ToggleAndSelectGroup2 // ▶️ 2
-    elseif step = 19
       Call @ToggleSendGuitar // 🎸 ✔️
     
       Call @Error
