@@ -109,7 +109,8 @@ class PresetBuilder
     when /🎤\s?❌/
       if @sendMicrophone
         @sendMicrophone = false
-        codes << 'ToggleSendMicrophone // 🎤 ❌' # TODO: Should not happen immediately!
+        codes << 'ToggleSendMicrophone' # TODO: Should not happen immediately!
+        codes << 'Log {🎤 ❌}'
       end
     when /🎤\s?✔️/
       if !@sendMicrophone
@@ -117,37 +118,44 @@ class PresetBuilder
         @nextMicrophonePreset = 1
       end
     when /🎸\s?([1-3])\s?(✔️)?/
-      codes << "PrepareGuitarPreset#{$1} // 🎸 #{$1}"
+      codes << "PrepareGuitarPreset#{$1}"
+      codes << "Log {🎸 #{$1}}"
       @nextGuitarPreset = $1
 
       if $2 == '✔️'
         @sendGuitar = true
-        codes << 'ToggleSendGuitar // 🎸 ✔️'
+        codes << 'ToggleSendGuitar'
+        codes << 'Log {🎸 ✔️}'
         @nextGuitarPreset = nil
       end
     when /🎹\s?([1-3])\s?(✔️)?/
-      codes << "PrepareKeyboardPreset#{$1} // 🎹 #{$1}"
+      codes << "PrepareKeyboardPreset#{$1}"
+      codes << "Log {🎹 #{$1}}"
       @nextKeyboardPreset = $1
 
       if $2 == '✔️'
         @sendKeyboard = true
-        codes << 'ToggleSendKeyboard // 🎹 ✔️'
+        codes << 'ToggleSendKeyboard'
+        codes << 'Log {🎹 ✔️}'
         @nextKeyboardPreset = nil
       end
     when /⏲️\s?(\d+)/
       while @clockLength != $1.to_i
         if @clockLength < $1.to_i
           @clockLength += 1
-          codes << "IncreaseClockLength // ⏲️ #{@clockLength}"
+          codes << 'IncreaseClockLength'
         else
           @clockLength -= 1
-          codes << "DecreaseClockLength // ⏲️ #{@clockLength}"
+          codes << "DecreaseClockLength"
         end
+        codes << "Log {⏲️ #{@clockLength}}"
       end
     when /⏺️\s?([0-4])/
-      codes << "RecordNextLoopInGroup#{$1} // ⏺️ #{$1}"
+      codes << "RecordNextLoopInGroup#{$1}"
+      codes << "Log {⏺️ #{$1}}"
     when /▶️\s?([1-4])/
-      codes << "ToggleAndSelectGroup#{$1} // ▶️ #{$1}"
+      codes << "ToggleAndSelectGroup#{$1}"
+      codes << "Log {▶️ #{$1}}"
     else
       puts "Unknown setting #{setting}, assuming it's just text."
     end
@@ -159,17 +167,20 @@ class PresetBuilder
     @result << "#{:else if @step > 1}if step = #{@step}"
 
     if @nextMicrophonePreset
-      @result << '  Call @ToggleSendMicrophone // 🎤 ✔️'
+      @result << '  Call @ToggleSendMicrophone'
+      @result << '  Log {🎤 ✔️}'
       @nextMicrophonePreset = nil
     end
 
     if @nextKeyboardPreset
-      @result << '  Call @ToggleSendKeyboard // 🎹 ✔️'
+      @result << '  Call @ToggleSendKeyboard'
+      @result << '  Log {🎹 ✔️}'
       @nextKeyboardPreset = nil
     end
 
     if @nextGuitarPreset
-      @result << '  Call @ToggleSendGuitar // 🎸 ✔️'
+      @result << '  Call @ToggleSendGuitar'
+      @result << ' Log {🎸 ✔️}'
       @nextGuitarPreset = nil
     end
 
