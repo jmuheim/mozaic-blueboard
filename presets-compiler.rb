@@ -64,7 +64,7 @@ class PresetBuilder
     @title = @doc.html.body.h1.text
 
     @doc.html.body.h2.each_with_index do |h2, i|
-      @result << "// #{h2.text}"
+      @result << "Log {#{h2.text}}"
 
       li = @doc.html.body.ul[i].li
       li = [li] if li.count == 0 # See https://stackoverflow.com/questions/65576289/
@@ -87,7 +87,8 @@ class PresetBuilder
   end
 
   def generate_prepare(part, settings)
-    @result << "#{:else if @step > 1}if step = #{@step} // #{part}"
+    @result << "#{:else if @step > 1}if step = #{@step}"
+    @result << "  Log {  #{part}}"
 
     settings.each_with_index do |setting, i|
       if codes = convert_setting_to_code(setting)
@@ -110,7 +111,7 @@ class PresetBuilder
       if @sendMicrophone
         @sendMicrophone = false
         codes << 'ToggleSendMicrophone' # TODO: Should not happen immediately!
-        codes << 'Log {🎤 ❌}'
+        codes << 'Log {    🎤 ❌}'
       end
     when /🎤\s?✔️/
       if !@sendMicrophone
@@ -119,24 +120,24 @@ class PresetBuilder
       end
     when /🎸\s?([1-3])\s?(✔️)?/
       codes << "PrepareGuitarPreset#{$1}"
-      codes << "Log {🎸 #{$1}}"
+      codes << "Log {    🎸 #{$1}}"
       @nextGuitarPreset = $1
 
       if $2 == '✔️'
         @sendGuitar = true
         codes << 'ToggleSendGuitar'
-        codes << 'Log {🎸 ✔️}'
+        codes << 'Log {    🎸 ✔️}'
         @nextGuitarPreset = nil
       end
     when /🎹\s?([1-3])\s?(✔️)?/
       codes << "PrepareKeyboardPreset#{$1}"
-      codes << "Log {🎹 #{$1}}"
+      codes << "Log {    🎹 #{$1}}"
       @nextKeyboardPreset = $1
 
       if $2 == '✔️'
         @sendKeyboard = true
         codes << 'ToggleSendKeyboard'
-        codes << 'Log {🎹 ✔️}'
+        codes << 'Log {    🎹 ✔️}'
         @nextKeyboardPreset = nil
       end
     when /⏲️\s?(\d+)/
@@ -148,14 +149,14 @@ class PresetBuilder
           @clockLength -= 1
           codes << "DecreaseClockLength"
         end
-        codes << "Log {⏲️ #{@clockLength}}"
+        codes << "Log {    ⏲️ #{@clockLength}}"
       end
     when /⏺️\s?([0-4])/
       codes << "RecordNextLoopInGroup#{$1}"
-      codes << "Log {⏺️ #{$1}}"
+      codes << "Log {    ⏺️ #{$1}}"
     when /▶️\s?([1-4])/
       codes << "ToggleAndSelectGroup#{$1}"
-      codes << "Log {▶️ #{$1}}"
+      codes << "Log {    ▶️ #{$1}}"
     else
       puts "Unknown setting #{setting}, assuming it's just text."
     end
@@ -168,19 +169,19 @@ class PresetBuilder
 
     if @nextMicrophonePreset
       @result << '  Call @ToggleSendMicrophone'
-      @result << '  Log {🎤 ✔️}'
+      @result << '  Log {    🎤 ✔️}'
       @nextMicrophonePreset = nil
     end
 
     if @nextKeyboardPreset
       @result << '  Call @ToggleSendKeyboard'
-      @result << '  Log {🎹 ✔️}'
+      @result << '  Log {    🎹 ✔️}'
       @nextKeyboardPreset = nil
     end
 
     if @nextGuitarPreset
       @result << '  Call @ToggleSendGuitar'
-      @result << ' Log {🎸 ✔️}'
+      @result << ' Log {    🎸 ✔️}'
       @nextGuitarPreset = nil
     end
 
