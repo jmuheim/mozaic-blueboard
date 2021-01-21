@@ -92,7 +92,7 @@ class PresetBuilder
     settings.each_with_index do |setting, i|
       if codes = convert_setting_to_code(setting)
         codes.each do |code|
-          @result << "  Call #{'@' unless code.start_with? 'Log'}" + code
+          @result << "  #{'Call @' unless code.start_with? 'Log'}" + code
         end
 
         @result << nil if codes.size > 1 && i != codes.size # Add a line break
