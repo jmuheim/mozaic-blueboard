@@ -1,8 +1,0 @@
-@OnLoad
-  SetShortName {Logger}
-@End
-
-@OnMidiInput
-  Log {Channel: }, MIDIChannel, { note: }, MIDINote, { velocity: }, MIDIVelocity
-  SendMidiThru
-@End
